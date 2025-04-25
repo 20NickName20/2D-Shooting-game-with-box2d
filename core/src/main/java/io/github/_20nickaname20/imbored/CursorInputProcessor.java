@@ -11,6 +11,9 @@ import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.utils.Array;
 
+import static io.github._20nickaname20.imbored.Main.camera;
+import static io.github._20nickaname20.imbored.Main.viewport;
+
 public class CursorInputProcessor extends InputAdapter {
     Main main;
 
@@ -33,7 +36,7 @@ public class CursorInputProcessor extends InputAdapter {
                     mouseJointDef.target.set(point);
                     mouseJointDef.bodyA = main.ground;
                     mouseJointDef.bodyB = body;
-                    mouseJointDef.maxForce = 1500;
+                    mouseJointDef.maxForce = 15000;
                     mouseJointDef.collideConnected = true;
                     main.mouseJoint = (MouseJoint) main.world.createJoint(mouseJointDef);
                     main.mouseJoint.setTarget(point);
@@ -59,6 +62,14 @@ public class CursorInputProcessor extends InputAdapter {
             main.mouseJoint.setTarget(Main.viewport.unproject(new Vector2(screenX, screenY)));
             return true;
         }
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(float amountX, float amountY) {
+        System.out.println("Scroll: " + amountX + "; " + amountY);
+        camera.position.add(amountX, -amountY, 0);
+        camera.update();
         return false;
     }
 }

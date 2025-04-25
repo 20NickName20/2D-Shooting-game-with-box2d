@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.Iterator;
+import java.util.function.Consumer;
 
 public class GameRenderer extends Box2DDebugRenderer {
 
@@ -52,9 +53,20 @@ public class GameRenderer extends Box2DDebugRenderer {
     }
 
     /** This assumes that the projection matrix has already been set. */
-    public void render (World world, Matrix4 projMatrix) {
+    public void render(World world, Matrix4 projMatrix) {
+        renderer.begin(ShapeRenderer.ShapeType.Line);
         renderer.setProjectionMatrix(projMatrix);
         renderBodies(world);
+        renderer.end();
+    }
+
+    public void render(World world, Matrix4 projMatrix, Consumer<ShapeRenderer> rendererConsumer) {
+        renderer.setProjectionMatrix(projMatrix);
+        renderer.identity();
+        renderer.begin(ShapeRenderer.ShapeType.Line);
+        rendererConsumer.accept(renderer);
+        renderBodies(world);
+        renderer.end();
     }
 
     public final Color SHAPE_NOT_ACTIVE = new Color(0.5f, 0.5f, 0.3f, 1);
@@ -66,9 +78,7 @@ public class GameRenderer extends Box2DDebugRenderer {
     public final Color AABB_COLOR = new Color(1.0f, 0, 1.0f, 1f);
     public final Color VELOCITY_COLOR = new Color(1.0f, 0, 0f, 1f);
 
-    private void renderBodies (World world) {
-        renderer.begin(ShapeRenderer.ShapeType.Line);
-
+    private void renderBodies(World world) {
         if (drawBodies || drawAABBs) {
             world.getBodies(bodies);
             for (Iterator<Body> iter = bodies.iterator(); iter.hasNext();) {
@@ -84,20 +94,30 @@ public class GameRenderer extends Box2DDebugRenderer {
                 drawJoint(joint);
             }
         }
-        renderer.end();
         if (drawContacts) {
+            renderer.end();
             renderer.begin(ShapeRenderer.ShapeType.Point);
             for (Contact contact : world.getContactList())
                 drawContact(contact);
-            renderer.end();
         }
     }
 
-    protected void renderBody (Body body) {
+    public void setShapeType(ShapeRenderer.ShapeType type) {
+        renderer.end();
+        renderer.begin(type);
+    }
+
+    protected void renderBody(Body body) {
         Color color;
         if (body.getUserData() instanceof Entity entity) {
             color = entity.material.color;
-            if (entity.render(renderer)) return;
+            Vector2 position = body.getPosition();
+            renderer.translate(position.x, position.y, 0);
+            if (entity.render(renderer)) {
+                renderer.translate(-position.x, -position.y, 0);
+                return;
+            }
+            renderer.translate(-position.x, -position.y, 0);
         } else {
             color = getColorByBody(body);
         }

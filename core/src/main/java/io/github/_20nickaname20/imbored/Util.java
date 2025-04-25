@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.TimeUtils;
+import io.github._20nickaname20.imbored.items.usable.guns.RaycastGunItem;
 
 import static io.github._20nickaname20.imbored.Main.startTime;
 
@@ -85,5 +86,29 @@ public class Util {
         body.createFixture(boxShape, 0.0f).setFriction(1.5f);
         boxShape.dispose();
         return body;
+    }
+
+    public static class Raycast {
+        public static float closestFraction;
+        public static Vector2 collisionPoint = new Vector2();
+        public static Body collisionBody;
+        public static boolean hadCollision;
+
+        public static RayCastCallback calculateCollisionPoint(Body ignore) {
+            hadCollision = false;
+            closestFraction = 1f;
+
+            return (fixture, point, normal, fraction) -> {
+                Body body = fixture.getBody();
+                if (body == ignore) return -1;
+                hadCollision = true;
+                if ( fraction < Raycast.closestFraction ) {
+                    Raycast.closestFraction = fraction;
+                    Raycast.collisionPoint.set(point);
+                    Raycast.collisionBody = body;
+                }
+                return 1;
+            };
+        }
     }
 }

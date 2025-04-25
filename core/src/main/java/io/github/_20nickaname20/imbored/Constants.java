@@ -2,7 +2,7 @@ package io.github._20nickaname20.imbored;
 
 public final class Constants {
     // SIMULATION SETTINGS //
-    static final float TIME_STEP = 1f / 300;
+    static final float TIME_STEP = 1f / 200;
     static final int VELOCITY_ITERATIONS = 6;
     static final int POSITION_ITERATIONS = 2;
     static final float SIMULATION_SPEED = 1.5f;

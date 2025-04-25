@@ -4,11 +4,18 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github._20nickaname20.imbored.Entity;
 import io.github._20nickaname20.imbored.Material;
+import io.github._20nickaname20.imbored.entities.damagable.living.human.PlayerEntity;
 
-public class BlockEntity extends Entity {
-    public boolean isGrabbed = false;
+public class BlockEntity extends DamagableEntity {
+    public PlayerEntity grabber;
 
-    public BlockEntity(World world, float x, float y, Shape shape, Material material) {
-        super(world, x, y, shape, material);
+    public BlockEntity(World world, float x, float y, Shape shape, Material material, float maxHealth) {
+        super(world, x, y, shape, material, maxHealth);
+    }
+
+    @Override
+    public void onDestroy() {
+        if (grabber != null) grabber.put();
+        super.onDestroy();
     }
 }

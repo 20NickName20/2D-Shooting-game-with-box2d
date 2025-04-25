@@ -1,20 +1,21 @@
-package io.github._20nickaname20.imbored.entities;
+package io.github._20nickaname20.imbored.entities.damagable;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
-import io.github._20nickaname20.imbored.Entity;
 import io.github._20nickaname20.imbored.Material;
+import io.github._20nickaname20.imbored.entities.DamagableEntity;
+import io.github._20nickaname20.imbored.entities.Moving;
 
-public abstract class LivingEntity extends Entity implements Moving {
+public abstract class LivingEntity extends DamagableEntity implements Moving {
     float health;
     protected Vector2 movement = new Vector2();
     private float lastXMovement = 0;
     private float lastYMovement = 0;
     float maxWalkSpeed = 20;
 
-    public LivingEntity(World world, float x, float y, Shape shape) {
-        super(world, x, y, shape, Material.FLESH);
+    public LivingEntity(World world, float x, float y, Shape shape, float maxHealth) {
+        super(world, x, y, shape, Material.FLESH, maxHealth);
         b.setFixedRotation(true);
     }
 

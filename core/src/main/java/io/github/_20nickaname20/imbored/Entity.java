@@ -1,31 +1,29 @@
 package io.github._20nickaname20.imbored;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.TimeUtils;
-import io.github._20nickaname20.imbored.entities.living.human.PlayerEntity;
+import io.github._20nickaname20.imbored.entities.damagable.living.human.PlayerEntity;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public abstract class Entity {
     public final Body b;
     final Material material;
-    final World world;
+    public final World world;
 
     public Set<Body> contacts = new HashSet<>();
     private float lastContactTime = 0;
 
     private boolean isRemoved = false;
+    protected Shape shape;
 
     public Entity(World world, float x, float y, Shape shape, Material material) {
         this.material = material;
         this.world = world;
+        this.shape = shape;
         b = Util.createBody(world, x, y, shape, material.density, material.friction, material.restitution);
         b.setUserData(this);
     }
@@ -76,5 +74,9 @@ public abstract class Entity {
     public static Entity getEntity(Body body) {
         if (body.getUserData() instanceof Entity entity) return entity;
         return null;
+    }
+
+    public static float getVolume(Body body) {
+        return body.getMass() / body.getFixtureList().get(0).getDensity();
     }
 }

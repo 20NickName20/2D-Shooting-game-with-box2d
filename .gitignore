@@ -1,18 +1,18 @@
 ## Gradle:
-.gradle/
-gradle-app.setting
-/build/
-/android/build/
-/core/build/
-/lwjgl2/build/
-/lwjgl3/build/
-/html/build/
-/teavm/build/
-/ios/build/
-/ios-moe/build/
-/headless/build/
-/server/build/
-/shared/build/
+# .gradle/
+# gradle-app.setting
+# /build/
+# /android/build/
+# /core/build/
+# /lwjgl2/build/
+# /lwjgl3/build/
+# /html/build/
+# /teavm/build/
+# /ios/build/
+# /ios-moe/build/
+# /headless/build/
+# /server/build/
+# /shared/build/
 
 ## Java:
 *.class
@@ -57,10 +57,6 @@ www-test/
 # Not sure yet...
 
 ## IntelliJ, Android Studio:
-.idea/
-*.ipr
-*.iws
-*.iml
 
 ## Eclipse:
 .classpath

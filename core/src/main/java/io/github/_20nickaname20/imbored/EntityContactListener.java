@@ -1,7 +1,6 @@
 package io.github._20nickaname20.imbored;
 
 import com.badlogic.gdx.physics.box2d.*;
-import io.github._20nickaname20.imbored.entities.living.human.PlayerEntity;
 
 public class EntityContactListener implements ContactListener {
     @Override
