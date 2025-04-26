@@ -3,8 +3,15 @@ package io.github._20nickaname20.imbored;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
+import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import io.github._20nickaname20.imbored.items.usable.guns.RaycastGunItem;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 import static io.github._20nickaname20.imbored.Main.startTime;
 
@@ -86,6 +93,83 @@ public class Util {
         body.createFixture(boxShape, 0.0f).setFriction(1.5f);
         boxShape.dispose();
         return body;
+    }
+
+    public static Body getBodyAtPoint(World world, Vector2 point) {
+        Array<Body> bodies = new Array<>();
+        world.getBodies(bodies);
+        for (Body body : bodies) {
+            if (body.getType() == BodyDef.BodyType.StaticBody) continue;
+            for (Fixture fixture : body.getFixtureList()) {
+                if (fixture.testPoint(point)) {
+                    return body;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Vector2 getBodyClosestPoint(Body body, Vector2 fromPoint) {
+        Vector2 closest = new Vector2();
+        for (Fixture fixture : body.getFixtureList()) {
+            if (fixture.testPoint(fromPoint)) {
+                return fromPoint;
+            }
+        }
+        body.getWorld().rayCast((Fixture fixture, Vector2 point, Vector2 normal, float fraction) -> {
+            closest.set(point);
+            return 0;
+        }, fromPoint, body.getPosition());
+        return closest;
+    }
+
+    public static Body getClosestBody(List<Body> bodies, Vector2 point) {
+        Body closest = bodies.remove(0);
+        float closestDist = closest.getPosition().dst(point);
+        if (!bodies.isEmpty()) {
+            for (Body body : bodies) {
+                float dist = body.getPosition().dst(point);
+                if (dist < closestDist) {
+                    closestDist = dist;
+                    closest = body;
+                }
+            }
+        }
+        return closest;
+    }
+
+    public static List<Body> filterBodies(World world, Function<Body, Boolean> filter) {
+        List<Body> bodyList = new ArrayList<>(10);
+        Array<Body> bodies = new Array<>();
+        world.getBodies(bodies);
+        for (Body body : bodies) {
+            if (filter.apply(body)) {
+                bodyList.add(body);
+            }
+        }
+        return bodyList;
+    }
+
+    public static Body getClosestBodyFiltered(World world, Vector2 point, Function<Body, Boolean> filter) {
+        Array<Body> bodies = new Array<>();
+        Body closest = null;
+        float closestDist = Float.MAX_VALUE;
+        world.getBodies(bodies);
+        for (Body body : bodies) {
+            if (filter.apply(body)) {
+                float dist = body.getPosition().dst(point);
+                if (closest == null) {
+                    closest = body;
+                    closestDist = dist;
+                    continue;
+                }
+                if (dist < closestDist) {
+                    closestDist = dist;
+                    closest = body;
+                }
+            }
+        }
+        return closest;
     }
 
     public static class Raycast {

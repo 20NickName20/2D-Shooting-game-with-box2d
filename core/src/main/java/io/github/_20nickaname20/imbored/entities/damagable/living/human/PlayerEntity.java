@@ -1,6 +1,7 @@
 package io.github._20nickaname20.imbored.entities.damagable.living.human;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -10,35 +11,23 @@ import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.utils.Array;
 import io.github._20nickaname20.imbored.*;
 import io.github._20nickaname20.imbored.entities.BlockEntity;
+import io.github._20nickaname20.imbored.entities.InventoryHolder;
 import io.github._20nickaname20.imbored.entities.damagable.living.HumanEntity;
 import io.github._20nickaname20.imbored.items.UsableItem;
 import io.github._20nickaname20.imbored.items.usable.guns.raycast.TestGunItem;
+import io.github._20nickaname20.imbored.items.usable.guns.raycast.automatic.AutomaticRifleItem;
+import io.github._20nickaname20.imbored.items.usable.joint.DistanceJointItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerEntity extends HumanEntity {
+public class PlayerEntity extends HumanEntity implements InventoryHolder {
     float food, thirst, infection; //TODO: set values
 
     PlayerController controller;
     private float lastJumpTime = 0;
 
     private Mode mode = Mode.GRAB;
-
-    public void setMode(Mode mode) {
-        if (mode != Mode.GRAB) {
-            put();
-        }
-        if (mode != Mode.INV) {
-            stopUsingItem();
-        }
-        this.mode = mode;
-    }
-
-    public Mode getMode() {
-        return mode;
-    }
-
     private float maxGrabForce = 2000;
     private float maxGrabMass = 10;
     private float grabRadius = 6;
@@ -47,15 +36,8 @@ public class PlayerEntity extends HumanEntity {
 
     private float itemCursorDistance = 4;
 
-    public float getCursorDistance() {
-        if (mode == Mode.GRAB) {
-            return grabCursorDistance;
-        }
-        if (mode == Mode.INV) {
-            return itemCursorDistance;
-        }
-        return 1;
-    }
+    private float cursorDistance = getModeCursorDistance();
+
 
     public Vector2 cursorDirection = new Vector2(1, 0);
     public float cursorRotationVel = 0;
@@ -70,12 +52,58 @@ public class PlayerEntity extends HumanEntity {
         controller.setPlayer(this);
         this.controller = controller;
         controller.register();
+
+        while (inventory.getFreeSpace() > 2) {
+            if (MathUtils.randomBoolean()) {
+                inventory.add(new TestGunItem());
+                continue;
+            }
+            inventory.add(new AutomaticRifleItem());
+        }
+        while (inventory.getFreeSpace() > 0) {
+            inventory.add(new DistanceJointItem());
+        }
+    }
+
+    public void setMode(Mode mode) {
+        this.mode = mode;
+        this.cursorDistance = getModeCursorDistance();
+        if (mode != Mode.GRAB) {
+            put();
+        }
+        if (mode != Mode.INV) {
+            deselectItem();
+        } else {
+            selectItem();
+        }
+    }
+
+    public float getModeCursorDistance() {
+        if (mode == Mode.GRAB) {
+            return grabCursorDistance;
+        }
+        if (mode == Mode.INV) {
+            return itemCursorDistance;
+        }
+        return 1;
+    }
+
+    public float getCursorDistance() {
+        return cursorDistance;
+    }
+
+    public void setCursorDistance(float distance) {
+        this.cursorDistance = distance;
+    }
+
+    public Mode getMode() {
+        return mode;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        new PlayerEntity(world, 0, 0, controller).inventory.add(new TestGunItem());
+        new PlayerEntity(world, 0, 0, controller);
     }
 
     public void jump() {
@@ -86,7 +114,6 @@ public class PlayerEntity extends HumanEntity {
     }
 
     public void scrollItem(int amount) {
-        stopUsingItem();
         inventory.scroll(amount);
     }
 
@@ -127,64 +154,28 @@ public class PlayerEntity extends HumanEntity {
     public void grab() {
         if (grabbedEntity != null) return;
         Vector2 cursorPosition = getCursorPosition();
-        Array<Body> bodies = new Array<>();
-        this.world.getBodies(bodies);
-        List<Body> nearBodies = new ArrayList<>(10);
-        for (Body body : bodies) {
-            Entity entity = Entity.getEntity(body);
-            if (entity == null) continue;
-            if (!(entity instanceof BlockEntity)) continue;
-            if (body.getMass() > maxGrabMass) continue;
-            if (body.getPosition().dst(cursorPosition) > grabRadius) continue;
-            nearBodies.add(body);
-        }
-        if (nearBodies.isEmpty()) return;
 
-        Body closest = nearBodies.remove(0);
-        float closestDist = closest.getPosition().dst(cursorPosition);
-        if (!nearBodies.isEmpty()) {
-            for (Body body : nearBodies) {
-                float dist = body.getPosition().dst(cursorPosition);
-                if (dist < closestDist) {
-                    closestDist = dist;
-                    closest = body;
-                }
-            }
-        }
+        Body closest = Util.getClosestBodyFiltered(world, cursorPosition, (body) -> {
+            Entity entity = Entity.getEntity(body);
+            if (entity == null) return false;
+            if (!(entity instanceof BlockEntity)) return false;
+            if (body.getMass() > maxGrabMass) return false;
+            if (body.getPosition().dst(cursorPosition) > grabRadius) return false;
+            return true;
+        });
+        if (closest == null) return;
+
+        Vector2 grabPoint = Util.getBodyClosestPoint(closest, cursorPosition);
 
         MouseJointDef mouseJointDef = new MouseJointDef();
-        boolean found = false;
-        Vector2 grabPoint = new Vector2();
-        for (Fixture fixture : closest.getFixtureList()) {
-            if (fixture.testPoint(cursorPosition)) {
-                grabPoint.set(cursorPosition);
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            closest.getWorld().rayCast((Fixture fixture, Vector2 point, Vector2 normal, float fraction) -> {
-                grabPoint.set(point);
-                return 0;
-            }, cursorPosition, closest.getPosition());
-        }
-
         mouseJointDef.target.set(grabPoint);
         mouseJointDef.bodyA = this.b;
         mouseJointDef.bodyB = closest;
         mouseJointDef.maxForce = maxGrabForce;
-
-        mouseJointDef.collideConnected = Entity.getVolume(closest) > 12;
-        //mouseJointDef.frequencyHz = 10000f
+        mouseJointDef.collideConnected = Entity.getVolume(closest) > 16;
         grabJoint = (MouseJoint) this.world.createJoint(mouseJointDef);
         grabJoint.setTarget(getCursorPosition());
 
-        //DistanceJointDef defJoint = new DistanceJointDef ();
-        //defJoint.frequencyHz = 5;
-        //defJoint.dampingRatio = 0.5f;
-        //defJoint.initialize(this.b, closest, this.b.getPosition(), grabPoint);
-        //DistanceJoint distanceJoint = (DistanceJoint) this.world.createJoint(defJoint);
-        //grabDistJoint = distanceJoint;
         // TODO: make some joints hidden (make custom joint class)
         //  joint.setUserData();
 
@@ -211,6 +202,7 @@ public class PlayerEntity extends HumanEntity {
     }
 
     public void startUsingItem() {
+        if (mode != Mode.INV) return;
         Item item = inventory.getSelectedItem();
         if (item == null) return;
         if (!(item instanceof UsableItem usable)) return;
@@ -218,10 +210,27 @@ public class PlayerEntity extends HumanEntity {
     }
 
     public void stopUsingItem() {
+        if (mode != Mode.INV) return;
         Item item = inventory.getSelectedItem();
         if (item == null) return;
         if (!(item instanceof UsableItem usable)) return;
         usable.onEndUse(this);
+    }
+
+    public void selectItem() {
+        Item item = inventory.getSelectedItem();
+        if (item == null) return;
+        item.onSelect(this);
+    }
+
+    public void deselectItem() {
+        Item item = inventory.getSelectedItem();
+        if (item == null) return;
+        item.onDeselect(this);
+    }
+
+    public void removeSelectedItem() {
+        inventory.removeSelectedItem();
     }
 
     @Override
@@ -243,29 +252,6 @@ public class PlayerEntity extends HumanEntity {
         controller.unregister();
     }
 
-    void renderSlot(ShapeRenderer renderer, boolean active, float x, float y) {
-        renderer.rect(x - 2, y - 2, 4, 4);
-        if (active) {
-            renderer.rect(x - 2.2f, y - 2.2f, 4.4f, 4.4f);
-        }
-    }
-
-    void renderInv(ShapeRenderer renderer) {
-        renderer.setColor(0.5f, 0.5f, 0.5f, 1f);
-        for (int i = -1; i < 2; i++) {
-            renderSlot(renderer, i == 0, i * 4.6f, -8);
-            Item item = inventory.get(i + inventory.getSelectedSlot());
-            if (item != null) {
-                renderer.translate(i * 4.6f, -8, 0);
-                // renderer.rotate(0, 0, 1, MathUtils.radiansToDegrees * 3.14f);
-
-                item.render(renderer, false);
-
-                renderer.translate(-i * 4.6f, 8, 0);
-            }
-        }
-    }
-
     @Override
     public boolean render(ShapeRenderer renderer) {
         super.render(renderer);
@@ -285,9 +271,16 @@ public class PlayerEntity extends HumanEntity {
         renderer.rotate(0, 0, 1, -angle);
 
         if (mode == Mode.INV) {
-            renderInv(renderer);
+            renderer.translate(0, -7, 0);
+            inventory.renderPart(renderer, 3);
+            renderer.translate(0, 7, 0);
         }
         return false;
+    }
+
+    @Override
+    public Inventory getInventory() {
+        return inventory;
     }
 
     public enum Mode {

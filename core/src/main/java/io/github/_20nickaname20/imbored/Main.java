@@ -66,8 +66,6 @@ public class Main extends ApplicationAdapter {
         PlayerEntity player = new PlayerEntity(world, 5 * controllerPlayers, -30,
             new PlayerGamepadController(controller)
         );
-        player.inventory.add(new TestGunItem());
-        player.inventory.add(new AutomaticRifleItem());
         controller.setPlayerIndex(controllerPlayers % 4);
         controllerPlayers++;
     }

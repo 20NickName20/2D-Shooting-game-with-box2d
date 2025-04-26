@@ -34,7 +34,6 @@ public abstract class DamagableEntity extends Entity {
     }
 
     public void onDestroy() {
-        System.out.println("Damagable entity destroyed: " + this);
         this.remove();
     }
 

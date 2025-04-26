@@ -34,7 +34,7 @@ public class Tests {
         }
         new BlockEntity(main.world, 70, -40, Util.circleShape(1.5f), Material.ROCK, 100);
         new PlayerEntity(main.world, 0, -40,
-            new PlayerKeyboardController(Input.Keys.A, Input.Keys.D, Input.Keys.W, Input.Keys.Q, Input.Keys.Z, Input.Keys.X, Input.Keys.SHIFT_LEFT)
+            new PlayerKeyboardController(new PlayerKeyboardController.KeyboardMapping())
         );
         for (Controller controller : Controllers.getControllers()) {
             main.addXInputControllerPlayer(controller);
@@ -51,7 +51,7 @@ public class Tests {
             }
         }
         new PlayerEntity(main.world, 0, -40,
-            new PlayerKeyboardController(Input.Keys.A, Input.Keys.D, Input.Keys.W, Input.Keys.Q, Input.Keys.Z, Input.Keys.X, Input.Keys.SHIFT_LEFT)
+            new PlayerKeyboardController(new PlayerKeyboardController.KeyboardMapping())
         );
         for (Controller controller : Controllers.getControllers()) {
             main.addXInputControllerPlayer(controller);

@@ -1,7 +1,7 @@
 package io.github._20nickaname20.imbored;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
+import io.github._20nickaname20.imbored.entities.InventoryHolder;
 
 public abstract class Item {
     private final float size;
@@ -21,11 +21,23 @@ public abstract class Item {
         this.isUpdating = isUpdating;
     }
 
-    public void update(Entity holder, float dt) {
+    public void update(InventoryHolder holder, float dt) {
 
     }
 
     public final float getSize() {
         return size;
+    }
+
+    public void onSelect(InventoryHolder holder) {
+
+    }
+
+    public void onDeselect(InventoryHolder holder) {
+
+    }
+
+    public void onRemove(InventoryHolder holder) {
+
     }
 }

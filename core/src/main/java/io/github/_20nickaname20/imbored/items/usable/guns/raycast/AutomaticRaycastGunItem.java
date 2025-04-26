@@ -2,6 +2,7 @@ package io.github._20nickaname20.imbored.items.usable.guns.raycast;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import io.github._20nickaname20.imbored.Entity;
+import io.github._20nickaname20.imbored.entities.InventoryHolder;
 import io.github._20nickaname20.imbored.entities.damagable.living.human.PlayerEntity;
 import io.github._20nickaname20.imbored.items.usable.guns.RaycastGunItem;
 
@@ -21,7 +22,7 @@ public abstract class AutomaticRaycastGunItem extends RaycastGunItem {
     }
 
     @Override
-    public void update(Entity holder, float dt) {
+    public void update(InventoryHolder holder, float dt) {
         shootFrom((PlayerEntity) holder);
     }
 }

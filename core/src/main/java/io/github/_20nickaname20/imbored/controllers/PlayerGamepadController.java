@@ -71,7 +71,7 @@ public class PlayerGamepadController extends PlayerController implements Control
         if (axisCode == mapping.axisRightY) {
             newDirection.y = -value;
         }
-        if (newDirection.len() > 0.5) {
+        if (newDirection.len() > 0.4) {
             if (axisCode == mapping.axisRightX) {
                 player.cursorDirection.x = value;
                 player.cursorDirection.nor();

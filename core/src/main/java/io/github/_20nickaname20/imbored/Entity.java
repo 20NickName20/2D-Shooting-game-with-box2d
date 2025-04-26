@@ -2,6 +2,7 @@ package io.github._20nickaname20.imbored;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.JointEdge;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github._20nickaname20.imbored.entities.damagable.living.human.PlayerEntity;
@@ -63,6 +64,9 @@ public abstract class Entity {
     }
 
     public void remove() {
+        for (JointEdge jointEdge : b.getJointList()) {
+            world.destroyJoint(jointEdge.joint);
+        }
         world.destroyBody(b);
         isRemoved = true;
     }

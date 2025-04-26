@@ -26,25 +26,17 @@ public class CursorInputProcessor extends InputAdapter {
         if (button != Input.Buttons.LEFT) return false;
         if (main.mouseJoint != null) return false;
         Vector2 point = Main.viewport.unproject(new Vector2(screenX, screenY));
-        Array<Body> bodies = new Array<>();
-        main.world.getBodies(bodies);
-        for (Body body : bodies) {
-            if (body.getType() == BodyDef.BodyType.StaticBody) continue;
-            for (Fixture fixture : body.getFixtureList()) {
-                if (fixture.testPoint(point)) {
-                    MouseJointDef mouseJointDef = new MouseJointDef();
-                    mouseJointDef.target.set(point);
-                    mouseJointDef.bodyA = main.ground;
-                    mouseJointDef.bodyB = body;
-                    mouseJointDef.maxForce = 15000;
-                    mouseJointDef.collideConnected = true;
-                    main.mouseJoint = (MouseJoint) main.world.createJoint(mouseJointDef);
-                    main.mouseJoint.setTarget(point);
-                    return true;
-                }
-            }
-        }
-        return false;
+        Body body = Util.getBodyAtPoint(main.world, point);
+        if (body == null) return false;
+        MouseJointDef mouseJointDef = new MouseJointDef();
+        mouseJointDef.target.set(point);
+        mouseJointDef.bodyA = main.ground;
+        mouseJointDef.bodyB = body;
+        mouseJointDef.maxForce = 15000;
+        mouseJointDef.collideConnected = true;
+        main.mouseJoint = (MouseJoint) main.world.createJoint(mouseJointDef);
+        main.mouseJoint.setTarget(point);
+        return true;
     }
 
     @Override
