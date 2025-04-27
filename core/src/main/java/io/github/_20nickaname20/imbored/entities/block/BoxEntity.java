@@ -9,6 +9,8 @@ import io.github._20nickaname20.imbored.Material;
 import io.github._20nickaname20.imbored.Util;
 import io.github._20nickaname20.imbored.entities.BlockEntity;
 
+import static io.github._20nickaname20.imbored.Main.withRotation;
+
 public class BoxEntity extends BlockEntity {
     private float sizeX, sizeY;
     public BoxEntity(World world, float x, float y, int sizeX, int sizeY, Material material, float maxHealth) {
@@ -23,11 +25,11 @@ public class BoxEntity extends BlockEntity {
         super.render(renderer);
         float angle = this.b.getAngle() * MathUtils.radiansToDegrees;
         renderer.setColor(getMaterial().color);
-        renderer.rotate(0, 0, 1, angle);
-        renderer.rect(-sizeX + innerPadding, -sizeY + innerPadding, (sizeX - innerPadding) * 2, (sizeY - innerPadding) * 2);
-        renderer.line(-sizeX + 0.5f + innerPadding, -sizeY + innerPadding, sizeX - innerPadding, sizeY - 0.5f - innerPadding);
-        renderer.line(-sizeX + innerPadding, -sizeY + 0.5f + innerPadding, sizeX - 0.5f - innerPadding, sizeY - innerPadding);
-        renderer.rotate(0, 0, 1, -angle);
+        withRotation(angle, () -> {
+            renderer.rect(-sizeX + innerPadding, -sizeY + innerPadding, (sizeX - innerPadding) * 2, (sizeY - innerPadding) * 2);
+            renderer.line(-sizeX + 0.5f + innerPadding, -sizeY + innerPadding, sizeX - innerPadding, sizeY - 0.5f - innerPadding);
+            renderer.line(-sizeX + innerPadding, -sizeY + 0.5f + innerPadding, sizeX - 0.5f - innerPadding, sizeY - innerPadding);
+        });
         return false;
     }
 }

@@ -9,6 +9,7 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
@@ -24,6 +25,7 @@ import io.github._20nickaname20.imbored.entities.damagable.living.human.cursor.P
 import io.github._20nickaname20.imbored.render.GameRenderer;
 
 import java.util.Random;
+import java.util.function.Consumer;
 
 import static io.github._20nickaname20.imbored.Util.fixBleeding;
 
@@ -34,6 +36,23 @@ public class Main extends ApplicationAdapter {
 
     public World world;
     public static GameRenderer renderer;
+
+    public static void withTranslation(float x, float y, Runnable runnable) {
+        Matrix4 transformMatrix = renderer.renderer.getTransformMatrix().cpy();
+        renderer.renderer.translate(x, y, 0);
+        runnable.run();
+        renderer.renderer.setTransformMatrix(transformMatrix);
+        //renderer.renderer.translate(-x, -y, 0);
+    }
+
+    public static void withRotation(float angle, Runnable runnable) {
+        Matrix4 transformMatrix = renderer.renderer.getTransformMatrix().cpy();
+        renderer.renderer.rotate(0, 0, 1f, angle);
+        runnable.run();
+        renderer.renderer.setTransformMatrix(transformMatrix);
+        //renderer.renderer.rotate(0, 0, 1f, -angle);
+    }
+
     public SpriteBatch batch;
     ShaderProgram shader;
 
@@ -144,17 +163,17 @@ public class Main extends ApplicationAdapter {
 
         renderer.render(world, camera.combined, (shape) -> {
             if (debugController != null) {
-                shape.translate(-70, 40, 0);
-                shape.setColor(0.75f, 0.75f, 0.75f, 1);
-                shape.circle(-10, 0, 5);
-                shape.circle(debugController.getAxis(0) * 5 - 10, -debugController.getAxis(1) * 5, 1.5f);
-                shape.line(-16, 0, -4, 0);
-                shape.line(-10, -6, -10, 6);
-                shape.circle(10, 0, 5);
-                shape.circle(debugController.getAxis(2) * 5 + 10, -debugController.getAxis(3) * 5, 1.5f);
-                shape.line(4, 0, 16, 0);
-                shape.line(10, -6, 10, 6);
-                shape.translate(70, -40, 0);
+                withTranslation(-70, 40, () -> {
+                    shape.setColor(0.75f, 0.75f, 0.75f, 1);
+                    shape.circle(-10, 0, 5);
+                    shape.circle(debugController.getAxis(0) * 5 - 10, -debugController.getAxis(1) * 5, 1.5f);
+                    shape.line(-16, 0, -4, 0);
+                    shape.line(-10, -6, -10, 6);
+                    shape.circle(10, 0, 5);
+                    shape.circle(debugController.getAxis(2) * 5 + 10, -debugController.getAxis(3) * 5, 1.5f);
+                    shape.line(4, 0, 16, 0);
+                    shape.line(10, -6, 10, 6);
+                });
             }
         });
 

@@ -5,6 +5,8 @@ import io.github._20nickaname20.imbored.entities.InventoryHolder;
 
 import java.util.ArrayList;
 
+import static io.github._20nickaname20.imbored.Main.withTranslation;
+
 public class Inventory {
     private float sizeLimit;
     private float containedSize = 0;
@@ -129,11 +131,9 @@ public class Inventory {
             renderSlot(renderer, i == 0, i * slotSize, 0);
             Item item = this.get(i + this.getSelectedSlot());
             if (item != null) {
-                renderer.translate(i * slotSize, 0, 0);
-
-                item.render(renderer, null);
-
-                renderer.translate(-i * slotSize, 0, 0);
+                withTranslation(i * slotSize, 0, () -> {
+                    item.render(renderer, null);
+                });
             }
         }
     }

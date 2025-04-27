@@ -59,7 +59,6 @@ public class CursorInputProcessor extends InputAdapter {
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
-        System.out.println("Scroll: " + amountX + "; " + amountY);
         camera.position.add(amountX, -amountY, 0);
         camera.update();
         return false;

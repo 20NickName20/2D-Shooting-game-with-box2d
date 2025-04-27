@@ -21,7 +21,7 @@ public class DistanceJointItem extends JointItem {
         DistanceJointDef defJoint = new DistanceJointDef();
         defJoint.collideConnected = true;
         defJoint.frequencyHz = 5;
-        defJoint.dampingRatio = 0.9f;
+        defJoint.dampingRatio = 0.5f;
         defJoint.initialize(bodyA, bodyB, posA, posB);
         defJoint.length *= 0.75f;
         DistanceJoint joint = (DistanceJoint) bodyA.getWorld().createJoint(defJoint);

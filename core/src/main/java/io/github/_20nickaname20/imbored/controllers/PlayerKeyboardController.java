@@ -134,8 +134,20 @@ public class PlayerKeyboardController extends PlayerController implements InputP
 
     @Override
     public boolean keyUp(int i) {
-        if (i == mapping.leftKey || i == mapping.rightKey) {
-            player.clearXMovement();
+        if (i == mapping.rightKey) {
+            if (Gdx.input.isKeyPressed(mapping.leftKey)) {
+                player.setXMovement(-1);
+            } else {
+                player.clearXMovement();
+            }
+            return false;
+        }
+        if (i == mapping.leftKey) {
+            if (Gdx.input.isKeyPressed(mapping.rightKey)) {
+                player.setXMovement(1);
+            } else {
+                player.clearXMovement();
+            }
             return false;
         }
 

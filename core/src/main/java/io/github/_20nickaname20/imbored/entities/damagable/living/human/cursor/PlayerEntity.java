@@ -18,6 +18,9 @@ import io.github._20nickaname20.imbored.items.usable.guns.raycast.TestGunItem;
 import io.github._20nickaname20.imbored.items.usable.guns.raycast.automatic.AutomaticRifleItem;
 import io.github._20nickaname20.imbored.items.usable.joint.DistanceJointItem;
 
+import static io.github._20nickaname20.imbored.Main.withRotation;
+import static io.github._20nickaname20.imbored.Main.withTranslation;
+
 public class PlayerEntity extends CursorEntity implements InventoryHolder {
     float food, thirst, infection; //TODO: set values
 
@@ -37,7 +40,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     private MouseJoint grabMouseJoint;
     private DistanceJoint grabDistanceJoint;
 
-    public final Inventory inventory = new Inventory(this, 10);
+    public final Inventory inventory = new Inventory(this, 20);
 
     public PlayerEntity(World world, float x, float y, PlayerController controller) {
         super(world, x, y, 100);
@@ -45,16 +48,19 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         this.controller = controller;
         controller.register(this);
 
-        while (inventory.getFreeSpace() > 2) {
+        while (inventory.getFreeSpace() > 5) {
             inventory.add(switch (MathUtils.random(2)) {
                 case 0 -> new TestGunItem();
                 case 1 -> new AutomaticRifleItem();
                 default -> new ShotgunItem();
             });
         }
+        int jointCount = 0;
         while (inventory.getFreeSpace() > 0) {
             inventory.add(new DistanceJointItem());
+            jointCount++;
         }
+        System.out.println(jointCount);
     }
 
     public void setMode(Mode mode) {
@@ -260,25 +266,25 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     public boolean render(ShapeRenderer renderer) {
         super.render(renderer);
         float cursorDistance = getCursorDistance();
-        renderer.setColor(1, 1,1, 0.5f);
+        renderer.setColor(1, 1, 1, 0.5f);
 
         Item selectedItem = inventory.getSelectedItem();
 
         float angle = cursorDirection.angleDeg();
-        renderer.rotate(0, 0, 1, angle);
-        renderer.line(0, 0, cursorDistance, 0);
-        renderer.translate(cursorDistance, 0, 0);
-            renderer.circle(0, 0,1.2f);
-            if (mode == Mode.INV && selectedItem != null) {
-                selectedItem.render(renderer, this);
-            }
-        renderer.translate(-cursorDistance, 0, 0);
-        renderer.rotate(0, 0, 1, -angle);
+        withRotation(angle, () -> {
+            renderer.line(0, 0, cursorDistance, 0);
+            withTranslation(cursorDistance, 0, () -> {
+                renderer.circle(0, 0, 1.2f);
+                if (mode == Mode.INV && selectedItem != null) {
+                    selectedItem.render(renderer, this);
+                }
+            });
+        });
 
         if (mode == Mode.INV) {
-            renderer.translate(0, -7, 0);
-            inventory.renderPart(renderer, 3);
-            renderer.translate(0, 7, 0);
+            withTranslation(0, -7f, () -> {
+                inventory.renderPart(renderer, 3);
+            });
         }
         return false;
     }
