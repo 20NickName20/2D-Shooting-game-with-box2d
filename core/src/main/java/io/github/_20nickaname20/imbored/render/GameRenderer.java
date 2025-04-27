@@ -1,4 +1,4 @@
-package io.github._20nickaname20.imbored;
+package io.github._20nickaname20.imbored.render;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -7,8 +7,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
 import com.badlogic.gdx.utils.Array;
+import io.github._20nickaname20.imbored.Entity;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class GameRenderer extends Box2DDebugRenderer {
@@ -21,8 +23,8 @@ public class GameRenderer extends Box2DDebugRenderer {
     private final static Vector2 lower = new Vector2();
     private final static Vector2 upper = new Vector2();
 
-    private final static Array<Body> bodies = new Array<Body>();
-    private final static Array<Joint> joints = new Array<Joint>();
+    private final static Array<Body> bodies = new Array<>();
+    private final static Array<Joint> joints = new Array<>();
 
     private boolean drawBodies;
     private boolean drawJoints;
@@ -196,7 +198,7 @@ public class GameRenderer extends Box2DDebugRenderer {
     private static Vector2 t = new Vector2();
     private static Vector2 axis = new Vector2();
 
-    private void drawShape (Fixture fixture, Transform transform, Color color) {
+    private void drawShape(Fixture fixture, Transform transform, Color color) {
         if (fixture.getType() == Shape.Type.Circle) {
             CircleShape circle = (CircleShape)fixture.getShape();
             t.set(circle.getPosition());

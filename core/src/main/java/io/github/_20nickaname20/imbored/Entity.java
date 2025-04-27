@@ -9,10 +9,11 @@ import io.github._20nickaname20.imbored.entities.damagable.living.human.PlayerEn
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 public abstract class Entity {
     public final Body b;
-    final Material material;
+    public final Material material;
     public final World world;
 
     public Set<Body> contacts = new HashSet<>();
@@ -20,6 +21,8 @@ public abstract class Entity {
 
     private boolean isRemoved = false;
     protected Shape shape;
+
+    public final UUID uuid = UUID.randomUUID();
 
     public Entity(World world, float x, float y, Shape shape, Material material) {
         this.material = material;

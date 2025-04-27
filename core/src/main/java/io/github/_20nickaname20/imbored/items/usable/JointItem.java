@@ -3,7 +3,6 @@ package io.github._20nickaname20.imbored.items.usable;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import io.github._20nickaname20.imbored.Entity;
 import io.github._20nickaname20.imbored.Util;
 import io.github._20nickaname20.imbored.entities.BlockEntity;
@@ -15,7 +14,8 @@ public abstract class JointItem extends UsableItem {
     private Body bodyA, bodyB;
     private Vector2 bodyAPos;
     private float bodyAAngle;
-    private Vector2 posA, posB;
+    protected Vector2 posA, posB;
+    private boolean isATargeted = false;
     private final float maxDistance;
     private float reach = 6;
 
@@ -25,8 +25,13 @@ public abstract class JointItem extends UsableItem {
     }
 
     private void reset() {
+        isATargeted = false;
         bodyA = null;
         bodyB = null;
+    }
+
+    public boolean isATargeted() {
+        return isATargeted;
     }
 
     @Override
@@ -42,7 +47,7 @@ public abstract class JointItem extends UsableItem {
         });
         if (closest == null) return;
         if (closest.getUserData() instanceof BlockEntity) {
-            System.out.println(closest);
+            isATargeted = true;
             bodyA = closest;
             bodyAPos = bodyA.getPosition().cpy();
             bodyAAngle = bodyA.getAngle();
@@ -52,6 +57,7 @@ public abstract class JointItem extends UsableItem {
 
     @Override
     public void onEndUse(PlayerEntity player) {
+        isATargeted = false;
         if (bodyA == null) return;
         Vector2 pos = player.getCursorPosition();
         Body closest = Util.getClosestBodyFiltered(player.world, pos, (body) -> {
@@ -87,7 +93,7 @@ public abstract class JointItem extends UsableItem {
     public void onDeselect(InventoryHolder holder) {
         reset();
         if (holder instanceof PlayerEntity player) {
-            player.setCursorDistance(player.getModeCursorDistance());
+            player.setCursorDistance(player.getDefaultCursorDistance());
         }
     }
 

@@ -1,5 +1,7 @@
 package io.github._20nickaname20.imbored.controllers;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.ControllerMapping;
@@ -19,13 +21,22 @@ public class PlayerGamepadController extends PlayerController implements Control
     }
 
     @Override
-    public void register() {
+    public void register(PlayerEntity player) {
+        super.register(player);
         controller.addListener(this);
     }
 
     @Override
     public void unregister() {
         controller.removeListener(this);
+    }
+
+    Vector2 targetCursorDirection = new Vector2();
+
+    @Override
+    public void update(float dt) {
+        player.cursorDirection.add(targetCursorDirection.cpy().scl(dt * 70));
+        player.cursorDirection.nor();
     }
 
     @Override
@@ -64,7 +75,7 @@ public class PlayerGamepadController extends PlayerController implements Control
             player.setXMovement(value);
             return false;
         }
-        Vector2 newDirection = player.cursorDirection.cpy();
+        Vector2 newDirection = targetCursorDirection.cpy();
         if (axisCode == mapping.axisRightX) {
             newDirection.x = value;
         }
@@ -73,24 +84,28 @@ public class PlayerGamepadController extends PlayerController implements Control
         }
         if (newDirection.len() > 0.4) {
             if (axisCode == mapping.axisRightX) {
-                player.cursorDirection.x = value;
-                player.cursorDirection.nor();
+                targetCursorDirection.x = value;
+                targetCursorDirection.nor();
                 return false;
             }
             if (axisCode == mapping.axisRightY) {
-                player.cursorDirection.y = -value;
-                player.cursorDirection.nor();
+                targetCursorDirection.y = -value;
+                targetCursorDirection.nor();
                 return false;
             }
         }
         if (axisCode == ZL_AXIS) {
             if (value == 1) {
+                if (player.getMode() == PlayerEntity.Mode.GRAB) {
+                    player.grab();
+                }
                 if (player.getMode() == PlayerEntity.Mode.INV) {
                     player.startUsingItem();
-                } else {
-                    player.setMode(PlayerEntity.Mode.INV);
                 }
             } else {
+                if (player.getMode() == PlayerEntity.Mode.GRAB) {
+                    player.put();
+                }
                 if (player.getMode() == PlayerEntity.Mode.INV) {
                     player.stopUsingItem();
                 }
@@ -99,15 +114,7 @@ public class PlayerGamepadController extends PlayerController implements Control
         }
         if (axisCode == ZR_AXIS) {
             if (value == 1) {
-                if (player.getMode() == PlayerEntity.Mode.GRAB) {
-                    player.grab();
-                } else {
-                    player.setMode(PlayerEntity.Mode.GRAB);
-                }
-            } else {
-                if (player.getMode() == PlayerEntity.Mode.GRAB) {
-                    player.put();
-                }
+                player.nextMode();
             }
         }
         return false;

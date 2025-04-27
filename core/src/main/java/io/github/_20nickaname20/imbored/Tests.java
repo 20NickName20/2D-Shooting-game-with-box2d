@@ -4,6 +4,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
@@ -44,10 +45,11 @@ public class Tests {
     }
 
     void towersTest() {
-        for (int x = 0; x < 5; x++) {
-            for (int y = 0; y < 10; y++) {
+        for (int x = 0; x < 6; x++) {
+            int height = MathUtils.random(5, 15);
+            for (int y = 0; y < height; y++) {
                 boolean type = main.random.nextBoolean();
-                new BoxEntity(main.world, -95 + x * 20, -48 + y * 4, 2, 2, type ? Material.WOOD : Material.METAL, type ? 150 : 300);
+                new BoxEntity(main.world, -85 + x * 35 + main.random.nextFloat() / 4, -48 + y * 4, 2, 2, type ? Material.WOOD : Material.METAL, type ? 150 : 300);
             }
         }
         new PlayerEntity(main.world, 0, -40,

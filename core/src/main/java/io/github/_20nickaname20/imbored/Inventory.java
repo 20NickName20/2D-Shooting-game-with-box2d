@@ -115,7 +115,7 @@ public class Inventory {
             Item item = items.get(i);
             renderer.translate((i % lineSize) * slotSize, -i / lineSize * slotSize, 0);
 
-            item.render(renderer, false);
+            item.render(renderer, null);
 
             renderer.translate(-(i % lineSize) * slotSize, i / lineSize * slotSize, 0);
 
@@ -131,7 +131,7 @@ public class Inventory {
             if (item != null) {
                 renderer.translate(i * slotSize, 0, 0);
 
-                item.render(renderer, false);
+                item.render(renderer, null);
 
                 renderer.translate(-i * slotSize, 0, 0);
             }

@@ -1,11 +1,8 @@
 package io.github._20nickaname20.imbored.items.usable;
 
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import io.github._20nickaname20.imbored.Util;
 import io.github._20nickaname20.imbored.entities.damagable.living.human.PlayerEntity;
 import io.github._20nickaname20.imbored.items.UsableItem;
-
-import java.sql.Time;
 
 public abstract class GunItem extends UsableItem {
     protected float cooldown, damage;
@@ -21,9 +18,11 @@ public abstract class GunItem extends UsableItem {
         return Util.time() - lastShootTime > cooldown;
     }
 
-    public boolean shootFrom(PlayerEntity player) {
-        if (!canShoot()) return false;
+    public final void shootAttempt(PlayerEntity player) {
+        if (!canShoot()) return;
         lastShootTime = Util.time();
-        return true;
+        onShoot(player);
     }
+
+    protected abstract void onShoot(PlayerEntity player);
 }

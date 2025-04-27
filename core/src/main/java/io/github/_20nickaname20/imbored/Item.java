@@ -2,6 +2,7 @@ package io.github._20nickaname20.imbored;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import io.github._20nickaname20.imbored.entities.InventoryHolder;
+import io.github._20nickaname20.imbored.entities.damagable.living.human.CursorEntity;
 
 public abstract class Item {
     private final float size;
@@ -11,7 +12,7 @@ public abstract class Item {
         this.size = size;
     }
 
-    public abstract void render(ShapeRenderer renderer, boolean inHand);
+    public abstract void render(ShapeRenderer renderer, CursorEntity handHolder);
 
     public final boolean isUpdating() {
         return this.isUpdating;

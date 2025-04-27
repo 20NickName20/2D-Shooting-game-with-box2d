@@ -1,5 +1,6 @@
 package io.github._20nickaname20.imbored.controllers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import io.github._20nickaname20.imbored.PlayerController;
@@ -16,8 +17,6 @@ public class PlayerKeyboardController extends PlayerController implements InputP
         public int jumpKey = Keys.SPACE;
         public int grabKey = Keys.E;
         public int itemKey = Keys.Q;
-        public int rotateLeftKey = Keys.NUM_1;
-        public int rotateRightKey = Keys.NUM_2;
         public int scrollItemLeftKey = Keys.TAB;
         public int scrollItemRightKey = Keys.R;
 
@@ -38,16 +37,6 @@ public class PlayerKeyboardController extends PlayerController implements InputP
 
         public KeyboardMapping setGrabKey(int grabKey) {
             this.grabKey = grabKey;
-            return this;
-        }
-
-        public KeyboardMapping setRotateLeftKey(int rotateLeftKey) {
-            this.rotateLeftKey = rotateLeftKey;
-            return this;
-        }
-
-        public KeyboardMapping setRotateRightKey(int rotateRightKey) {
-            this.rotateRightKey = rotateRightKey;
             return this;
         }
 
@@ -74,13 +63,31 @@ public class PlayerKeyboardController extends PlayerController implements InputP
     }
 
     @Override
-    public void register() {
+    public void register(PlayerEntity player) {
+        super.register(player);
         inputMultiplexer.addProcessor(this);
     }
 
     @Override
     public void unregister() {
         inputMultiplexer.removeProcessor(this);
+    }
+
+    @Override
+    public void update(float dt) {
+        if (Gdx.input.isKeyPressed(Keys.UP)) {
+            player.cursorDirection.add(0, 0.1f);
+        }
+        if (Gdx.input.isKeyPressed(Keys.DOWN)) {
+            player.cursorDirection.add(0, -0.1f);
+        }
+        if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+            player.cursorDirection.add(-0.1f, 0);
+        }
+        if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+            player.cursorDirection.add(0.1f, 0);
+        }
+        player.cursorDirection.nor();
     }
 
     @Override
@@ -97,14 +104,6 @@ public class PlayerKeyboardController extends PlayerController implements InputP
             player.setXMovement(1);
             return false;
         }
-        if (i == mapping.rotateLeftKey) {
-            player.cursorRotationVel = 120f;
-            return false;
-        }
-        if (i == mapping.rotateRightKey) {
-            player.cursorRotationVel = -120f;
-            return false;
-        }
         if (i == mapping.scrollItemLeftKey) {
             if (player.getMode() == PlayerEntity.Mode.INV) {
                 player.scrollItem(-1);
@@ -117,10 +116,6 @@ public class PlayerKeyboardController extends PlayerController implements InputP
                 return false;
             }
         }
-        // if (i == Keys.F) {
-        //     player.throwGrabbed();
-        //     return false;
-        // }
         if (i == mapping.grabKey) {
             if (player.getMode() == PlayerEntity.Mode.GRAB) {
                 player.grab();
@@ -142,10 +137,6 @@ public class PlayerKeyboardController extends PlayerController implements InputP
     public boolean keyUp(int i) {
         if (i == mapping.leftKey || i == mapping.rightKey) {
             player.clearXMovement();
-            return false;
-        }
-        if (i == mapping.rotateLeftKey || i == mapping.rotateRightKey) {
-            player.cursorRotationVel = 0;
             return false;
         }
 
