@@ -1,7 +1,7 @@
 package io.github._20nickaname20.imbored.items.usable.guns.raycast;
 
 import com.badlogic.gdx.math.MathUtils;
-import io.github._20nickaname20.imbored.entities.damagable.living.human.PlayerEntity;
+import io.github._20nickaname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
 import io.github._20nickaname20.imbored.items.usable.guns.RaycastGunItem;
 
 public class ShotgunItem extends RaycastGunItem {

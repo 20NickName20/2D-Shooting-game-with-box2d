@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github._20nickaname20.imbored.entities.damagable.living.HumanEntity;
 
-public class CursorEntity extends HumanEntity {
+public abstract class CursorEntity extends HumanEntity {
 
     protected float cursorDistance = 0;
     public final Vector2 cursorDirection = new Vector2(0, 1);

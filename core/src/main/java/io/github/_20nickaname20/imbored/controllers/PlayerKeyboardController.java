@@ -1,14 +1,13 @@
 package io.github._20nickaname20.imbored.controllers;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import io.github._20nickaname20.imbored.PlayerController;
 
 import static io.github._20nickaname20.imbored.Main.inputMultiplexer;
 
 import com.badlogic.gdx.Input.Keys;
-import io.github._20nickaname20.imbored.entities.damagable.living.human.PlayerEntity;
+import io.github._20nickaname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
 
 public class PlayerKeyboardController extends PlayerController implements InputProcessor {
     public static class KeyboardMapping {

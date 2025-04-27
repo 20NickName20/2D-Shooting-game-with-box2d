@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import io.github._20nickaname20.imbored.Main;
 import io.github._20nickaname20.imbored.entities.damagable.living.human.CursorEntity;
-import io.github._20nickaname20.imbored.entities.damagable.living.human.PlayerEntity;
+import io.github._20nickaname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
 import io.github._20nickaname20.imbored.items.usable.guns.RaycastGunItem;
 
 public class TestGunItem extends RaycastGunItem {

@@ -13,9 +13,8 @@ void main() {
         coordX.x = round(coordX.x);
         vec2 coordY = coord;
         coordY.y = round(coordY.y);
-        float color = 1;
-        color -= sqrt(distance(coord, coordX)) / 1.9;
-        color -= sqrt(distance(coord, coordY)) / 1.9;
+        float someVal = sqrt(sqrt(distance(coord, coordX) + 0.02) * sqrt(distance(coord, coordY) + 0.02));
+        float color = 1 - sqrt(someVal);
         gl_FragColor.b = color * color;
 
         gl_FragColor.a = 1;

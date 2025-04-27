@@ -1,13 +1,11 @@
 package io.github._20nickaname20.imbored.controllers;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.ControllerMapping;
 import com.badlogic.gdx.math.Vector2;
 import io.github._20nickaname20.imbored.PlayerController;
-import io.github._20nickaname20.imbored.entities.damagable.living.human.PlayerEntity;
+import io.github._20nickaname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
 
 public class PlayerGamepadController extends PlayerController implements ControllerListener {
     private final Controller controller;

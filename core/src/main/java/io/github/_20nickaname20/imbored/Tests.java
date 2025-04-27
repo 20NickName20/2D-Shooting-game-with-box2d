@@ -1,9 +1,7 @@
 package io.github._20nickaname20.imbored;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
@@ -11,9 +9,7 @@ import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import io.github._20nickaname20.imbored.controllers.PlayerKeyboardController;
 import io.github._20nickaname20.imbored.entities.BlockEntity;
 import io.github._20nickaname20.imbored.entities.block.BoxEntity;
-import io.github._20nickaname20.imbored.entities.damagable.living.human.PlayerEntity;
-
-import java.util.function.BiFunction;
+import io.github._20nickaname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
 
 public class Tests {
     Main main;

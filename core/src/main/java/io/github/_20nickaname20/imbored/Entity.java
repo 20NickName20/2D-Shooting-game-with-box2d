@@ -5,7 +5,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.JointEdge;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
-import io.github._20nickaname20.imbored.entities.damagable.living.human.PlayerEntity;
+import io.github._20nickaname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
 
 import java.util.HashSet;
 import java.util.Set;

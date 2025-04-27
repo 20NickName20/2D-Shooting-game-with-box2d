@@ -7,7 +7,7 @@ import io.github._20nickaname20.imbored.Entity;
 import io.github._20nickaname20.imbored.Util;
 import io.github._20nickaname20.imbored.entities.BlockEntity;
 import io.github._20nickaname20.imbored.entities.InventoryHolder;
-import io.github._20nickaname20.imbored.entities.damagable.living.human.PlayerEntity;
+import io.github._20nickaname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
 import io.github._20nickaname20.imbored.items.UsableItem;
 
 public abstract class JointItem extends UsableItem {
@@ -67,7 +67,6 @@ public abstract class JointItem extends UsableItem {
             if (body.getPosition().dst(pos) > reach) return false;
             return true;
         });
-        System.out.println(closest);
         if (closest == null) return;
         Vector2 connectPoint = Util.getBodyClosestPoint(closest, pos);
         if (closest == bodyA) return;

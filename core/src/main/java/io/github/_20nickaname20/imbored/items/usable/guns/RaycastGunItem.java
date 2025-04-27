@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import io.github._20nickaname20.imbored.Util;
 import io.github._20nickaname20.imbored.entities.DamagableEntity;
 import io.github._20nickaname20.imbored.entities.damagable.living.human.CursorEntity;
-import io.github._20nickaname20.imbored.entities.damagable.living.human.PlayerEntity;
+import io.github._20nickaname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
 import io.github._20nickaname20.imbored.items.usable.GunItem;
 
 import java.util.ArrayList;
@@ -79,7 +79,6 @@ public abstract class RaycastGunItem extends GunItem {
     @Override
     public void render(ShapeRenderer renderer, CursorEntity handHolder) {
         if (handHolder == null) return;
-        if (Util.time() - lastShootTime > rayDisplayTime) return;
         renderRays(renderer);
     }
 }

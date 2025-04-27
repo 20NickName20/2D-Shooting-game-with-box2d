@@ -1,5 +1,6 @@
-package io.github._20nickaname20.imbored.entities.damagable.living.human;
+package io.github._20nickaname20.imbored.entities.damagable.living.human.cursor;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.joints.*;
 import io.github._20nickaname20.imbored.*;
 import io.github._20nickaname20.imbored.entities.BlockEntity;
 import io.github._20nickaname20.imbored.entities.InventoryHolder;
+import io.github._20nickaname20.imbored.entities.damagable.living.human.CursorEntity;
 import io.github._20nickaname20.imbored.items.UsableItem;
 import io.github._20nickaname20.imbored.items.usable.guns.raycast.ShotgunItem;
 import io.github._20nickaname20.imbored.items.usable.guns.raycast.TestGunItem;
@@ -182,7 +184,6 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
 
         grabbedEntity = (BlockEntity) grabbed.getUserData();
         grabbedEntity.grabber = this;
-        System.out.println("grabbed entity: " + grabbedEntity);
     }
 
     public void put() {
