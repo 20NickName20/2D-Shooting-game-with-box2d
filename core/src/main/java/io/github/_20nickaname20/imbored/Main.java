@@ -8,11 +8,15 @@ import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -33,6 +37,7 @@ public class Main extends ApplicationAdapter {
     public World world;
     public static GameRenderer renderer;
     public SpriteBatch batch;
+    ShaderProgram shader;
 
     MouseJoint mouseJoint = null;
     float zoom = 0.075f;
@@ -76,9 +81,13 @@ public class Main extends ApplicationAdapter {
 
         world = new World(new Vector2(0, -Constants.ACCELERATION_OF_GRAVITY), true);
         world.setContactListener(new EntityContactListener());
-        renderer = new GameRenderer();
+        shader = new ShaderProgram(Gdx.files.internal("shader/shader.vert").readString(), Gdx.files.internal("shader/shader.frag").readString());
+        if (!shader.isCompiled()) throw new GdxRuntimeException("Couldn't compile shader: " + shader.getLog());
+        ShaderProgram.pedantic = false;
+        renderer = new GameRenderer(shader);
 
         camera.zoom /= zoom;
+
         Gdx.input.setInputProcessor(inputMultiplexer);
         inputMultiplexer.addProcessor(new CursorInputProcessor(this));
 
@@ -111,8 +120,6 @@ public class Main extends ApplicationAdapter {
     private float accumulator = 0;
 
     private void doPhysicsStep(float deltaTime) {
-        // fixed time step
-        // max frame time to avoid spiral of death (on slow devices)
         float frameTime = Math.min(deltaTime, 0.25f);
         accumulator += frameTime;
         while (accumulator >= Constants.TIME_STEP) {
@@ -124,6 +131,9 @@ public class Main extends ApplicationAdapter {
     @Override
     public void render() {
         dt = Gdx.graphics.getDeltaTime();
+        shader.bind();
+        shader.setUniformf("u_Time", Util.time());
+
         ScreenUtils.clear(0, 0, 0, 1);
         doPhysicsStep(dt * Constants.SIMULATION_SPEED);
         Array<Body> bodies = new Array<>();
@@ -133,6 +143,7 @@ public class Main extends ApplicationAdapter {
             if (!(userdata instanceof Entity entity)) continue;
             entity.update(dt);
         }
+
         renderer.render(world, camera.combined, (shape) -> {
             if (debugController != null) {
                 shape.translate(-70, 40, 0);
@@ -164,5 +175,6 @@ public class Main extends ApplicationAdapter {
         batch.dispose();
         renderer.dispose();
         world.dispose();
+        shader.dispose();
     }
 }

@@ -1,6 +1,8 @@
 package io.github._20nickaname20.imbored.render;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -15,7 +17,7 @@ import java.util.function.Consumer;
 
 public class GameRenderer extends Box2DDebugRenderer {
 
-    protected ShapeRenderer renderer;
+    public ShapeRenderer renderer;
 
     /** vertices for polygon rendering **/
     private final static Vector2[] vertices = new Vector2[1000];
@@ -33,14 +35,16 @@ public class GameRenderer extends Box2DDebugRenderer {
     private boolean drawVelocities;
     private boolean drawContacts;
 
-    public GameRenderer() {
-        this(true, true, false, true, false, true);
+    ShaderProgram shader;
+
+    public GameRenderer(ShaderProgram shader) {
+        this(true, true, false, true, false, true, shader);
     }
 
     public GameRenderer(boolean drawBodies, boolean drawJoints, boolean drawAABBs, boolean drawInactiveBodies,
-                               boolean drawVelocities, boolean drawContacts) {
+                               boolean drawVelocities, boolean drawContacts, ShaderProgram shader) {
         // next we setup the immediate mode renderer
-        renderer = new ShapeRenderer();
+        renderer = new ShapeRenderer(5000, shader);
 
         // initialize vertices array
         for (int i = 0; i < vertices.length; i++)
@@ -54,17 +58,15 @@ public class GameRenderer extends Box2DDebugRenderer {
         this.drawContacts = drawContacts;
     }
 
-    /** This assumes that the projection matrix has already been set. */
-    public void render(World world, Matrix4 projMatrix) {
-        renderer.begin(ShapeRenderer.ShapeType.Line);
-        renderer.setProjectionMatrix(projMatrix);
-        renderBodies(world);
-        renderer.end();
-    }
-
     public void render(World world, Matrix4 projMatrix, Consumer<ShapeRenderer> rendererConsumer) {
         renderer.setProjectionMatrix(projMatrix);
         renderer.identity();
+
+        renderer.begin(ShapeRenderer.ShapeType.Filled);
+        renderer.setColor(Color.BLACK);
+        renderer.rect(-200, -200, 400, 400);
+        renderer.end();
+
         renderer.begin(ShapeRenderer.ShapeType.Line);
         rendererConsumer.accept(renderer);
         renderBodies(world);

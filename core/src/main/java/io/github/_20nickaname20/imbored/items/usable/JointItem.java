@@ -16,7 +16,7 @@ public abstract class JointItem extends UsableItem {
     private float bodyAAngle;
     protected Vector2 posA, posB;
     private boolean isATargeted = false;
-    private final float maxDistance;
+    protected final float maxDistance;
     private float reach = 6;
 
     public JointItem(float size, float maxDistance) {

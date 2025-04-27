@@ -3,6 +3,7 @@ package io.github._20nickaname20.imbored.items.usable.joint;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
@@ -30,12 +31,17 @@ public class DistanceJointItem extends JointItem {
     public void render(ShapeRenderer renderer, CursorEntity handHolder) {
         renderer.setColor(Color.CYAN);
         if (handHolder != null && this.isATargeted()) {
-            renderer.circle(0, 0, 1);
+            renderer.circle(0, 0, 1.5f, 6);
 
             Matrix4 matrix4 = renderer.getTransformMatrix().cpy();
             renderer.identity();
 
-            renderer.line(posA, handHolder.getCursorPosition());
+            Vector2 posB = handHolder.getCursorPosition();
+            if (this.posA.dst(posB) > this.maxDistance) {
+                renderer.setColor(0.8f, 0.3f, 0.3f, 1);
+            }
+
+            renderer.line(this.posA, posB);
 
             renderer.setTransformMatrix(matrix4);
             renderer.updateMatrices();
