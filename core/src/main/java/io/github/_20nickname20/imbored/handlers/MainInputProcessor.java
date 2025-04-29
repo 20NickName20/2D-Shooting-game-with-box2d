@@ -25,7 +25,7 @@ public class MainInputProcessor extends InputAdapter {
         if (button != Input.Buttons.LEFT) return false;
         if (mouseJoint != null) return false;
         Vector2 point = gameScreen.getViewport().unproject(new Vector2(screenX, screenY));
-        Body body = FindBody.atPoint(gameScreen.getWorld(), point);
+        Body body = FindBody.atPoint(gameScreen.world.world, point);
         if (body == null) return false;
         if (!(body.getUserData() instanceof Entity entity)) return false;
         grabbed = entity;
@@ -35,7 +35,7 @@ public class MainInputProcessor extends InputAdapter {
         mouseJointDef.bodyB = body;
         mouseJointDef.maxForce = 15000;
         mouseJointDef.collideConnected = true;
-        mouseJoint = (MouseJoint) gameScreen.getWorld().createJoint(mouseJointDef);
+        mouseJoint = (MouseJoint) gameScreen.world.world.createJoint(mouseJointDef);
         mouseJoint.setTarget(point);
         return true;
     }
@@ -44,7 +44,7 @@ public class MainInputProcessor extends InputAdapter {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (button != Input.Buttons.LEFT) return false;
         if (mouseJoint == null) return false;
-        if (!grabbed.isRemoved()) gameScreen.getWorld().destroyJoint(mouseJoint);
+        if (!grabbed.isRemoved()) gameScreen.world.world.destroyJoint(mouseJoint);
         mouseJoint = null;
         grabbed = null;
         return true;

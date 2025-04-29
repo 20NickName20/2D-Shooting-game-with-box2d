@@ -3,8 +3,8 @@ package io.github._20nickname20.imbored.items.usable.guns.raycast;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import io.github._20nickname20.imbored.Entity;
-import io.github._20nickname20.imbored.entities.damagable.living.human.CursorEntity;
-import io.github._20nickname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.entities.living.human.CursorEntity;
+import io.github._20nickname20.imbored.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.items.usable.guns.RaycastGunItem;
 
 public class TestGunItem extends RaycastGunItem {

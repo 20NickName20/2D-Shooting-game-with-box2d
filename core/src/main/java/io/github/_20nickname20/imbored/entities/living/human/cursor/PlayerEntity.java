@@ -1,25 +1,21 @@
-package io.github._20nickname20.imbored.entities.damagable.living.human.cursor;
+package io.github._20nickname20.imbored.entities.living.human.cursor;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.MassData;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.*;
 import io.github._20nickname20.imbored.*;
-import io.github._20nickname20.imbored.entities.BlockEntity;
-import io.github._20nickname20.imbored.entities.Grabbable;
-import io.github._20nickname20.imbored.entities.InventoryHolder;
-import io.github._20nickname20.imbored.entities.damagable.living.human.CursorEntity;
+import io.github._20nickname20.imbored.entities.*;
+import io.github._20nickname20.imbored.entities.container.InteractiveContainerEntity;
+import io.github._20nickname20.imbored.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.items.UsableItem;
 import io.github._20nickname20.imbored.items.usable.guns.raycast.ShotgunItem;
 import io.github._20nickname20.imbored.items.usable.guns.raycast.TestGunItem;
 import io.github._20nickname20.imbored.items.usable.guns.raycast.automatic.AutomaticRifleItem;
 import io.github._20nickname20.imbored.items.usable.joint.distance.HardDistanceJointItem;
 import io.github._20nickname20.imbored.render.JointDisplay;
-import io.github._20nickname20.imbored.screens.GameScreen;
 import io.github._20nickname20.imbored.util.FindBody;
 import io.github._20nickname20.imbored.util.Util;
 
@@ -39,27 +35,25 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     private float throwPower = 55;
 
     private float itemCursorDistance = 4;
+    private float itemDropPower = 15;
 
     private BlockEntity grabbedEntity;
+    private InteractiveContainerEntity container;
     private MouseJoint grabMouseJoint;
     private DistanceJoint grabDistanceJoint;
 
     public final Inventory inventory = new Inventory(this, 20);
 
-    public PlayerEntity(World world, float x, float y, PlayerController controller) {
+    public PlayerEntity(GameWorld world, float x, float y, PlayerController controller) {
         super(world, x, y, 100);
         this.setCursorDistance(getDefaultCursorDistance());
         this.controller = controller;
         controller.register(this);
 
-        while (inventory.getFreeSpace() > 5) {
-            inventory.add(switch (MathUtils.random(2)) {
-                case 0 -> new TestGunItem(this);
-                case 1 -> new AutomaticRifleItem(this);
-                default -> new ShotgunItem(this);
-            });
-        }
-        while (inventory.getFreeSpace() > 0) {
+        inventory.add(new TestGunItem(this));
+        inventory.add(new AutomaticRifleItem(this));
+        inventory.add(new ShotgunItem(this));
+        for (int i = 0; i < 3; i++) {
             inventory.add(new HardDistanceJointItem(this));
         }
     }
@@ -105,13 +99,14 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     @Override
     public void onDestroy() {
         if (this.isRemoved()) return;
-        GameScreen.spawnEntity(new PlayerEntity(world, 0, 0, controller));
+        gameWorld.spawn(new PlayerEntity(gameWorld, 0, 0, controller));
         super.onDestroy();
     }
 
     public void jump() {
         if (this.getTimeSinceContact() > 0.2f) return;
         if (Util.time() - lastJumpTime < 0.2f) return;
+        if (this.b.getLinearVelocity().y > 35) return;
         lastJumpTime = Util.time();
         this.b.applyLinearImpulse(new Vector2(0, 25), this.b.getPosition(), true);
     }
@@ -126,12 +121,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         inventory.update(dt);
         controller.update(dt);
 
-        // TODO: Remove this
-        if (b.getPosition().y > 50) {
-            b.applyLinearImpulse(0, -100, b.getPosition().x, b.getPosition().y, true);
-        }
-
-        if (grabbedEntity != null) {
+        if (mode == Mode.GRAB && grabbedEntity != null) {
             Vector2 cursorPosition = getCursorPosition().cpy();
             Vector2 toGrabbed = grabbedEntity.b.getPosition().sub(this.b.getPosition());
 
@@ -147,6 +137,20 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
             }
 
             grabMouseJoint.setTarget(cursorPosition);
+        }
+        if (mode == Mode.INV) {
+            Vector2 position = this.b.getPosition();
+            Body closest = FindBody.closestFiltered(world, position, (body) -> {
+                if (!(body.getUserData() instanceof InteractiveContainerEntity filteredContainer)) return false;
+                if (body.getPosition().dst(position) > filteredContainer.getInteractDistance()) return false;
+                return true;
+            });
+            if (closest == null) {
+                container = null;
+            } else if (closest.getUserData() instanceof InteractiveContainerEntity container) {
+                container.renderInv();
+                this.container = container;
+            }
         }
     }
 
@@ -183,9 +187,6 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         grabMouseJoint = (MouseJoint) this.world.createJoint(mouseJointDef);
         grabMouseJoint.setUserData(new JointDisplay(new Color(1, 1, 1, 1)));
 
-        // TODO: make some joints hidden (make custom joint class)
-        //  joint.setUserData();
-
         MassData massData = grabbed.getMassData();
         massData.mass /= 100;
         grabbed.setMassData(massData);
@@ -199,9 +200,9 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         grabbedEntity.grabber = null;
         grabbedEntity.b.resetMassData();
         grabbedEntity = null;
-        GameScreen.removeJoint(grabDistanceJoint);
+        gameWorld.remove(grabDistanceJoint);
         grabDistanceJoint = null;
-        GameScreen.removeJoint(grabMouseJoint);
+        gameWorld.remove(grabMouseJoint);
         grabMouseJoint = null;
     }
 
@@ -243,6 +244,51 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
 
     public void removeSelectedItem() {
         inventory.removeSelectedItem();
+    }
+
+    public ItemEntity dropSelectedItem() {
+        if (mode != Mode.INV) return null;
+        if (inventory.getSelectedItem() == null) return null;
+        deselectItem();
+        Vector2 cursorPosition = this.getCursorPosition();
+        return gameWorld.dropItem(cursorPosition, this.cursorDirection.cpy().scl(itemDropPower), inventory.popSelectedItem());
+    }
+
+    public boolean pickupItem(ItemEntity entity) {
+        if (!entity.canPickup()) return false;
+        if (!inventory.add(entity.item)) return false;
+        entity.remove();
+        return true;
+    }
+
+    @Override
+    public boolean shouldCollide(Entity other) {
+        if (other instanceof PlayerEntity) {
+            return false;
+        }
+        if (other instanceof ItemEntity itemEntity) {
+            pickupItem(itemEntity);
+            return false;
+        }
+        return true;
+    }
+
+    public void scrollContainer(int amount) {
+        if (container == null) return;
+        container.scrollItem(amount);
+    }
+
+    public void takeOutOfContainer() {
+        if (container == null) return;
+        container.takeOutSelected(cursorDirection.cpy().scl(-itemDropPower * 2));
+    }
+
+    public void putSelectedToContainer() {
+        if (container == null) return;
+        if (inventory.isEmpty()) return;
+        Item item = inventory.popSelectedItem();
+        if (container.putItem(item)) return;
+        gameWorld.dropItem(getCursorPosition(), this.cursorDirection.cpy().scl(itemDropPower), item);
     }
 
     @Override

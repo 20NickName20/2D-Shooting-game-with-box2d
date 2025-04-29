@@ -1,15 +1,12 @@
 package io.github._20nickname20.imbored.items.usable.guns.raycast;
 
-import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import io.github._20nickname20.imbored.Entity;
 import io.github._20nickname20.imbored.Material;
-import io.github._20nickname20.imbored.entities.damagable.living.human.CursorEntity;
-import io.github._20nickname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.entities.living.human.CursorEntity;
+import io.github._20nickname20.imbored.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.items.usable.guns.RaycastGunItem;
-
-import java.lang.MatchException;
 
 public class ShotgunItem extends RaycastGunItem {
     public ShotgunItem(Entity holder) {

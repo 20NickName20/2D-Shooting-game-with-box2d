@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.function.Function;
 
 public class FindBody {
-    // TODO: util.FindBody.java
     public static Body atPoint(World world, Vector2 point) {
         Array<Body> bodies = new Array<>();
         world.getBodies(bodies);

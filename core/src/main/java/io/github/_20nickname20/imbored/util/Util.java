@@ -46,15 +46,5 @@ public class Util {
         return body;
     }
 
-    public static Body createStaticBox(World world, Vector2 pos, float sizeX, float sizeY) {
-        BodyDef boxDef = new BodyDef();
-        boxDef.position.set(pos);
-
-        Body body = world.createBody(boxDef);
-
-        PolygonShape boxShape = Shapes.boxShape(sizeX, sizeY);
-        body.createFixture(boxShape, 0.0f).setFriction(1.5f);
-        boxShape.dispose();
-        return body;
-    }
+    // TODO: and joint utils
 }

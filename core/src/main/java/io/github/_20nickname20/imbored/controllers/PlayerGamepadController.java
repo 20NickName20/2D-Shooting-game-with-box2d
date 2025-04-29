@@ -5,7 +5,7 @@ import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.ControllerMapping;
 import com.badlogic.gdx.math.Vector2;
 import io.github._20nickname20.imbored.PlayerController;
-import io.github._20nickname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.entities.living.human.cursor.PlayerEntity;
 
 public class PlayerGamepadController extends PlayerController implements ControllerListener {
     private final Controller controller;
@@ -70,16 +70,26 @@ public class PlayerGamepadController extends PlayerController implements Control
             }
             return false;
         }
-
-        /*
-        if (sticks > 1) return false;
         if (buttonCode == mapping.buttonX) {
-            player.nextMode();
+            player.dropSelectedItem();
+            return false;
         }
-        if (buttonCode == mapping.buttonA) {
-            this.startUseMode(player);
+        if (buttonCode == mapping.buttonDpadLeft) {
+            player.scrollContainer(-1);
+            return false;
         }
-         */
+        if (buttonCode == mapping.buttonDpadRight) {
+            player.scrollContainer(1);
+            return false;
+        }
+        if (buttonCode == mapping.buttonDpadUp) {
+            player.putSelectedToContainer();
+            return false;
+        }
+        if (buttonCode == mapping.buttonDpadDown) {
+            player.takeOutOfContainer();
+            return false;
+        }
         return false;
     }
 

@@ -3,38 +3,38 @@ package io.github._20nickname20.imbored.util;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import io.github._20nickname20.imbored.Entity;
+import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.Material;
 import io.github._20nickname20.imbored.controllers.PlayerKeyboardController;
 import io.github._20nickname20.imbored.entities.BlockEntity;
+import io.github._20nickname20.imbored.entities.StaticEntity;
 import io.github._20nickname20.imbored.entities.block.BoxEntity;
-import io.github._20nickname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.entities.container.CrateEntity;
+import io.github._20nickname20.imbored.entities.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.items.usable.guns.raycast.TestGunItem;
 import io.github._20nickname20.imbored.screens.GameScreen;
 
 public class Tests {
     GameScreen gameScreen;
-    World world;
+    GameWorld world;
     public Tests(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
-        this.world = gameScreen.getWorld();
+        this.world = gameScreen.world;
     }
 
     public void boxEnv() {
-        gameScreen.setGround(
-            Util.createStaticBox(world, new Vector2(0, -55), 102, 2)
-        );
-        Util.createStaticBox(world, new Vector2(-100, 0), 2, 57);
-        Util.createStaticBox(world, new Vector2(100, 0), 2, 57);
+
     }
 
     public void plane() {
-        gameScreen.setGround(
-            Util.createStaticBox(world, new Vector2(0, -55), 10_000f, 1)
-        );
+        Entity ground = new StaticEntity(world, 0, -55,  Shapes.boxShape(10_000f, 2), Material.GROUND);
+        world.spawn(ground);
+        ground.onSpawnAction(() -> {
+            gameScreen.setGround(ground.b);
+        });
     }
 
     public void towersTest() {
@@ -42,13 +42,23 @@ public class Tests {
             int height = MathUtils.random(5, 15);
             for (int y = 0; y < height; y++) {
                 boolean type = MathUtils.randomBoolean();
-                GameScreen.spawnEntity(new BoxEntity(world, -85 + x * 35 + MathUtils.random(0, 0.25f), -48 + y * 4, 2, 2, type ? Material.WOOD : Material.METAL, type ? 150 : 300));
+                world.spawn(new BoxEntity(world, -85 + x * 35 + MathUtils.random(0, 0.25f), -48 + y * 4, 2, 2, type ? Material.WOOD : Material.METAL, type ? 150 : 300));
             }
         }
-        GameScreen.spawnEntity(new PlayerEntity(world, 0, -40, new PlayerKeyboardController(new PlayerKeyboardController.KeyboardMapping())));
+        world.spawn(new PlayerEntity(world, 0, -40, new PlayerKeyboardController(new PlayerKeyboardController.KeyboardMapping())));
         for (Controller controller : Controllers.getControllers()) {
             gameScreen.addXInputControllerPlayer(controller);
         }
+    }
+
+    public void crate() {
+        CrateEntity entity = new CrateEntity(world, 100, 0, 3.5f, 3.5f, 200);
+        entity.getInventory().add(new TestGunItem(entity));
+        entity.getInventory().add(new TestGunItem(entity));
+        entity.getInventory().add(new TestGunItem(entity));
+        entity.getInventory().add(new TestGunItem(entity));
+        entity.getInventory().add(new TestGunItem(entity));
+        world.spawn(entity);
     }
 
     void distanceJointTest() {
@@ -59,8 +69,6 @@ public class Tests {
         defJoint.frequencyHz = 5;
         defJoint.dampingRatio = 0.5f;
         defJoint.initialize(box1.b, box2.b, box1.b.getPosition(), box2.b.getPosition());
-        DistanceJoint joint = (DistanceJoint) world.createJoint(defJoint);
-        // TODO: make some joints hidden (make custom joint class)
-        //  joint.setUserData();
+        DistanceJoint joint = (DistanceJoint) world.world.createJoint(defJoint);
     }
 }

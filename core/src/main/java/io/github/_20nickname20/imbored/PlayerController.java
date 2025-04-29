@@ -1,6 +1,6 @@
 package io.github._20nickname20.imbored;
 
-import io.github._20nickname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.entities.living.human.cursor.PlayerEntity;
 
 public abstract class PlayerController {
 

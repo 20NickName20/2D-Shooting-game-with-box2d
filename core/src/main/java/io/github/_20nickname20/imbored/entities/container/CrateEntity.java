@@ -1,24 +1,25 @@
-package io.github._20nickname20.imbored.entities.block;
+package io.github._20nickname20.imbored.entities.container;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.Shape;
 import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.Material;
-import io.github._20nickname20.imbored.util.Shapes;
 import io.github._20nickname20.imbored.entities.BlockEntity;
+import io.github._20nickname20.imbored.entities.ContainerEntity;
+import io.github._20nickname20.imbored.util.Shapes;
 
 import static io.github._20nickname20.imbored.util.With.rotation;
 
-public class BoxEntity extends BlockEntity {
+public class CrateEntity extends InteractiveContainerEntity {
     private final float sizeX, sizeY;
-    public BoxEntity(GameWorld world, float x, float y, int sizeX, int sizeY, Material material, float maxHealth) {
-        super(world, x, y, Shapes.boxShape(sizeX, sizeY), material, maxHealth);
+    public CrateEntity(GameWorld world, float x, float y, float sizeX, float sizeY, float maxHealth) {
+        super(world, x, y, Shapes.boxShape(sizeX, sizeY), Material.WOOD, maxHealth, 50);
         this.sizeX = sizeX;
         this.sizeY = sizeY;
     }
 
-    private final static float innerPadding = 0.2f;
+    private final static float innerPadding = 0.3f;
     @Override
     public boolean render(ShapeRenderer renderer) {
         super.render(renderer);

@@ -10,7 +10,7 @@ import static io.github._20nickname20.imbored.util.With.translation;
 public class Inventory {
     private float sizeLimit;
     private float containedSize = 0;
-    private ArrayList<Item> items = new ArrayList<>();
+    private final ArrayList<Item> items = new ArrayList<>();
     private int selectedSlot = 0;
     private final InventoryHolder holder;
 
@@ -29,6 +29,10 @@ public class Inventory {
 
     public float getSizeLimit() {
         return sizeLimit;
+    }
+
+    public boolean isEmpty() {
+        return items.isEmpty();
     }
 
     public void setSizeLimit(float sizeLimit) {
@@ -78,6 +82,12 @@ public class Inventory {
         int count = items.size();
         if (count == 0) return null;
         return items.get(selectedSlot);
+    }
+
+    public Item popSelectedItem() {
+        Item item = getSelectedItem();
+        removeSelectedItem();
+        return item;
     }
 
     public void removeItem(int index) {

@@ -7,7 +7,7 @@ import io.github._20nickname20.imbored.PlayerController;
 import static io.github._20nickname20.imbored.Main.inputMultiplexer;
 
 import com.badlogic.gdx.Input.Keys;
-import io.github._20nickname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.entities.living.human.cursor.PlayerEntity;
 
 public class PlayerKeyboardController extends PlayerController implements InputProcessor {
     public static class KeyboardMapping {
@@ -18,6 +18,12 @@ public class PlayerKeyboardController extends PlayerController implements InputP
         public int modeUseKey = Keys.Q;
         public int scrollItemLeftKey = Keys.TAB;
         public int scrollItemRightKey = Keys.R;
+        public int dropItemKey = Keys.Z;
+        public int throwKey = Keys.NUM_1;
+        public int containerScrollLeftKey = Keys.LEFT_BRACKET;
+        public int containerScrollRightKey = Keys.RIGHT_BRACKET;
+        public int containerTakeOutKey = Keys.O;
+        public int containerPutKey = Keys.P;
 
         public KeyboardMapping setLeftKey(int leftKey) {
             this.leftKey = leftKey;
@@ -51,6 +57,16 @@ public class PlayerKeyboardController extends PlayerController implements InputP
 
         public KeyboardMapping setScrollItemRightKey(int scrollItemRightKey) {
             this.scrollItemRightKey = scrollItemRightKey;
+            return this;
+        }
+
+        public KeyboardMapping setDropItemKey(int dropItemKey) {
+            this.dropItemKey = dropItemKey;
+            return this;
+        }
+
+        public KeyboardMapping setThrowKey(int throwKey) {
+            this.throwKey = throwKey;
             return this;
         }
     }
@@ -120,6 +136,24 @@ public class PlayerKeyboardController extends PlayerController implements InputP
         }
         if (i == mapping.modeUseKey) {
             this.startUseMode();
+        }
+        if (i == mapping.dropItemKey) {
+            player.dropSelectedItem();
+        }
+        if (i == mapping.throwKey) {
+            player.throwGrabbed();
+        }
+        if (i == mapping.containerScrollLeftKey) {
+            player.scrollContainer(-1);
+        }
+        if (i == mapping.containerScrollRightKey) {
+            player.scrollContainer(1);
+        }
+        if (i == mapping.containerTakeOutKey) {
+            player.takeOutOfContainer();
+        }
+        if (i == mapping.containerPutKey) {
+            player.putSelectedToContainer();
         }
         return false;
     }

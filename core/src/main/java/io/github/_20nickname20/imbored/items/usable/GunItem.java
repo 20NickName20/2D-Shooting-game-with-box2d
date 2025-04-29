@@ -2,7 +2,7 @@ package io.github._20nickname20.imbored.items.usable;
 
 import io.github._20nickname20.imbored.Entity;
 import io.github._20nickname20.imbored.util.Util;
-import io.github._20nickname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.items.UsableItem;
 
 public abstract class GunItem extends UsableItem {

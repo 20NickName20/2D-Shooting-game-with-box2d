@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import io.github._20nickname20.imbored.Entity;
-import io.github._20nickname20.imbored.entities.damagable.living.human.CursorEntity;
+import io.github._20nickname20.imbored.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.items.usable.JointItem;
 import io.github._20nickname20.imbored.render.JointDisplay;
 

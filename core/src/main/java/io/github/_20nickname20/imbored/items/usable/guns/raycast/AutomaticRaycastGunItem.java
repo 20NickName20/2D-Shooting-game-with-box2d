@@ -2,11 +2,11 @@ package io.github._20nickname20.imbored.items.usable.guns.raycast;
 
 import io.github._20nickname20.imbored.Entity;
 import io.github._20nickname20.imbored.entities.InventoryHolder;
-import io.github._20nickname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.items.usable.guns.RaycastGunItem;
 
 public abstract class AutomaticRaycastGunItem extends RaycastGunItem {
-    public AutomaticRaycastGunItem(float size, Entity holder, float cooldown, float damage, float power, float recoilScale, float range, float maxScatterAngle) {
+    public AutomaticRaycastGunItem(Entity holder, float size, float cooldown, float damage, float power, float recoilScale, float range, float maxScatterAngle) {
         super(holder, size, cooldown, damage, power, recoilScale, range, maxScatterAngle, cooldown / 4);
     }
 

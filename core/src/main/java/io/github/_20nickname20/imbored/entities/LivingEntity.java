@@ -1,11 +1,10 @@
-package io.github._20nickname20.imbored.entities.damagable;
+package io.github._20nickname20.imbored.entities;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
+import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.Material;
-import io.github._20nickname20.imbored.entities.DamagableEntity;
-import io.github._20nickname20.imbored.entities.Moving;
 
 public abstract class LivingEntity extends DamagableEntity implements Moving {
     float health;
@@ -14,19 +13,19 @@ public abstract class LivingEntity extends DamagableEntity implements Moving {
     private float lastYMovement = 0;
     float maxWalkSpeed = 20;
 
-    public LivingEntity(World world, float x, float y, Shape shape, float maxHealth) {
+    public LivingEntity(GameWorld world, float x, float y, Shape shape, float maxHealth) {
         super(world, x, y, shape, Material.FLESH, maxHealth);
     }
 
     @Override
-    public void spawn(World world) {
-        super.spawn(world);
+    public void onSpawn(World world) {
+        super.onSpawn(world);
         this.b.setFixedRotation(true);
     }
 
     @Override
     public void update(float dt) {
-        if (this.b.getLinearVelocity().len() > maxWalkSpeed) return;
+        if (this.b.getLinearVelocity().len() > maxWalkSpeed && this.b.getLinearVelocity().dot(this.getMovement()) > 0) return;
         this.b.applyLinearImpulse(this.getMovement(), this.b.getPosition(), true);
     }
 

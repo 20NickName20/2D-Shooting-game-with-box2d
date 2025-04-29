@@ -14,6 +14,7 @@ public abstract class Entity {
     public Body b;
     protected final Shape shape;
     public final Material material;
+    public final GameWorld gameWorld;
     public final World world;
 
     public Set<Body> contacts = new HashSet<>();
@@ -24,18 +25,29 @@ public abstract class Entity {
 
     public final UUID uuid = UUID.randomUUID();
     private final float spawnX, spawnY;
+    private Runnable onSpawn = null;
+    public float spawnTime;
 
-    public Entity(World world, float x, float y, Shape shape, Material material) {
+    public Entity(GameWorld gameWorld, float x, float y, Shape shape, Material material) {
         this.spawnX = x;
         this.spawnY = y;
         this.material = material;
-        this.world = world;
+        this.gameWorld = gameWorld;
+        this.world = gameWorld.world;
         this.shape = shape;
     }
 
-    public void spawn(World world) {
+    public void onSpawnAction(Runnable onSpawn) {
+        this.onSpawn = onSpawn;
+    }
+
+    public void onSpawn(World world) {
         b = Util.createBody(world, spawnX, spawnY, shape, material.density, material.friction, material.restitution);
         b.setUserData(this);
+        spawnTime = Util.time();
+
+        if (onSpawn == null) return;
+        onSpawn.run();
     }
 
     public void update(float dt) {
@@ -61,13 +73,16 @@ public abstract class Entity {
         this.contacts.remove(other);
     }
 
+    public boolean shouldCollide(Entity other) {
+        return true;
+    }
+
     public float getTimeSinceContact() {
         if (!contacts.isEmpty()) return 0;
         return Util.time() - lastContactTime;
     }
 
     public void remove() {
-        if (isRemoved) throw new IllegalStateException("Entity::remove() is called twice!");
         isRemoved = true;
     }
 

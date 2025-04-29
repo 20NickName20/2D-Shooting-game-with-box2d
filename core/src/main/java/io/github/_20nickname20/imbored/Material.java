@@ -12,7 +12,8 @@ public class Material {
     FLESH(0.05f, 0.9f, 0.01f, 1, new Color(0.7f, 0.2f, 0.2f, 1));
      */
 
-    public static final Material GROUND = new Material(new Color(0.5f, 0.9f, 0.5f, 1)); // TODO: ground...
+    public static final Material GROUND = new Material(new Color(0.5f, 0.9f, 0.5f, 1))
+        .setFriction(1.5f);
     public static final Material WOOD = new Material(new Color(0.5f, 0.4f, 0.1f, 1))
         .setDensity(0.1f)
         .setFriction(0.75f)
@@ -25,14 +26,22 @@ public class Material {
         .setDensity(0.5f)
         .setFriction(0.7f)
         .setRestitution(0.05f);
+    public static final Material ITEM = new Material(new Color(0.6f, 0.6f, 0.65f, 1))
+        .setDensity(0.5f)
+        .setFriction(0.7f)
+        .setRestitution(0.05f);
     public static final Material FLESH = new Material(new Color(0.7f, 0.2f, 0.2f, 1))
         .setDensity(0.05f)
         .setFriction(0.85f)
         .setRestitution(0.01f);
+    public static final Material CLOTH = new Material(new Color(0.9f, 0.9f, 0.75f, 1))
+        .setDensity(0.05f)
+        .setFriction(0.6f)
+        .setRestitution(0.1f);
 
     public float density = 1;
     public float friction = 1;
-    public float restitution = 1;
+    public float restitution = 0;
     public final Color color;
 
     private Material(Color color) {

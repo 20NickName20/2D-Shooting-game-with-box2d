@@ -9,8 +9,8 @@ import io.github._20nickname20.imbored.util.ClosestRaycast;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.entities.DamagableEntity;
 import io.github._20nickname20.imbored.entities.InventoryHolder;
-import io.github._20nickname20.imbored.entities.damagable.living.human.CursorEntity;
-import io.github._20nickname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.entities.living.human.CursorEntity;
+import io.github._20nickname20.imbored.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.items.usable.GunItem;
 
 import java.util.ArrayList;

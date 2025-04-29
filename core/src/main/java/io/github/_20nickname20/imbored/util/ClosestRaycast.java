@@ -5,8 +5,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 
-// TODO: make RaycastResult class
-// TODO: util.ClosestRaycast.java
 public class ClosestRaycast {
     public static class RaycastResult {
         public final float fraction;

@@ -3,7 +3,7 @@ package io.github._20nickname20.imbored.items;
 import io.github._20nickname20.imbored.Entity;
 import io.github._20nickname20.imbored.Item;
 import io.github._20nickname20.imbored.entities.InventoryHolder;
-import io.github._20nickname20.imbored.entities.damagable.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.entities.living.human.cursor.PlayerEntity;
 
 public abstract class UsableItem extends Item {
     public UsableItem(Entity holder, float size) {

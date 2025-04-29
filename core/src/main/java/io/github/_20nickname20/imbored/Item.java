@@ -3,7 +3,7 @@ package io.github._20nickname20.imbored;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import io.github._20nickname20.imbored.entities.InventoryHolder;
-import io.github._20nickname20.imbored.entities.damagable.living.human.CursorEntity;
+import io.github._20nickname20.imbored.entities.living.human.CursorEntity;
 
 public abstract class Item {
     private final float size;
@@ -12,8 +12,8 @@ public abstract class Item {
     private boolean isSelected = false;
 
     public Item(Entity holder, float size) {
-        this.size = size;
         this.holder = holder;
+        this.size = size;
     }
 
     public void setHolder(Entity holder) {

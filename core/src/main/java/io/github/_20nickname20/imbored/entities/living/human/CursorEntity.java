@@ -1,15 +1,16 @@
-package io.github._20nickname20.imbored.entities.damagable.living.human;
+package io.github._20nickname20.imbored.entities.living.human;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import io.github._20nickname20.imbored.entities.damagable.living.HumanEntity;
+import io.github._20nickname20.imbored.GameWorld;
+import io.github._20nickname20.imbored.entities.living.HumanEntity;
 
 public abstract class CursorEntity extends HumanEntity {
 
     protected float cursorDistance = 0;
     public final Vector2 cursorDirection = new Vector2(0, 1);
 
-    public CursorEntity(World world, float x, float y, float maxHealth) {
+    public CursorEntity(GameWorld world, float x, float y, float maxHealth) {
         super(world, x, y, maxHealth);
     }
 

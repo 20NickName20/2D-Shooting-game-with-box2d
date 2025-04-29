@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.JointEdge;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github._20nickname20.imbored.Entity;
+import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.Material;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.render.BarDisplay;
@@ -17,7 +18,7 @@ public abstract class DamagableEntity extends Entity {
     protected float health, maxHealth;
     protected float lastDamageTime = 0;
 
-    public DamagableEntity(World world, float x, float y, Shape shape, Material material, float maxHealth) {
+    public DamagableEntity(GameWorld world, float x, float y, Shape shape, Material material, float maxHealth) {
         super(world, x, y, shape, material);
         this.maxHealth = maxHealth;
         this.health = maxHealth;
