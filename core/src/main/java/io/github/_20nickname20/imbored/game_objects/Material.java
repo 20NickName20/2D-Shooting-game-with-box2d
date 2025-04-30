@@ -9,13 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Material {
-    /*
-    CARBON(0.0001f, 1f, 0.5f, 1f, new Color(0.1f, 0, 0, 1)),
-    WOOD(0.1f, 0.75f, 0.1f, 1, new Color(0.5f, 0.4f, 0.1f, 1)),
-    ROCK(0.6f, 0.9f, 0.01f, 1, new Color(0.5f, 0.5f, 0.5f, 1)),
-    METAL(0.5f, 0.7f, 0.05f, 1, new Color(0.6f, 0.6f, 0.65f, 1)),
-    FLESH(0.05f, 0.9f, 0.01f, 1, new Color(0.7f, 0.2f, 0.2f, 1));
-     */
 
     public static final Material GROUND = new Material(new Color(0.5f, 0.9f, 0.5f, 1))
         .setFriction(1.5f);
@@ -32,7 +25,7 @@ public class Material {
         .setDensity(0.5f)
         .setFriction(0.7f)
         .setRestitution(0.05f);
-    public static final Material ITEM = new Material(new Color(0.6f, 0.6f, 0.65f, 1))
+    public static final Material ITEM = new Material(Color.WHITE)
         .setDensity(0.5f)
         .setFriction(0.7f)
         .setRestitution(0.05f);

@@ -1,6 +1,7 @@
 package io.github._20nickname20.imbored.game_objects.entities.living.human.cursor;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.MassData;
@@ -18,7 +19,6 @@ import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.Te
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.automatic.AutomaticRifleItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.joint.distance.HardDistanceJointItem;
 import io.github._20nickname20.imbored.render.JointDisplay;
-import io.github._20nickname20.imbored.render.PenRenderer;
 import io.github._20nickname20.imbored.util.FindBody;
 import io.github._20nickname20.imbored.util.Util;
 
@@ -272,8 +272,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
             return false;
         }
         if (other instanceof ItemEntity itemEntity) {
-            pickupItem(itemEntity);
-            return false;
+            return !pickupItem(itemEntity);
         }
         return true;
     }
@@ -304,7 +303,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     }
 
     @Override
-    public boolean render(PenRenderer renderer) {
+    public boolean render(ShapeRenderer renderer) {
         super.render(renderer);
         float cursorDistance = getCursorDistance();
         renderer.setColor(1, 1, 1, 0.5f);
@@ -315,7 +314,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         rotation(renderer, angle, () -> {
             renderer.line(0, 0, cursorDistance, 0);
             translation(renderer, cursorDistance, 0, () -> {
-                //renderer.circle(0, 0, 1.2f);
+                renderer.circle(0, 0, 1.2f);
                 if (mode == Mode.INV && selectedItem != null) {
                     selectedItem.render(renderer, this);
                 }

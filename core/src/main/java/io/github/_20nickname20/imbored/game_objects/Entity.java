@@ -5,7 +5,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github._20nickname20.imbored.GameWorld;
-import io.github._20nickname20.imbored.render.PenRenderer;
 import io.github._20nickname20.imbored.util.Util;
 
 import java.util.HashSet;
@@ -56,7 +55,7 @@ public abstract class Entity {
 
     }
 
-    public boolean render(PenRenderer renderer) {
+    public boolean render(ShapeRenderer renderer) {
         return false;
     }
 

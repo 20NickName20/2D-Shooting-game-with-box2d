@@ -1,6 +1,7 @@
 package io.github._20nickname20.imbored.game_objects.items.usable.joint;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -10,7 +11,6 @@ import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.items.usable.JointItem;
 import io.github._20nickname20.imbored.render.JointDisplay;
-import io.github._20nickname20.imbored.render.PenRenderer;
 
 public abstract class DistanceJointItem extends JointItem {
     private final float frequency, damping, lengthScale;
@@ -35,13 +35,13 @@ public abstract class DistanceJointItem extends JointItem {
     }
 
     @Override
-    public void render(PenRenderer renderer, CursorEntity handHolder) {
+    public void render(ShapeRenderer renderer, CursorEntity handHolder) {
         renderer.setColor(color);
         if (handHolder != null && this.isATargeted()) {
-            // renderer.circle(0, 0, 1.75f, 6);
+            renderer.circle(0, 0, 1.75f, 6);
 
             Matrix4 matrix4 = renderer.getTransformMatrix().cpy();
-            renderer.getTransformMatrix().idt();
+            renderer.identity();
 
             Vector2 posB = handHolder.getCursorPosition();
             if (this.posA.dst(posB) > this.maxDistance || getClosestBodyForConnecting(handHolder.world, handHolder.getCursorPosition()) == null) {
@@ -54,7 +54,7 @@ public abstract class DistanceJointItem extends JointItem {
             return;
         }
         if (handHolder != null && getClosestBodyForConnecting(handHolder.world, handHolder.getCursorPosition()) != null) {
-            // renderer.circle(0, 0, 1.75f, 6);
+            renderer.circle(0, 0, 1.75f, 6);
             return;
         }
         renderer.line(-1, -1, 1, 1);

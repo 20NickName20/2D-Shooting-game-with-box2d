@@ -1,7 +1,6 @@
 package io.github._20nickname20.imbored.render;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
@@ -13,9 +12,9 @@ import io.github._20nickname20.imbored.game_objects.Entity;
 
 import java.util.function.Consumer;
 
-public class GameRenderer extends Box2DDebugRenderer {
+public class GameLineRenderer extends Box2DDebugRenderer {
 
-    public PenRenderer renderer;
+    public ShapeRenderer renderer;
 
     /** vertices for polygon rendering **/
     private final static Vector2[] vertices = new Vector2[1000];
@@ -29,13 +28,13 @@ public class GameRenderer extends Box2DDebugRenderer {
     private boolean drawBodies;
     private boolean drawJoints;
 
-    public GameRenderer(ShaderProgram shader) {
+    public GameLineRenderer(ShaderProgram shader) {
         this(true, true, shader);
     }
 
-    public GameRenderer(boolean drawBodies, boolean drawJoints, ShaderProgram shader) {
-        // next we setup the immediate mode renderer
-        renderer = new PenRenderer();
+    public GameLineRenderer(boolean drawBodies, boolean drawJoints, ShaderProgram shader) {
+        renderer = new ShapeRenderer(5000, shader);
+        renderer.setAutoShapeType(true);
 
         // initialize vertices array
         for (int i = 0; i < vertices.length; i++)
@@ -45,9 +44,9 @@ public class GameRenderer extends Box2DDebugRenderer {
         this.drawJoints = drawJoints;
     }
 
-    public void render(World world, Matrix4 projMatrix, Consumer<PenRenderer> rendererConsumer) {
+    public void render(World world, Matrix4 projMatrix, Consumer<ShapeRenderer> rendererConsumer) {
+        renderer.identity();
         renderer.setProjectionMatrix(projMatrix);
-        renderer.getTransformMatrix().idt();
 
         renderer.begin();
         rendererConsumer.accept(renderer);
@@ -76,17 +75,17 @@ public class GameRenderer extends Box2DDebugRenderer {
 
     protected void renderBody(Body body) {
         Color color;
+        Vector2 position = body.getPosition();
         if (body.getUserData() instanceof Entity entity) {
             color = entity.material.color;
-            Vector2 position = body.getPosition();
-            renderer.getTransformMatrix().translate(position.x, position.y, 0);
+            renderer.translate(position.x, position.y, 0);
             if (entity.render(renderer)) {
-                renderer.getTransformMatrix().translate(-position.x, -position.y, 0);
+                renderer.translate(-position.x, -position.y, 0);
                 return;
             }
-            renderer.getTransformMatrix().translate(-position.x, -position.y, 0);
+            renderer.translate(-position.x, -position.y, 0);
         } else {
-            color = getColorByBody(body);
+            color = SHAPE_STATIC;
         }
         Transform transform = body.getTransform();
         for (Fixture fixture : body.getFixtureList()) {
@@ -94,10 +93,6 @@ public class GameRenderer extends Box2DDebugRenderer {
                 drawShape(fixture, transform, color);
             }
         }
-    }
-
-    private Color getColorByBody(Body body) {
-        return SHAPE_STATIC;
     }
 
     private static Vector2 t = new Vector2();
@@ -168,10 +163,10 @@ public class GameRenderer extends Box2DDebugRenderer {
 
     private void drawSolidPolygon (int vertexCount, Color color, boolean closed) {
         renderer.setColor(color.r, color.g, color.b, color.a);
-        lv.set(GameRenderer.vertices[0]);
-        f.set(GameRenderer.vertices[0]);
+        lv.set(GameLineRenderer.vertices[0]);
+        f.set(GameLineRenderer.vertices[0]);
         for (int i = 1; i < vertexCount; i++) {
-            Vector2 v = GameRenderer.vertices[i];
+            Vector2 v = GameLineRenderer.vertices[i];
             renderer.line(lv.x, lv.y, v.x, v.y);
             lv.set(v);
         }

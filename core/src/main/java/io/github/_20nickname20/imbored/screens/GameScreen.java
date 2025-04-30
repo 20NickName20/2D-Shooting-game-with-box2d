@@ -4,10 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -17,7 +15,7 @@ import io.github._20nickname20.imbored.*;
 import io.github._20nickname20.imbored.controllers.PlayerGamepadController;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.handlers.MainInputProcessor;
-import io.github._20nickname20.imbored.render.GameRenderer;
+import io.github._20nickname20.imbored.render.GameLineRenderer;
 import io.github._20nickname20.imbored.util.Tests;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.util.With;
@@ -30,7 +28,7 @@ public class GameScreen extends ScreenAdapter {
     private final Viewport viewport;
     public static final float zoom = 0.075f;
 
-    private final GameRenderer renderer;
+    private final GameLineRenderer renderer;
     ShaderProgram shader;
 
     public GameWorld world;
@@ -57,7 +55,7 @@ public class GameScreen extends ScreenAdapter {
         );
         if (!shader.isCompiled()) throw new GdxRuntimeException("Couldn't compile shader: " + shader.getLog());
         ShaderProgram.pedantic = false;
-        renderer = new GameRenderer(shader);
+        renderer = new GameLineRenderer(shader);
         camera.zoom /= zoom;
 
         inputMultiplexer.addProcessor(new MainInputProcessor(this));
@@ -93,6 +91,7 @@ public class GameScreen extends ScreenAdapter {
 
         ScreenUtils.clear(0, 0, 0, 1);
 
+        viewport.apply();
         renderer.render(world.world, camera.combined, (pen) -> {
             if (debugController != null && Gdx.input.isKeyPressed(Input.Keys.F3)) {
                 With.translation(pen, -70, 40, () -> {

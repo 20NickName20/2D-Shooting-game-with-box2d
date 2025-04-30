@@ -1,9 +1,9 @@
 package io.github._20nickname20.imbored.game_objects;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import io.github._20nickname20.imbored.game_objects.entities.InventoryHolder;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
-import io.github._20nickname20.imbored.render.PenRenderer;
 
 public abstract class Item {
     private final float size;
@@ -20,7 +20,7 @@ public abstract class Item {
         this.holder = holder;
     }
 
-    public abstract void render(PenRenderer renderer, CursorEntity handHolder);
+    public abstract void render(ShapeRenderer renderer, CursorEntity handHolder);
 
     public final boolean isUpdating() {
         return this.isUpdating;

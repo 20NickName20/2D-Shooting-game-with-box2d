@@ -1,11 +1,11 @@
 package io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.RaycastGunItem;
-import io.github._20nickname20.imbored.render.PenRenderer;
 
 public class TestGunItem extends RaycastGunItem {
     public TestGunItem(Entity holder) {
@@ -13,19 +13,16 @@ public class TestGunItem extends RaycastGunItem {
     }
 
     @Override
-    public void render(PenRenderer renderer, CursorEntity handHolder) {
+    public void render(ShapeRenderer renderer, CursorEntity handHolder) {
         super.render(renderer, handHolder);
         renderer.setColor(0.5f, 0.5f, 0.5f, 1);
-        // renderer.rectLine(-0.9f, -0.9f, 0.1f, 0.1f, 1.1f);
-        /*
+        renderer.rectLine(-0.9f, -0.9f, 0.1f, 0.1f, 1.1f);
         renderer.polygon(new float[]{
             0f, 0.5f,
             2f, 0.9f,
             2f, -0.9f,
             0f, -0.5f,
         });
-
-         */
     }
 
     @Override

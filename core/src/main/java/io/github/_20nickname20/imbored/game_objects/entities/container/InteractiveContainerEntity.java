@@ -1,5 +1,6 @@
 package io.github._20nickname20.imbored.game_objects.entities.container;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Shape;
 import io.github._20nickname20.imbored.GameWorld;
@@ -7,7 +8,6 @@ import io.github._20nickname20.imbored.game_objects.Item;
 import io.github._20nickname20.imbored.game_objects.Material;
 import io.github._20nickname20.imbored.game_objects.entities.ContainerEntity;
 import io.github._20nickname20.imbored.game_objects.entities.ItemEntity;
-import io.github._20nickname20.imbored.render.PenRenderer;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.util.With;
 
@@ -39,7 +39,7 @@ public class InteractiveContainerEntity extends ContainerEntity {
     }
 
     @Override
-    public boolean render(PenRenderer renderer) {
+    public boolean render(ShapeRenderer renderer) {
         super.render(renderer);
         if (Util.time() - interactTime > 0.1f) return false;
         With.translation(renderer, 0, 8, () -> {

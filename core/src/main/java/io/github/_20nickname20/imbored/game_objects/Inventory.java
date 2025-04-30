@@ -113,17 +113,17 @@ public class Inventory {
         }
     }
 
-    void renderSlot(PenRenderer renderer, boolean active, float x, float y) {
+    void renderSlot(ShapeRenderer renderer, boolean active, float x, float y) {
         renderer.setColor(0.5f, 0.5f, 0.5f, 1f);
-        // renderer.rect(x - 2, y - 2, 4, 4);
+        renderer.rect(x - 2, y - 2, 4, 4);
         if (active) {
-            // renderer.rect(x - 2.2f, y - 2.2f, 4.4f, 4.4f);
+            renderer.rect(x - 2.2f, y - 2.2f, 4.4f, 4.4f);
         }
     }
 
     public static final float slotSize = 4.6f;
 
-    public void renderPart(PenRenderer renderer, int slotAmount) {
+    public void renderPart(ShapeRenderer renderer, int slotAmount) {
         int range = slotAmount / 2;
         for (int i = -range; i <= range; i++) {
             renderSlot(renderer, i == 0, i * slotSize, 0);

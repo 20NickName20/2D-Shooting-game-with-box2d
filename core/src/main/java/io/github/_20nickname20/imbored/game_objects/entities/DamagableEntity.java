@@ -1,6 +1,7 @@
 package io.github._20nickname20.imbored.game_objects.entities;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -10,7 +11,6 @@ import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.game_objects.Item;
 import io.github._20nickname20.imbored.game_objects.Material;
-import io.github._20nickname20.imbored.render.PenRenderer;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.render.BarDisplay;
 import io.github._20nickname20.imbored.util.With;
@@ -87,7 +87,7 @@ public abstract class DamagableEntity extends Entity {
     private final static Color BAR_OUTTER_COLOR = new Color(0.6f, 0.2f, 0, 1);
     private final static Color BAR_INNER_COLOR = new Color(0.5f, 1, 0, 1);
     @Override
-    public boolean render(PenRenderer renderer) {
+    public boolean render(ShapeRenderer renderer) {
         float time = Util.time();
         float dt = time - lastDamageTime;
         displayHealth += (health - displayHealth) * dt;

@@ -80,7 +80,7 @@ public abstract class RaycastGunItem extends GunItem {
         rays.clear();
     }
 
-    protected final void renderRays(PenRenderer renderer, float cursorDistance) {
+    protected final void renderRays(ShapeRenderer renderer, float cursorDistance) {
         ArrayList<Ray> toRemove = new ArrayList<>();
         float time = Util.time();
         for (Ray ray : rays) {
@@ -95,7 +95,7 @@ public abstract class RaycastGunItem extends GunItem {
     }
 
     @Override
-    public void render(PenRenderer renderer, CursorEntity handHolder) {
+    public void render(ShapeRenderer renderer, CursorEntity handHolder) {
         if (handHolder == null) return;
         renderRays(renderer, handHolder.getCursorDistance());
     }

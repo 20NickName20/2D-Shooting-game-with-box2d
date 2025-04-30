@@ -1,12 +1,12 @@
 package io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.Material;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.RaycastGunItem;
-import io.github._20nickname20.imbored.render.PenRenderer;
 
 public class ShotgunItem extends RaycastGunItem {
     public ShotgunItem(Entity holder) {
@@ -31,11 +31,11 @@ public class ShotgunItem extends RaycastGunItem {
     }
 
     @Override
-    public void render(PenRenderer renderer, CursorEntity handHolder) {
+    public void render(ShapeRenderer renderer, CursorEntity handHolder) {
         super.render(renderer, handHolder);
 
         renderer.setColor(Material.WOOD.color);
-        // renderer.rectLine(-0.9f, -0.9f, 0.1f, 0.1f, 1.1f);
-        // renderer.rectLine(0, 0, 3, 0, 1.1f);
+        renderer.rectLine(-0.9f, -0.9f, 0.1f, 0.1f, 1.1f);
+        renderer.rectLine(0, 0, 3, 0, 1.1f);
     }
 }

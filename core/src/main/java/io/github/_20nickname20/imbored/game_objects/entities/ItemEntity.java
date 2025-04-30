@@ -1,12 +1,12 @@
 package io.github._20nickname20.imbored.game_objects.entities;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.game_objects.Item;
 import io.github._20nickname20.imbored.game_objects.Material;
 import io.github._20nickname20.imbored.game_objects.entities.container.InteractiveContainerEntity;
-import io.github._20nickname20.imbored.render.PenRenderer;
 import io.github._20nickname20.imbored.util.Shapes;
 import io.github._20nickname20.imbored.util.Util;
 
@@ -40,7 +40,7 @@ public class ItemEntity extends BlockEntity {
     }
 
     @Override
-    public boolean render(PenRenderer renderer) {
+    public boolean render(ShapeRenderer renderer) {
         item.render(renderer, null);
         return true;
     }

@@ -65,6 +65,7 @@ public class MainInputProcessor extends InputAdapter {
             float centerY = (startY + endY) / 2;
             float sideX = Math.abs(centerX - endX);
             float sideY = Math.abs(centerY - endY);
+            if (sideX < 1 || sideY < 1) return false;
             gameScreen.world.spawn(
                 new StaticEntity(gameScreen.world, centerX, centerY, Shapes.boxShape(sideX, sideY), Material.GROUND)
             );
