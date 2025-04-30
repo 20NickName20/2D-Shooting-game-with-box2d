@@ -65,6 +65,10 @@ public class Inventory {
         getSelectedItem().onSelect(holder);
     }
 
+    public boolean canFit(Item item) {
+        return !(containedSize + item.getSize() > sizeLimit);
+    }
+
     public boolean add(Item item) {
         if (item == null) return false;
         if (containedSize + item.getSize() > sizeLimit) return false;
@@ -94,7 +98,6 @@ public class Inventory {
 
     public Item removeItem(int index) {
         Item removed = items.remove(index);
-        removed.onRemove(holder);
         containedSize -= removed.getSize();
         if (selectedSlot >= items.size() && selectedSlot != 0) {
             selectedSlot -= 1;

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import io.github._20nickname20.imbored.game_objects.entities.InventoryHolder;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
+import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 
 public abstract class Item {
     private final float size;
@@ -46,7 +47,7 @@ public abstract class Item {
         isSelected = false;
     }
 
-    public void onRemove(InventoryHolder holder) {
+    public void onPickup(PlayerEntity holder) {
 
     }
 

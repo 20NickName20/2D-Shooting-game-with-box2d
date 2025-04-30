@@ -53,6 +53,10 @@ public abstract class DamagableEntity extends Entity {
         }
     }
 
+    public void kill() {
+        this.damage(Float.MAX_VALUE);
+    }
+
     public void onDestroy() {
         this.remove();
         List<Item> droppedItems = getDroppedItems();

@@ -2,6 +2,7 @@ package io.github._20nickname20.imbored.game_objects.entities.living.human.curso
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.MassData;
@@ -13,6 +14,7 @@ import io.github._20nickname20.imbored.game_objects.Item;
 import io.github._20nickname20.imbored.game_objects.entities.*;
 import io.github._20nickname20.imbored.game_objects.entities.container.InteractiveContainerEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
+import io.github._20nickname20.imbored.game_objects.items.DeathItem;
 import io.github._20nickname20.imbored.game_objects.items.UsableItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.ShotgunItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.TestGunItem;
@@ -45,6 +47,8 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     private MouseJoint grabMouseJoint;
     private DistanceJoint grabDistanceJoint;
 
+    public boolean popBob = false;
+
     public final Inventory inventory = new Inventory(this, 20);
 
     public PlayerEntity(GameWorld world, float x, float y, PlayerController controller) {
@@ -59,6 +63,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         for (int i = 0; i < 3; i++) {
             inventory.add(new HardDistanceJointItem(this));
         }
+        inventory.add(new DeathItem(this));
     }
 
     public void setMode(Mode mode) {
@@ -118,14 +123,28 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         inventory.scroll(amount);
     }
 
+    private float lastPopBobTime = 0;
     @Override
     public void update(float dt) {
         super.update(dt);
         inventory.update(dt);
         controller.update(dt);
 
+        Vector2 cursorPosition = getCursorPosition();
+        float time = Util.time();
+
+        if (popBob && time - lastPopBobTime > 0.01f) {
+            lastPopBobTime = time;
+            Class<? extends Item> type = switch (MathUtils.random(3)) {
+                case 0 -> TestGunItem.class;
+                case 1 -> AutomaticRifleItem.class;
+                case 2 -> ShotgunItem.class;
+                default -> HardDistanceJointItem.class;
+            };
+            gameWorld.dropItem(cursorPosition, cursorDirection.cpy().scl(itemDropPower * 5).rotateDeg(MathUtils.random(-20f, 20f)), Item.createFromType(type, null));
+        }
+
         if (mode == Mode.GRAB && grabbedEntity != null) {
-            Vector2 cursorPosition = getCursorPosition().cpy();
             Vector2 toGrabbed = grabbedEntity.b.getPosition().sub(this.b.getPosition());
 
             if (toGrabbed.dot(cursorDirection) < -0.5) {
@@ -263,6 +282,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         if (!entity.canPickup()) return false;
         if (!inventory.add(entity.item)) return false;
         entity.remove();
+        entity.item.onPickup(this);
         return true;
     }
 
@@ -272,7 +292,9 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
             return false;
         }
         if (other instanceof ItemEntity itemEntity) {
-            return !pickupItem(itemEntity);
+            if (!inventory.canFit(itemEntity.item)) return true;
+            pickupItem(itemEntity);
+            return false;
         }
         return true;
     }

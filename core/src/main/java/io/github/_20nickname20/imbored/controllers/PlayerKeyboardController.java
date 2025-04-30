@@ -1,6 +1,7 @@
 package io.github._20nickname20.imbored.controllers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import io.github._20nickname20.imbored.PlayerController;
 
@@ -154,6 +155,10 @@ public class PlayerKeyboardController extends PlayerController implements InputP
         }
         if (i == mapping.containerPutKey) {
             player.putSelectedToContainer();
+        }
+
+        if (i == Keys.NUM_LOCK) {
+            player.popBob = !player.popBob;
         }
         return false;
     }

@@ -92,18 +92,18 @@ public class GameScreen extends ScreenAdapter {
         ScreenUtils.clear(0, 0, 0, 1);
 
         viewport.apply();
-        renderer.render(world.world, camera.combined, (pen) -> {
+        renderer.render(world.world, camera.combined, (shape) -> {
             if (debugController != null && Gdx.input.isKeyPressed(Input.Keys.F3)) {
-                With.translation(pen, -70, 40, () -> {
-                    pen.setColor(0.75f, 0.75f, 0.75f, 1);
-                    //pen.circle(-10, 0, 5);
-                    //pen.circle(debugController.getAxis(0) * 5 - 10, -debugController.getAxis(1) * 5, 1.5f);
-                    pen.line(-16, 0, -4, 0);
-                    pen.line(-10, -6, -10, 6);
-                    //pen.circle(10, 0, 5);
-                    //pen.circle(debugController.getAxis(2) * 5 + 10, -debugController.getAxis(3) * 5, 1.5f);
-                    pen.line(4, 0, 16, 0);
-                    pen.line(10, -6, 10, 6);
+                With.translation(shape, -70, 40, () -> {
+                    shape.setColor(0.75f, 0.75f, 0.75f, 1);
+                    shape.circle(-10, 0, 5);
+                    shape.circle(debugController.getAxis(0) * 5 - 10, -debugController.getAxis(1) * 5, 1.5f);
+                    shape.line(-16, 0, -4, 0);
+                    shape.line(-10, -6, -10, 6);
+                    shape.circle(10, 0, 5);
+                    shape.circle(debugController.getAxis(2) * 5 + 10, -debugController.getAxis(3) * 5, 1.5f);
+                    shape.line(4, 0, 16, 0);
+                    shape.line(10, -6, 10, 6);
                 });
             }
         });

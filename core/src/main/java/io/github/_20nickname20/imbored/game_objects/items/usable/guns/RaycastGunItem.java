@@ -84,10 +84,13 @@ public abstract class RaycastGunItem extends GunItem {
         ArrayList<Ray> toRemove = new ArrayList<>();
         float time = Util.time();
         for (Ray ray : rays) {
-            if (time - ray.time > rayDisplayTime) {
+            float rayTime = time - ray.time;
+            if (rayTime > rayDisplayTime) {
                 toRemove.add(ray);
             }
-            renderer.line(new Vector2(), new Vector2(range * ray.fraction - cursorDistance, 0).rotateRad(ray.offsetAngle));
+            Vector2 start = new Vector2(Math.max(0, 0), 0).rotateRad(ray.offsetAngle);
+            Vector2 end = new Vector2(Math.min(range * ray.fraction * rayTime / rayDisplayTime, range * ray.fraction), 0).rotateAroundRad(new Vector2(), ray.offsetAngle);
+            renderer.line(start, end);
         }
         for (Ray removed : toRemove) {
             rays.remove(removed);

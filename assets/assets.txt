@@ -1,3 +1,4 @@
+hs_err_pid10636.log
 hs_err_pid11224.log
 hs_err_pid15772.log
 hs_err_pid16444.log
