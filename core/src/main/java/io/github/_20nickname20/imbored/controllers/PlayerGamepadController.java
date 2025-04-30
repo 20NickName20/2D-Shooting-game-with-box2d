@@ -5,7 +5,7 @@ import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.ControllerMapping;
 import com.badlogic.gdx.math.Vector2;
 import io.github._20nickname20.imbored.PlayerController;
-import io.github._20nickname20.imbored.entities.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 
 public class PlayerGamepadController extends PlayerController implements ControllerListener {
     private final Controller controller;

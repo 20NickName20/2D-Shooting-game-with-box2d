@@ -1,13 +1,14 @@
 package io.github._20nickname20.imbored.controllers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import io.github._20nickname20.imbored.PlayerController;
 
 import static io.github._20nickname20.imbored.Main.inputMultiplexer;
 
 import com.badlogic.gdx.Input.Keys;
-import io.github._20nickname20.imbored.entities.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 
 public class PlayerKeyboardController extends PlayerController implements InputProcessor {
     public static class KeyboardMapping {
@@ -154,6 +155,10 @@ public class PlayerKeyboardController extends PlayerController implements InputP
         }
         if (i == mapping.containerPutKey) {
             player.putSelectedToContainer();
+        }
+
+        if (i == Keys.NUM_LOCK) {
+            player.popBob = !player.popBob;
         }
         return false;
     }

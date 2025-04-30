@@ -6,7 +6,9 @@ import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.JointEdge;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import io.github._20nickname20.imbored.entities.ItemEntity;
+import io.github._20nickname20.imbored.game_objects.Entity;
+import io.github._20nickname20.imbored.game_objects.Item;
+import io.github._20nickname20.imbored.game_objects.entities.ItemEntity;
 import io.github._20nickname20.imbored.handlers.EntityContactFilter;
 import io.github._20nickname20.imbored.handlers.EntityContactListener;
 import io.github._20nickname20.imbored.util.Constants;
@@ -17,8 +19,11 @@ import java.util.Set;
 public class GameWorld {
     public final World world;
 
-    private static final Set<Entity> entitiesToSpawn = new HashSet<>();
-    private static final Set<Joint> jointsToRemove = new HashSet<>();
+    private final Array<Body> bodies = new Array<>();
+    private final Array<Body> bodies1 = new Array<>();
+
+    private final Set<Entity> entitiesToSpawn = new HashSet<>();
+    private final Set<Joint> jointsToRemove = new HashSet<>();
 
     public GameWorld() {
         world = new World(new Vector2(0, -Constants.ACCELERATION_OF_GRAVITY), true);
@@ -38,6 +43,20 @@ public class GameWorld {
     private float accumulator = 0;
     private int step = 0;
 
+    private void processRemoval(Entity entity) {
+        entity.b.setUserData(null);
+        for (JointEdge jointEdge : entity.b.getJointList()) {
+            world.destroyJoint(jointEdge.joint);
+        }
+        world.destroyBody(entity.b);
+        world.getBodies(bodies1);
+        for (Body body1 : bodies1) {
+            if (!(body1.getUserData() instanceof Entity entity1)) continue;
+            if (entity1.isRemoved()) continue;
+            entity1.contacts.remove(entity.b);
+        }
+    }
+
     private void doPhysicsStep(float dt) {
         float frameTime = Math.min(dt, 0.25f);
         accumulator += frameTime;
@@ -47,23 +66,12 @@ public class GameWorld {
             step++;
             if (step < Constants.UPDATES_LATENCY) continue;
             step = 0;
-            Array<Body> bodies = new Array<>();
             world.getBodies(bodies);
             for (Body body : bodies) {
                 if (!(body.getUserData() instanceof Entity entity)) continue;
+
                 if (entity.isRemoved()) {
-                    entity.b.setUserData(null);
-                    for (JointEdge jointEdge : entity.b.getJointList()) {
-                        world.destroyJoint(jointEdge.joint);
-                    }
-                    world.destroyBody(entity.b);
-                    Array<Body> bodies1 = new Array<>();
-                    world.getBodies(bodies1);
-                    for (Body body1 : bodies1) {
-                        if (!(body1.getUserData() instanceof Entity entity1)) continue;
-                        if (entity1.isRemoved()) continue;
-                        entity1.contacts.remove(body);
-                    }
+                    processRemoval(entity);
                     continue;
                 }
                 entity.update(Constants.TIME_STEP * Constants.UPDATES_LATENCY);

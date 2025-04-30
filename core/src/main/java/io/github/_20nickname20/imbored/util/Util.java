@@ -45,6 +45,4 @@ public class Util {
 
         return body;
     }
-
-    // TODO: and joint utils
 }
