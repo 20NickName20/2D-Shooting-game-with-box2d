@@ -7,7 +7,7 @@ import io.github._20nickname20.imbored.PlayerController;
 import static io.github._20nickname20.imbored.Main.inputMultiplexer;
 
 import com.badlogic.gdx.Input.Keys;
-import io.github._20nickname20.imbored.entities.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 
 public class PlayerKeyboardController extends PlayerController implements InputProcessor {
     public static class KeyboardMapping {

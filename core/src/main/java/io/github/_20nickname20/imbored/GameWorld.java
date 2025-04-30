@@ -6,7 +6,9 @@ import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.JointEdge;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import io.github._20nickname20.imbored.entities.ItemEntity;
+import io.github._20nickname20.imbored.game_objects.Entity;
+import io.github._20nickname20.imbored.game_objects.Item;
+import io.github._20nickname20.imbored.game_objects.entities.ItemEntity;
 import io.github._20nickname20.imbored.handlers.EntityContactFilter;
 import io.github._20nickname20.imbored.handlers.EntityContactListener;
 import io.github._20nickname20.imbored.util.Constants;
@@ -16,6 +18,8 @@ import java.util.Set;
 
 public class GameWorld {
     public final World world;
+
+    private final Array<Body> bodies = new Array<>();
 
     private static final Set<Entity> entitiesToSpawn = new HashSet<>();
     private static final Set<Joint> jointsToRemove = new HashSet<>();
@@ -47,7 +51,6 @@ public class GameWorld {
             step++;
             if (step < Constants.UPDATES_LATENCY) continue;
             step = 0;
-            Array<Body> bodies = new Array<>();
             world.getBodies(bodies);
             for (Body body : bodies) {
                 if (!(body.getUserData() instanceof Entity entity)) continue;

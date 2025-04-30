@@ -8,30 +8,19 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Joint;
-import com.badlogic.gdx.physics.box2d.JointEdge;
-import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github._20nickname20.imbored.*;
 import io.github._20nickname20.imbored.controllers.PlayerGamepadController;
-import io.github._20nickname20.imbored.entities.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.handlers.MainInputProcessor;
-import io.github._20nickname20.imbored.handlers.EntityContactFilter;
-import io.github._20nickname20.imbored.handlers.EntityContactListener;
 import io.github._20nickname20.imbored.render.GameRenderer;
-import io.github._20nickname20.imbored.util.Constants;
 import io.github._20nickname20.imbored.util.Tests;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.util.With;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import static io.github._20nickname20.imbored.Main.inputMultiplexer;
 
@@ -39,7 +28,7 @@ public class GameScreen extends ScreenAdapter {
     public final Main game;
     private final OrthographicCamera camera;
     private final Viewport viewport;
-    float zoom = 0.075f;
+    public static final float zoom = 0.075f;
 
     private final GameRenderer renderer;
     ShaderProgram shader;
@@ -48,9 +37,10 @@ public class GameScreen extends ScreenAdapter {
 
     private Body ground;
 
-    int controllerPlayers = 0;
-
     Controller debugController;
+
+    // TODO: Add worldgen and world saving
+    // TODO: Add SpriteBatch rendering
 
     public GameScreen(Main game) {
         this.game = game;
@@ -78,23 +68,19 @@ public class GameScreen extends ScreenAdapter {
     private void init() {
         Tests tests = new Tests(this);
         tests.plane();
-        tests.towersTest();
-        tests.crate();
+        tests.crates();
     }
 
-    public void addXInputControllerPlayer(Controller controller) {
+    public void addXInputControllerPlayer(Controller controller, float x) {
         if (!controller.getName().contains("XInput")) return;
         debugController = controller;
         System.out.println("Controller connected: " + controller.getName() + " ID: " + controller.getUniqueId());
 
         world.spawn(
-            new PlayerEntity(world, 5 * controllerPlayers, -30,
+            new PlayerEntity(world, x, -30,
                 new PlayerGamepadController(controller)
             )
         );
-
-        controller.setPlayerIndex(controllerPlayers % 4);
-        controllerPlayers++;
     }
 
     @Override
@@ -107,24 +93,18 @@ public class GameScreen extends ScreenAdapter {
 
         ScreenUtils.clear(0, 0, 0, 1);
 
-        renderer.render(world.world, camera.combined, (shape) -> {
-            shape.setColor(Color.BLACK);
-            shape.set(ShapeRenderer.ShapeType.Filled);
-            With.translation(shape, camera.position.x, camera.position.y, () -> {
-                shape.rect(-200, -200, 400, 400);
-            });
-            shape.set(ShapeRenderer.ShapeType.Line);
+        renderer.render(world.world, camera.combined, (pen) -> {
             if (debugController != null && Gdx.input.isKeyPressed(Input.Keys.F3)) {
-                With.translation(shape, -70, 40, () -> {
-                    shape.setColor(0.75f, 0.75f, 0.75f, 1);
-                    shape.circle(-10, 0, 5);
-                    shape.circle(debugController.getAxis(0) * 5 - 10, -debugController.getAxis(1) * 5, 1.5f);
-                    shape.line(-16, 0, -4, 0);
-                    shape.line(-10, -6, -10, 6);
-                    shape.circle(10, 0, 5);
-                    shape.circle(debugController.getAxis(2) * 5 + 10, -debugController.getAxis(3) * 5, 1.5f);
-                    shape.line(4, 0, 16, 0);
-                    shape.line(10, -6, 10, 6);
+                With.translation(pen, -70, 40, () -> {
+                    pen.setColor(0.75f, 0.75f, 0.75f, 1);
+                    //pen.circle(-10, 0, 5);
+                    //pen.circle(debugController.getAxis(0) * 5 - 10, -debugController.getAxis(1) * 5, 1.5f);
+                    pen.line(-16, 0, -4, 0);
+                    pen.line(-10, -6, -10, 6);
+                    //pen.circle(10, 0, 5);
+                    //pen.circle(debugController.getAxis(2) * 5 + 10, -debugController.getAxis(3) * 5, 1.5f);
+                    pen.line(4, 0, 16, 0);
+                    pen.line(10, -6, 10, 6);
                 });
             }
         });

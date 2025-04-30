@@ -1,6 +1,7 @@
 package io.github._20nickname20.imbored.render;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
@@ -8,14 +9,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
 import com.badlogic.gdx.utils.Array;
-import io.github._20nickname20.imbored.Entity;
+import io.github._20nickname20.imbored.game_objects.Entity;
 
-import java.util.Iterator;
 import java.util.function.Consumer;
 
 public class GameRenderer extends Box2DDebugRenderer {
 
-    public ShapeRenderer renderer;
+    public PenRenderer renderer;
 
     /** vertices for polygon rendering **/
     private final static Vector2[] vertices = new Vector2[1000];
@@ -28,20 +28,14 @@ public class GameRenderer extends Box2DDebugRenderer {
 
     private boolean drawBodies;
     private boolean drawJoints;
-    private boolean drawAABBs;
-    private boolean drawInactiveBodies;
-    private boolean drawVelocities;
-    private boolean drawContacts;
 
     public GameRenderer(ShaderProgram shader) {
-        this(true, true, false, true, false, true, shader);
+        this(true, true, shader);
     }
 
-    public GameRenderer(boolean drawBodies, boolean drawJoints, boolean drawAABBs, boolean drawInactiveBodies,
-                               boolean drawVelocities, boolean drawContacts, ShaderProgram shader) {
+    public GameRenderer(boolean drawBodies, boolean drawJoints, ShaderProgram shader) {
         // next we setup the immediate mode renderer
-        renderer = new ShapeRenderer(5000, shader);
-        renderer.setAutoShapeType(true);
+        renderer = new PenRenderer();
 
         // initialize vertices array
         for (int i = 0; i < vertices.length; i++)
@@ -49,52 +43,34 @@ public class GameRenderer extends Box2DDebugRenderer {
 
         this.drawBodies = drawBodies;
         this.drawJoints = drawJoints;
-        this.drawAABBs = drawAABBs;
-        this.drawInactiveBodies = drawInactiveBodies;
-        this.drawVelocities = drawVelocities;
-        this.drawContacts = drawContacts;
     }
 
-    public void render(World world, Matrix4 projMatrix, Consumer<ShapeRenderer> rendererConsumer) {
+    public void render(World world, Matrix4 projMatrix, Consumer<PenRenderer> rendererConsumer) {
         renderer.setProjectionMatrix(projMatrix);
-        renderer.identity();
+        renderer.getTransformMatrix().idt();
 
-        renderer.begin(ShapeRenderer.ShapeType.Line);
+        renderer.begin();
         rendererConsumer.accept(renderer);
         renderBodies(world);
         renderer.end();
     }
 
-    public final Color SHAPE_NOT_ACTIVE = new Color(0.5f, 0.5f, 0.3f, 1);
     public final Color SHAPE_STATIC = new Color(0.5f, 0.9f, 0.5f, 1);
-    public final Color SHAPE_KINEMATIC = new Color(0.5f, 0.5f, 0.9f, 1);
-    public final Color SHAPE_NOT_AWAKE = new Color(0.6f, 0.6f, 0.6f, 1);
-    public final Color SHAPE_AWAKE = new Color(0.9f, 0.7f, 0.7f, 1);
     public final Color JOINT_COLOR = new Color(0.5f, 0.8f, 0.8f, 1);
-    public final Color AABB_COLOR = new Color(1.0f, 0, 1.0f, 1f);
-    public final Color VELOCITY_COLOR = new Color(1.0f, 0, 0f, 1f);
 
     private void renderBodies(World world) {
-        if (drawBodies || drawAABBs) {
+        if (drawBodies) {
             world.getBodies(bodies);
-            for (Iterator<Body> iter = bodies.iterator(); iter.hasNext();) {
-                Body body = iter.next();
-                if (body.isActive() || drawInactiveBodies) renderBody(body);
+            for (Body body : bodies) {
+                renderBody(body);
             }
         }
 
         if (drawJoints) {
             world.getJoints(joints);
-            for (Iterator<Joint> iter = joints.iterator(); iter.hasNext();) {
-                Joint joint = iter.next();
+            for (Joint joint : joints) {
                 drawJoint(joint);
             }
-        }
-        if (drawContacts) {
-            renderer.end();
-            renderer.begin(ShapeRenderer.ShapeType.Point);
-            for (Contact contact : world.getContactList())
-                drawContact(contact);
         }
     }
 
@@ -103,12 +79,12 @@ public class GameRenderer extends Box2DDebugRenderer {
         if (body.getUserData() instanceof Entity entity) {
             color = entity.material.color;
             Vector2 position = body.getPosition();
-            renderer.translate(position.x, position.y, 0);
+            renderer.getTransformMatrix().translate(position.x, position.y, 0);
             if (entity.render(renderer)) {
-                renderer.translate(-position.x, -position.y, 0);
+                renderer.getTransformMatrix().translate(-position.x, -position.y, 0);
                 return;
             }
-            renderer.translate(-position.x, -position.y, 0);
+            renderer.getTransformMatrix().translate(-position.x, -position.y, 0);
         } else {
             color = getColorByBody(body);
         }
@@ -116,72 +92,12 @@ public class GameRenderer extends Box2DDebugRenderer {
         for (Fixture fixture : body.getFixtureList()) {
             if (drawBodies) {
                 drawShape(fixture, transform, color);
-                if (drawVelocities) {
-                    Vector2 position = body.getPosition();
-                    drawSegment(position, body.getLinearVelocity().add(position), VELOCITY_COLOR);
-                }
-            }
-
-            if (drawAABBs) {
-                drawAABB(fixture, transform);
             }
         }
     }
 
-    private Color getColorByBody (Body body) {
-        if (body.isActive() == false)
-            return SHAPE_NOT_ACTIVE;
-        else if (body.getType() == BodyDef.BodyType.StaticBody)
-            return SHAPE_STATIC;
-        else if (body.getType() == BodyDef.BodyType.KinematicBody)
-            return SHAPE_KINEMATIC;
-        else if (body.isAwake() == false)
-            return SHAPE_NOT_AWAKE;
-        else
-            return SHAPE_AWAKE;
-    }
-
-    private void drawAABB (Fixture fixture, Transform transform) {
-        if (fixture.getType() == Shape.Type.Circle) {
-
-            CircleShape shape = (CircleShape)fixture.getShape();
-            float radius = shape.getRadius();
-            vertices[0].set(shape.getPosition());
-            transform.mul(vertices[0]);
-            lower.set(vertices[0].x - radius, vertices[0].y - radius);
-            upper.set(vertices[0].x + radius, vertices[0].y + radius);
-
-            // define vertices in ccw fashion...
-            vertices[0].set(lower.x, lower.y);
-            vertices[1].set(upper.x, lower.y);
-            vertices[2].set(upper.x, upper.y);
-            vertices[3].set(lower.x, upper.y);
-
-            drawSolidPolygon(vertices, 4, AABB_COLOR, true);
-        } else if (fixture.getType() == Shape.Type.Polygon) {
-            PolygonShape shape = (PolygonShape)fixture.getShape();
-            int vertexCount = shape.getVertexCount();
-
-            shape.getVertex(0, vertices[0]);
-            lower.set(transform.mul(vertices[0]));
-            upper.set(lower);
-            for (int i = 1; i < vertexCount; i++) {
-                shape.getVertex(i, vertices[i]);
-                transform.mul(vertices[i]);
-                lower.x = Math.min(lower.x, vertices[i].x);
-                lower.y = Math.min(lower.y, vertices[i].y);
-                upper.x = Math.max(upper.x, vertices[i].x);
-                upper.y = Math.max(upper.y, vertices[i].y);
-            }
-
-            // define vertices in ccw fashion...
-            vertices[0].set(lower.x, lower.y);
-            vertices[1].set(upper.x, lower.y);
-            vertices[2].set(upper.x, upper.y);
-            vertices[3].set(lower.x, upper.y);
-
-            drawSolidPolygon(vertices, 4, AABB_COLOR, true);
-        }
+    private Color getColorByBody(Body body) {
+        return SHAPE_STATIC;
     }
 
     private static Vector2 t = new Vector2();
@@ -202,7 +118,7 @@ public class GameRenderer extends Box2DDebugRenderer {
             edge.getVertex2(vertices[1]);
             transform.mul(vertices[0]);
             transform.mul(vertices[1]);
-            drawSolidPolygon(vertices, 2, color, true);
+            drawSolidPolygon(2, color, true);
             return;
         }
 
@@ -213,7 +129,7 @@ public class GameRenderer extends Box2DDebugRenderer {
                 chain.getVertex(i, vertices[i]);
                 transform.mul(vertices[i]);
             }
-            drawSolidPolygon(vertices, vertexCount, color, true);
+            drawSolidPolygon(vertexCount, color, true);
             return;
         }
 
@@ -224,7 +140,7 @@ public class GameRenderer extends Box2DDebugRenderer {
                 chain.getVertex(i, vertices[i]);
                 transform.mul(vertices[i]);
             }
-            drawSolidPolygon(vertices, vertexCount, color, false);
+            drawSolidPolygon(vertexCount, color, false);
         }
     }
 
@@ -232,7 +148,7 @@ public class GameRenderer extends Box2DDebugRenderer {
     private final Vector2 v = new Vector2();
     private final Vector2 lv = new Vector2();
 
-    private void drawSolidCircle (Vector2 center, float radius, Vector2 axis, Color color) {
+    private void drawSolidCircle(Vector2 center, float radius, Vector2 axis, Color color) {
         float angle = 0;
         float angleInc = 2 * (float)Math.PI / 20;
         renderer.setColor(color.r, color.g, color.b, color.a);
@@ -247,15 +163,15 @@ public class GameRenderer extends Box2DDebugRenderer {
             lv.set(v);
         }
         renderer.line(f.x, f.y, lv.x, lv.y);
-        renderer.line(center.x, center.y, 0, center.x + axis.x * radius, center.y + axis.y * radius, 0);
+        renderer.line(center.x, center.y, center.x + axis.x * radius, center.y + axis.y * radius);
     }
 
-    private void drawSolidPolygon (Vector2[] vertices, int vertexCount, Color color, boolean closed) {
+    private void drawSolidPolygon (int vertexCount, Color color, boolean closed) {
         renderer.setColor(color.r, color.g, color.b, color.a);
-        lv.set(vertices[0]);
-        f.set(vertices[0]);
+        lv.set(GameRenderer.vertices[0]);
+        f.set(GameRenderer.vertices[0]);
         for (int i = 1; i < vertexCount; i++) {
-            Vector2 v = vertices[i];
+            Vector2 v = GameRenderer.vertices[i];
             renderer.line(lv.x, lv.y, v.x, v.y);
             lv.set(v);
         }
@@ -303,14 +219,6 @@ public class GameRenderer extends Box2DDebugRenderer {
         renderer.line(x1.x, x1.y, x2.x, x2.y);
     }
 
-    private void drawContact (Contact contact) {
-        WorldManifold worldManifold = contact.getWorldManifold();
-        if (worldManifold.getNumberOfContactPoints() == 0) return;
-        Vector2 point = worldManifold.getPoints()[0];
-        renderer.setColor(getColorByBody(contact.getFixtureA().getBody()));
-        renderer.point(point.x, point.y, 0);
-    }
-
     public boolean isDrawBodies () {
         return drawBodies;
     }
@@ -322,49 +230,8 @@ public class GameRenderer extends Box2DDebugRenderer {
     public boolean isDrawJoints () {
         return drawJoints;
     }
-
     public void setDrawJoints (boolean drawJoints) {
         this.drawJoints = drawJoints;
-    }
-
-    public boolean isDrawAABBs () {
-        return drawAABBs;
-    }
-
-    public void setDrawAABBs (boolean drawAABBs) {
-        this.drawAABBs = drawAABBs;
-    }
-
-    public boolean isDrawInactiveBodies () {
-        return drawInactiveBodies;
-    }
-
-    public void setDrawInactiveBodies (boolean drawInactiveBodies) {
-        this.drawInactiveBodies = drawInactiveBodies;
-    }
-
-    public boolean isDrawVelocities () {
-        return drawVelocities;
-    }
-
-    public void setDrawVelocities (boolean drawVelocities) {
-        this.drawVelocities = drawVelocities;
-    }
-
-    public boolean isDrawContacts () {
-        return drawContacts;
-    }
-
-    public void setDrawContacts (boolean drawContacts) {
-        this.drawContacts = drawContacts;
-    }
-
-    public static Vector2 getAxis () {
-        return axis;
-    }
-
-    public static void setAxis (Vector2 axis) {
-        GameRenderer.axis = axis;
     }
 
     public void dispose () {
