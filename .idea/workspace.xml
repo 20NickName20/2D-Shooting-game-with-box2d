@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4a78e742-e078-4be3-8f79-d9f4c33b45bc" name="Changes" comment="Prepare to merge into master" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" show_ignored="true" />
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="imbored" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="imbored" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="imbored" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="application" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="imbored" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="ide" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="package-info" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="new-rendering" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;20NickName20&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/20NickName20/2D-Shooting-game-with-box2d.git&quot;,
+    &quot;accountId&quot;: &quot;369494db-f454-4aa3-bb97-16e1e22191b8&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;4dafc8ff&quot;,
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2w1pIPGVj3jAlEnFEEq8SPrM4aJ" />
+  <component name="ProjectReloadState">
+    <option name="STATE" value="1" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.imbored [dist].executor": "Run",
+    "Gradle.imbored [run].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Shell Script.start build.executor": "Run",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/USER/Downloads/Telegram Desktop/glsl-plugin-idea-1.1.5.zip",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="io.github._20nickname20.imbored.util.Shapes" />
+      <recent name="io.github._20nickname20.imbored.util.FindBody" />
+      <recent name="io.github._20nickname20.imbored.util.With" />
+      <recent name="io.github._20nickaname20.imbored.Util" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\USER\libgdx_projects\imbored\lwjgl3\src\main\resources\fonts" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="io.github._20nickaname20.imbored.entities.damagable" />
+      <recent name="io.github._20nickaname20.imbored.entities.health" />
+    </key>
+    <key name="MoveInnerDialog.RECENTS_KEY">
+      <recent name="io.github._20nickname20.imbored.util" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="io.github._20nickname20.imbored.render" />
+      <recent name="io.github._20nickname20.imbored.entities" />
+      <recent name="io.github._20nickname20.imbored.items" />
+      <recent name="io.github._20nickname20.imbored.items.usable.joint" />
+      <recent name="io.github._20nickaname20.imbored.items.usable.joint.distance" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Gradle.imbored [run]">
+    <configuration name="imbored [dist]" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="dist" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="imbored [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="run" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Gradle.imbored [dist]" />
+      <item itemvalue="Gradle.imbored [run]" />
+      <item itemvalue="Shell Script.build and run" />
+      <item itemvalue="Shell Script.start build" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.imbored [run]" />
+        <item itemvalue="Gradle.imbored [run]" />
+        <item itemvalue="Gradle.imbored [run]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4a78e742-e078-4be3-8f79-d9f4c33b45bc" name="Changes" comment="" />
+      <created>1745220226012</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1745220226012</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1745493627955</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1745493627955</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Added:&#10;item system, guns (and shooting), raycast, health and damage system&#10;inventory, item scrolling">
+      <option name="closed" value="true" />
+      <created>1745592466084</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1745592466084</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added more functions to Util class&#10;Added Item::onSelect and Item::onDeselect&#10;Added PlayerEntity::selectItem, PlayerEntity::deselectItem, PlayerEntity::removeSelectedItem&#10;Added InventoryHolder interface&#10;Added joint-creating items">
+      <option name="closed" value="true" />
+      <created>1745686974195</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1745686974196</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Added CursorEntity class, representing any entity which can have a cursor&#10;Made healthbar depleting animation smoother&#10;Fixed grabbing and moving objects&#10;Fixed joint items, now showing the first connection point&#10;Added ShotgunItem and ability to render multiple rays from one gun at once&#10;Fixed cursor movement both on keyboard and gamepad">
+      <option name="closed" value="true" />
+      <created>1745752072324</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1745752072324</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Added CursorEntity class, representing any entity which can have a cursor&#10;Made healthbar depleting animation smoother&#10;Fixed grabbing and moving objects&#10;Fixed joint items, now showing the first connection point&#10;Added ShotgunItem and ability to render multiple rays from one gun at once&#10;Fixed cursor movement both on keyboard and gamepad">
+      <option name="closed" value="true" />
+      <created>1745754160402</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1745754160402</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Bugfix&#10;Changed DistanceJointItem properties&#10;Finally fixed weird wobbling thing&#10;Fixed keyboard movement">
+      <option name="closed" value="true" />
+      <created>1745777651704</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1745777651704</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Big update&#10;- Items now store their &quot;holders&quot;&#10;- Refactored a lot of Util code&#10;- Added ability to manage different screens&#10;- Entities now get damage on high-speed contact&#10;- Added different DistanceJointItem">
+      <option name="closed" value="true" />
+      <created>1745935888139</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1745935888139</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Inventory &amp; Container UPDATE!!!&#10;(also changed the way the world filters collisions)">
+      <option name="closed" value="true" />
+      <created>1745952899998</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1745952899998</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1746016005585</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1746016005585</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1746022178863</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1746022178863</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Prepare to merge into master">
+      <option name="closed" value="true" />
+      <created>1746034136823</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1746034136823</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
+    <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.vert" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added:&#10;item system, guns (and shooting), raycast, health and damage system&#10;inventory, item scrolling" />
+    <MESSAGE value="Added more functions to Util class&#10;Added Item::onSelect and Item::onDeselect&#10;Added PlayerEntity::selectItem, PlayerEntity::deselectItem, PlayerEntity::removeSelectedItem&#10;Added InventoryHolder interface&#10;Added joint-creating items" />
+    <MESSAGE value="Added CursorEntity class, representing any entity which can have a cursor&#10;Made healthbar depleting animation smoother&#10;Fixed grabbing and moving objects&#10;Fixed joint items, now showing the first connection point&#10;Added ShotgunItem and ability to render multiple rays from one gun at once&#10;Fixed cursor movement both on keyboard and gamepad" />
+    <MESSAGE value="Bugfix&#10;Changed DistanceJointItem properties&#10;Finally fixed weird wobbling thing&#10;Fixed keyboard movement" />
+    <MESSAGE value="Big update&#10;- Items now store their &quot;holders&quot;&#10;- Refactored a lot of Util code&#10;- Added ability to manage different screens&#10;- Entities now get damage on high-speed contact&#10;- Added different DistanceJointItem" />
+    <MESSAGE value="Inventory &amp; Container UPDATE!!!&#10;(also changed the way the world filters collisions)" />
+    <MESSAGE value="Initial commit" />
+    <MESSAGE value="Prepare to merge into master" />
+    <option name="LAST_COMMIT_MESSAGE" value="Prepare to merge into master" />
+  </component>
+</project>
