@@ -4,8 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -84,6 +87,11 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void render(float dt) {
         world.update(dt);
+        Vector2 target = world.playerCenter.cpy().add(0, viewport.getWorldHeight() * 4);
+        if (!Float.isNaN(target.x) && !Float.isNaN(target.y)) {
+            Vector2 move = target.sub(camera.position.x, camera.position.y).scl(dt / 2);
+            camera.position.add(move.x, move.y, 0);
+        }
 
         shader.bind();
         shader.setUniformf("u_Time", Util.time());
@@ -93,6 +101,12 @@ public class GameScreen extends ScreenAdapter {
 
         viewport.apply();
         renderer.render(world.world, camera.combined, (shape) -> {
+            With.translation(shape, camera.position.x, camera.position.y, () -> {
+                shape.setColor(Color.BLACK);
+                shape.set(ShapeRenderer.ShapeType.Filled);
+                shape.rect(-200, -200, 400, 400);
+                shape.set(ShapeRenderer.ShapeType.Line);
+            });
             if (debugController != null && Gdx.input.isKeyPressed(Input.Keys.F3)) {
                 With.translation(shape, -70, 40, () -> {
                     shape.setColor(0.75f, 0.75f, 0.75f, 1);

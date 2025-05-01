@@ -11,7 +11,7 @@ import io.github._20nickname20.imbored.game_objects.entities.ItemEntity;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.util.With;
 
-public class InteractiveContainerEntity extends ContainerEntity {
+public abstract class InteractiveContainerEntity extends ContainerEntity {
     public InteractiveContainerEntity(GameWorld world, float x, float y, Shape shape, Material material, float maxHealth, float inventorySize) {
         super(world, x, y, shape, material, maxHealth, inventorySize);
     }

@@ -87,7 +87,7 @@ public abstract class Entity {
         isRemoved = true;
     }
 
-    public boolean isRemoved() {
+    public final boolean isRemoved() {
         return isRemoved;
     }
 

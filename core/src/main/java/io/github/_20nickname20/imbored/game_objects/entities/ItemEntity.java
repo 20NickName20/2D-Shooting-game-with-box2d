@@ -20,8 +20,15 @@ public class ItemEntity extends BlockEntity {
         item.setHolder(this);
     }
 
+    public void setIgnoreDelay() {
+        ignoreDelay = true;
+    }
+
+    private boolean ignoreDelay = false;
+
     public boolean canPickup() {
         if (isRemoved()) return false;
+        if (ignoreDelay) return true;
         return Util.time() - this.spawnTime > PICKUP_DELAY;
     }
 
@@ -30,7 +37,16 @@ public class ItemEntity extends BlockEntity {
         if (other instanceof InteractiveContainerEntity) {
             return false;
         }
+        if (other instanceof ItemEntity) {
+            return false;
+        }
         return true;
+    }
+
+    @Override
+    public void update(float dt) {
+        super.update(dt);
+        item.update(dt);
     }
 
     @Override

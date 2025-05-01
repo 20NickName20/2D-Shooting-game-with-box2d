@@ -14,17 +14,19 @@ import io.github._20nickname20.imbored.game_objects.Item;
 import io.github._20nickname20.imbored.game_objects.entities.*;
 import io.github._20nickname20.imbored.game_objects.entities.container.InteractiveContainerEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
-import io.github._20nickname20.imbored.game_objects.items.DeathItem;
 import io.github._20nickname20.imbored.game_objects.items.UsableItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.ShotgunItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.TestGunItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.automatic.AutomaticRifleItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.joint.distance.HardDistanceJointItem;
+import io.github._20nickname20.imbored.game_objects.loot.TestRandomLoot;
 import io.github._20nickname20.imbored.render.JointDisplay;
 import io.github._20nickname20.imbored.util.FindBody;
 import io.github._20nickname20.imbored.util.Util;
+import io.github._20nickname20.imbored.util.With;
 
-import static io.github._20nickname20.imbored.util.With.rotation;
+import java.util.List;
+
 import static io.github._20nickname20.imbored.util.With.translation;
 
 public class PlayerEntity extends CursorEntity implements InventoryHolder {
@@ -56,14 +58,6 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         this.setCursorDistance(getDefaultCursorDistance());
         this.controller = controller;
         controller.register(this);
-
-        inventory.add(new TestGunItem(this));
-        inventory.add(new AutomaticRifleItem(this));
-        inventory.add(new ShotgunItem(this));
-        for (int i = 0; i < 3; i++) {
-            inventory.add(new HardDistanceJointItem(this));
-        }
-        inventory.add(new DeathItem(this));
     }
 
     public void setMode(Mode mode) {
@@ -74,6 +68,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         }
         if (mode != Mode.INV) {
             deselectItem();
+            container = null;
         } else {
             selectItem();
         }
@@ -107,14 +102,22 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     @Override
     public void onDestroy() {
         if (this.isRemoved()) return;
-        gameWorld.spawn(new PlayerEntity(gameWorld, 0, 0, controller));
+        gameWorld.spawn(new PlayerEntity(gameWorld, gameWorld.playerCenter.x, gameWorld.playerCenter.y + 50, controller));
         super.onDestroy();
+    }
+
+    @Override
+    public List<Item> getDroppedItems() {
+        List<Item> items = super.getDroppedItems();
+        items.addAll(inventory.getItems());
+        return items;
     }
 
     public void jump() {
         if (this.getTimeSinceContact() > 0.2f) return;
         if (Util.time() - lastJumpTime < 0.2f) return;
-        if (this.b.getLinearVelocity().y > 35) return;
+        if (this.b.getLinearVelocity().y > 20) return;
+        if (grabbedEntity != null && this.contacts.size() <= 1 && this.getLastContactedBody() == grabbedEntity.b) return;
         lastJumpTime = Util.time();
         this.b.applyLinearImpulse(new Vector2(0, 25), this.b.getPosition(), true);
     }
@@ -135,16 +138,13 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
 
         if (popBob && time - lastPopBobTime > 0.01f) {
             lastPopBobTime = time;
-            Class<? extends Item> type = switch (MathUtils.random(3)) {
-                case 0 -> TestGunItem.class;
-                case 1 -> AutomaticRifleItem.class;
-                case 2 -> ShotgunItem.class;
-                default -> HardDistanceJointItem.class;
-            };
-            gameWorld.dropItem(cursorPosition, cursorDirection.cpy().scl(itemDropPower * 5).rotateDeg(MathUtils.random(-20f, 20f)), Item.createFromType(type, null));
+            gameWorld.dropItem(cursorPosition, cursorDirection.cpy().scl(itemDropPower * 5).rotateDeg(MathUtils.random(-20f, 20f)), new TestRandomLoot().generate(1).get(0));
         }
 
         if (mode == Mode.GRAB && grabbedEntity != null) {
+//            cursorDirection.add(grabbedEntity.b.getLinearVelocity().cpy().scl(dt / 5f));
+//            cursorDirection.nor();
+
             Vector2 toGrabbed = grabbedEntity.b.getPosition().sub(this.b.getPosition());
 
             if (toGrabbed.dot(cursorDirection) < -0.5) {
@@ -195,8 +195,8 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
 
         DistanceJointDef distJointDef = new DistanceJointDef();
         distJointDef.initialize(this.b, grabbed, this.b.getPosition(), grabPoint);
-        distJointDef.dampingRatio = 0.7f;
-        distJointDef.frequencyHz = 5;
+        distJointDef.dampingRatio = 0.5f;
+        distJointDef.frequencyHz = 5f;
         distJointDef.collideConnected = true;
         distJointDef.length = getCursorDistance();
         grabDistanceJoint = (DistanceJoint) this.world.createJoint(distJointDef);
@@ -212,7 +212,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         grabMouseJoint.setUserData(new JointDisplay(new Color(1, 1, 1, 1)));
 
         MassData massData = grabbed.getMassData();
-        massData.mass /= 100;
+        massData.mass /= 500;
         grabbed.setMassData(massData);
 
         grabbedEntity = (Entity) grabbed.getUserData();
@@ -306,7 +306,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
 
     public void takeOutOfContainer() {
         if (container == null) return;
-        container.takeOutSelected(this.b.getPosition().cpy().sub(container.b.getPosition()).nor().scl(itemDropPower * 2));
+        container.takeOutSelected(this.b.getPosition().cpy().sub(container.b.getPosition()).nor().scl(itemDropPower * 2)).setIgnoreDelay();
     }
 
     public void putSelectedToContainer() {
@@ -333,7 +333,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         Item selectedItem = inventory.getSelectedItem();
 
         float angle = cursorDirection.angleDeg();
-        rotation(renderer, angle, () -> {
+        With.rotation(renderer, angle, () -> {
             renderer.line(0, 0, cursorDistance, 0);
             translation(renderer, cursorDistance, 0, () -> {
                 renderer.circle(0, 0, 1.2f);
@@ -354,6 +354,11 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     @Override
     public Inventory getInventory() {
         return inventory;
+    }
+
+    @Override
+    public Entity getEntity() {
+        return this;
     }
 
     public enum Mode {

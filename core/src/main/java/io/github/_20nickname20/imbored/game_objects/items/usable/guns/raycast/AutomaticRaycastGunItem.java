@@ -1,7 +1,6 @@
 package io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast;
 
 import io.github._20nickname20.imbored.game_objects.Entity;
-import io.github._20nickname20.imbored.game_objects.entities.InventoryHolder;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.RaycastGunItem;
 
@@ -10,18 +9,24 @@ public abstract class AutomaticRaycastGunItem extends RaycastGunItem {
         super(holder, size, cooldown, damage, power, recoilScale, range, maxScatterAngle, cooldown / 4);
     }
 
+    private boolean isShooting = false;
+
     @Override
     public void onStartUse(PlayerEntity player) {
-        this.setUpdating(true);
+        this.isShooting = true;
     }
 
     @Override
     public void onEndUse(PlayerEntity player) {
-        this.setUpdating(false);
+        this.isShooting = false;
     }
 
     @Override
-    public void update(InventoryHolder holder, float dt) {
-        shootAttempt((PlayerEntity) holder);
+    public void update(float dt) {
+        if (this.isShooting) {
+            if (this.getHolder() instanceof PlayerEntity player) {
+                shootAttempt(player);
+            }
+        }
     }
 }

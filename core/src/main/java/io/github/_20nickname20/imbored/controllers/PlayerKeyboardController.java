@@ -157,7 +157,7 @@ public class PlayerKeyboardController extends PlayerController implements InputP
             player.putSelectedToContainer();
         }
 
-        if (i == Keys.NUM_LOCK) {
+        if (i == Keys.NUM_0) {
             player.popBob = !player.popBob;
         }
         return false;

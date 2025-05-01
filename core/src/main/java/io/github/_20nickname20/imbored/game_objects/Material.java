@@ -1,12 +1,8 @@
 package io.github._20nickname20.imbored.game_objects;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.MathUtils;
 import io.github._20nickname20.imbored.game_objects.items.scrap.PlankItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.TestGunItem;
-
-import java.util.ArrayList;
-import java.util.List;
+import io.github._20nickname20.imbored.game_objects.loot.ScrapLoot;
 
 public class Material {
 
@@ -26,7 +22,7 @@ public class Material {
         .setFriction(0.7f)
         .setRestitution(0.05f);
     public static final Material ITEM = new Material(Color.WHITE)
-        .setDensity(0.5f)
+        .setDensity(0.3f)
         .setFriction(0.7f)
         .setRestitution(0.05f);
     public static final Material FLESH = new Material(new Color(0.7f, 0.2f, 0.2f, 1))

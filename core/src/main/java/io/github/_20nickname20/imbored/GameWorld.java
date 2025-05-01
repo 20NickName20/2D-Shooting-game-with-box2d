@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Array;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.Item;
 import io.github._20nickname20.imbored.game_objects.entities.ItemEntity;
+import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.handlers.EntityContactFilter;
 import io.github._20nickname20.imbored.handlers.EntityContactListener;
 import io.github._20nickname20.imbored.util.Constants;
@@ -57,6 +58,8 @@ public class GameWorld {
         }
     }
 
+    public Vector2 playerCenter = new Vector2();
+
     private void doPhysicsStep(float dt) {
         float frameTime = Math.min(dt, 0.25f);
         accumulator += frameTime;
@@ -67,8 +70,15 @@ public class GameWorld {
             if (step < Constants.UPDATES_LATENCY) continue;
             step = 0;
             world.getBodies(bodies);
+            playerCenter.setZero();
+            float playerCount = 0;
             for (Body body : bodies) {
                 if (!(body.getUserData() instanceof Entity entity)) continue;
+
+                if (entity instanceof PlayerEntity) {
+                    playerCenter.add(entity.b.getPosition());
+                    playerCount += 1;
+                }
 
                 if (entity.isRemoved()) {
                     processRemoval(entity);
@@ -80,6 +90,7 @@ public class GameWorld {
                 }
                 jointsToRemove.clear();
             }
+            playerCenter.scl(1f / playerCount);
         }
     }
 

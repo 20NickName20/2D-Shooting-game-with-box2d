@@ -1,8 +1,9 @@
-package io.github._20nickname20.imbored.game_objects;
+package io.github._20nickname20.imbored.game_objects.loot;
 
 import com.badlogic.gdx.math.MathUtils;
+import io.github._20nickname20.imbored.game_objects.Item;
+import io.github._20nickname20.imbored.game_objects.LootGenerator;
 import io.github._20nickname20.imbored.game_objects.items.ScrapItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.TestGunItem;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,12 +1,9 @@
 package io.github._20nickname20.imbored.game_objects;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import io.github._20nickname20.imbored.game_objects.entities.InventoryHolder;
-import io.github._20nickname20.imbored.render.PenRenderer;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static io.github._20nickname20.imbored.util.With.translation;
 
@@ -73,6 +70,7 @@ public class Inventory {
         if (item == null) return false;
         if (containedSize + item.getSize() > sizeLimit) return false;
         containedSize += item.getSize();
+        item.setHolder(holder.getEntity());
         items.add(item);
         return true;
     }
@@ -109,11 +107,20 @@ public class Inventory {
         return removeItem(selectedSlot);
     }
 
+    private final List<Integer> itemsToRemove = new ArrayList<>();
     public void update(float dt) {
-        for (Item item : items) {
-            if (!item.isUpdating()) continue;
-            item.update(holder, dt);
+        int amount = this.amount();
+        for (int i = 0; i < amount; i++) {
+            Item item = this.get(i);
+            item.update(dt);
+            if (item.isRemoved()) {
+                itemsToRemove.add(i);
+            }
         }
+        for (int i = itemsToRemove.size() - 1; i >= 0; i--) {
+            this.removeItem(itemsToRemove.get(i));
+        }
+        itemsToRemove.clear();
     }
 
     void renderSlot(ShapeRenderer renderer, boolean active, float x, float y) {

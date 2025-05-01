@@ -5,36 +5,26 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import io.github._20nickname20.imbored.game_objects.Entity;
-import io.github._20nickname20.imbored.render.PenRenderer;
 import io.github._20nickname20.imbored.util.ClosestRaycast;
+import io.github._20nickname20.imbored.util.Ray;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.game_objects.entities.DamagableEntity;
 import io.github._20nickname20.imbored.game_objects.entities.InventoryHolder;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
-import io.github._20nickname20.imbored.game_objects.items.usable.GunItem;
+import io.github._20nickname20.imbored.game_objects.items.usable.BaseGunItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class RaycastGunItem extends GunItem {
-    private float power;
-    private float recoilScale;
-    private float maxScatterAngle;
+public abstract class RaycastGunItem extends BaseGunItem {
+    private final float power;
+    private final float recoilScale;
+    private final float maxScatterAngle;
 
-    private float rayDisplayTime;
-    private List<Ray> rays = new ArrayList<>();
+    private final float rayDisplayTime;
+    private final List<Ray> rays = new ArrayList<>();
 
-    private static class Ray {
-        Ray(float fraction, float offsetAngle, float time) {
-            this.fraction = fraction;
-            this.offsetAngle = offsetAngle;
-            this.time = time;
-        }
-        float fraction;
-        float offsetAngle;
-        float time;
-    }
     // TODO: ADD LASER!!!! (shoots thru 5 entities)
 
     protected float range;
@@ -88,8 +78,8 @@ public abstract class RaycastGunItem extends GunItem {
             if (rayTime > rayDisplayTime) {
                 toRemove.add(ray);
             }
-            Vector2 start = new Vector2(Math.max(0, 0), 0).rotateRad(ray.offsetAngle);
-            Vector2 end = new Vector2(Math.min(range * ray.fraction * rayTime / rayDisplayTime, range * ray.fraction), 0).rotateAroundRad(new Vector2(), ray.offsetAngle);
+            Vector2 start = new Vector2(range * ray.fraction * Math.min(1, rayTime / rayDisplayTime), 0).rotateRad(ray.offsetAngle);
+            Vector2 end = new Vector2(range * ray.fraction - cursorDistance, 0).rotateAroundRad(new Vector2(), ray.offsetAngle);
             renderer.line(start, end);
         }
         for (Ray removed : toRemove) {

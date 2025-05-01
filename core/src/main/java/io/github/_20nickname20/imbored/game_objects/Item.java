@@ -8,8 +8,8 @@ import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor
 
 public abstract class Item {
     private final float size;
-    private boolean isUpdating = false;
     private Entity holder;
+    private boolean isRemoved = false;
     private boolean isSelected = false;
 
     public Item(Entity holder, float size) {
@@ -21,18 +21,22 @@ public abstract class Item {
         this.holder = holder;
     }
 
+    public Entity getHolder() {
+        return holder;
+    }
+
     public abstract void render(ShapeRenderer renderer, CursorEntity handHolder);
 
-    public final boolean isUpdating() {
-        return this.isUpdating;
+    public void update(float dt) {
+
     }
 
-    public final void setUpdating(boolean isUpdating) {
-        this.isUpdating = isUpdating;
+    public void remove() {
+        isRemoved = true;
     }
 
-    public void update(InventoryHolder holder, float dt) {
-
+    public boolean isRemoved() {
+        return isRemoved;
     }
 
     public final float getSize() {
