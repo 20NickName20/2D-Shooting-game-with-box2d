@@ -26,7 +26,7 @@ public class Material {
         .setFriction(0.7f)
         .setRestitution(0.05f);
     public static final Material FLESH = new Material(new Color(0.7f, 0.2f, 0.2f, 1))
-        .setDensity(0.05f)
+        .setDensity(0.1f)
         .setFriction(0.85f)
         .setRestitution(0.01f);
     public static final Material CLOTH = new Material(new Color(0.9f, 0.9f, 0.75f, 1))

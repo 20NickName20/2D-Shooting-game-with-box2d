@@ -7,11 +7,11 @@ import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.game_objects.Material;
 
 public abstract class LivingEntity extends DamagableEntity implements Moving {
-    float health;
     protected Vector2 movement = new Vector2();
     private float lastXMovement = 0;
     private float lastYMovement = 0;
     float maxWalkSpeed = 20;
+    protected float speed = 100;
 
     public LivingEntity(GameWorld world, float x, float y, Shape shape, float maxHealth) {
         super(world, x, y, shape, Material.FLESH, maxHealth);
@@ -26,7 +26,7 @@ public abstract class LivingEntity extends DamagableEntity implements Moving {
     @Override
     public void update(float dt) {
         if (this.b.getLinearVelocity().len() > maxWalkSpeed && this.b.getLinearVelocity().dot(this.getMovement()) > 0) return;
-        this.b.applyLinearImpulse(this.getMovement(), this.b.getPosition(), true);
+        this.b.applyLinearImpulse(this.getMovement().cpy().scl(dt * speed), this.b.getPosition(), true);
     }
 
     @Override

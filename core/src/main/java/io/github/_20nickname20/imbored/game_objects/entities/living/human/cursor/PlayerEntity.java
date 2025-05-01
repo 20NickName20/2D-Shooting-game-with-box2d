@@ -119,7 +119,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         if (this.b.getLinearVelocity().y > 20) return;
         if (grabbedEntity != null && this.contacts.size() <= 1 && this.getLastContactedBody() == grabbedEntity.b) return;
         lastJumpTime = Util.time();
-        this.b.applyLinearImpulse(new Vector2(0, 25), this.b.getPosition(), true);
+        this.b.applyLinearImpulse(new Vector2(0, 50), this.b.getPosition(), true);
     }
 
     public void scrollItem(int amount) {
@@ -306,7 +306,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
 
     public void takeOutOfContainer() {
         if (container == null) return;
-        container.takeOutSelected(this.b.getPosition().cpy().sub(container.b.getPosition()).nor().scl(itemDropPower * 2)).setIgnoreDelay();
+        container.takeOutSelected(this.b.getPosition().cpy().sub(container.b.getPosition()).nor().scl(itemDropPower * 2));
     }
 
     public void putSelectedToContainer() {

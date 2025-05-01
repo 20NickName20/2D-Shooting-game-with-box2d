@@ -19,7 +19,10 @@ public abstract class InteractiveContainerEntity extends ContainerEntity {
     public ItemEntity takeOutSelected(Vector2 impulse) {
         if (this.getInventory().isEmpty()) return null;
         Item item = this.getInventory().removeSelectedItem();
-        return gameWorld.dropItem(this.b.getPosition(), impulse, item);
+        if (item == null) return null;
+        ItemEntity itemEntity = gameWorld.dropItem(this.b.getPosition(), impulse, item);
+        itemEntity.setIgnoreDelay();
+        return itemEntity;
     }
 
     public boolean putItem(Item item) {
