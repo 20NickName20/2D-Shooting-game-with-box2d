@@ -8,7 +8,7 @@ import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.Au
 
 public class AutomaticRifleItem extends AutomaticRaycastGunItem {
     public AutomaticRifleItem(Entity holder) {
-        super(holder, 2, 0.05f, 5, 10, 0.075f, 175f, MathUtils.degRad * 10);
+        super(holder, 2, 0.15f, 5, 6.5f, 0.08f, 175f, MathUtils.degRad * 10);
     }
 
     @Override

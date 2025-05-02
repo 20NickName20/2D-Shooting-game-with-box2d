@@ -15,10 +15,6 @@ import io.github._20nickname20.imbored.game_objects.entities.*;
 import io.github._20nickname20.imbored.game_objects.entities.container.InteractiveContainerEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.items.UsableItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.ShotgunItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.TestGunItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.automatic.AutomaticRifleItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.joint.distance.HardDistanceJointItem;
 import io.github._20nickname20.imbored.game_objects.loot.TestRandomLoot;
 import io.github._20nickname20.imbored.render.JointDisplay;
 import io.github._20nickname20.imbored.util.FindBody;
@@ -54,7 +50,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     public final Inventory inventory = new Inventory(this, 20);
 
     public PlayerEntity(GameWorld world, float x, float y, PlayerController controller) {
-        super(world, x, y, 100);
+        super(world, x, y, 100, 20);
         this.setCursorDistance(getDefaultCursorDistance());
         this.controller = controller;
         controller.register(this);
@@ -102,7 +98,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     @Override
     public void onDestroy() {
         if (this.isRemoved()) return;
-        gameWorld.spawn(new PlayerEntity(gameWorld, gameWorld.playerCenter.x, gameWorld.playerCenter.y + 50, controller));
+        gameWorld.spawn(new PlayerEntity(gameWorld, gameWorld.camera.position.x, 50, controller));
         super.onDestroy();
     }
 
@@ -275,12 +271,15 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         if (inventory.getSelectedItem() == null) return null;
         deselectItem();
         Vector2 cursorPosition = this.getCursorPosition();
-        return gameWorld.dropItem(cursorPosition, this.cursorDirection.cpy().scl(itemDropPower), inventory.removeSelectedItem());
+        return gameWorld.dropItem(cursorPosition, this.cursorDirection.cpy().scl(itemDropPower).add(this.b.getLinearVelocity()), inventory.removeSelectedItem());
     }
 
     public boolean pickupItem(ItemEntity entity) {
         if (!entity.canPickup()) return false;
         if (!inventory.add(entity.item)) return false;
+        if (inventory.amount() == 1) {
+            entity.item.onSelect(this);
+        }
         entity.remove();
         entity.item.onPickup(this);
         return true;
@@ -313,6 +312,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         if (container == null) return;
         if (inventory.isEmpty()) return;
         Item item = inventory.removeSelectedItem();
+        item.onDeselect(this);
         if (container.putItem(item)) return;
         gameWorld.dropItem(getCursorPosition(), this.cursorDirection.cpy().scl(itemDropPower), item);
     }

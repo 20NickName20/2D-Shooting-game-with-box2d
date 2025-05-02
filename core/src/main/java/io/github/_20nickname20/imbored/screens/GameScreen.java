@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -27,7 +26,6 @@ import static io.github._20nickname20.imbored.Main.inputMultiplexer;
 
 public class GameScreen extends ScreenAdapter {
     public final Main game;
-    private final OrthographicCamera camera;
     private final Viewport viewport;
     public static final float zoom = 0.075f;
 
@@ -46,12 +44,13 @@ public class GameScreen extends ScreenAdapter {
     public GameScreen(Main game) {
         this.game = game;
 
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        viewport = new FitViewport(16, 9, camera);
-        viewport.apply();
-        camera.update();
 
         world = new GameWorld();
+
+        viewport = new FitViewport(16, 9, world.camera);
+        viewport.apply();
+        world.camera.update();
+
         shader = new ShaderProgram(
             Gdx.files.internal("shader/shader.vert").readString(),
             Gdx.files.internal("shader/shader.frag").readString()
@@ -59,7 +58,7 @@ public class GameScreen extends ScreenAdapter {
         if (!shader.isCompiled()) throw new GdxRuntimeException("Couldn't compile shader: " + shader.getLog());
         ShaderProgram.pedantic = false;
         renderer = new GameLineRenderer(shader);
-        camera.zoom /= zoom;
+        world.camera.zoom /= zoom;
 
         inputMultiplexer.addProcessor(new MainInputProcessor(this));
 
@@ -72,8 +71,8 @@ public class GameScreen extends ScreenAdapter {
         tests.crates();
     }
 
-    public void addXInputControllerPlayer(Controller controller, float x) {
-        if (!controller.getName().contains("XInput")) return;
+    public void addControllerPlayer(Controller controller, float x) {
+        if (controller.getName().toLowerCase().contains("joy")) return;
         debugController = controller;
         System.out.println("Controller connected: " + controller.getName() + " ID: " + controller.getUniqueId());
 
@@ -87,21 +86,16 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void render(float dt) {
         world.update(dt);
-        Vector2 target = world.playerCenter.cpy().add(0, viewport.getWorldHeight() * 4);
-        if (!Float.isNaN(target.x) && !Float.isNaN(target.y)) {
-            Vector2 move = target.sub(camera.position.x, camera.position.y).scl(dt / 2);
-            camera.position.add(move.x, move.y, 0);
-        }
 
         shader.bind();
         shader.setUniformf("u_Time", Util.time());
-        shader.setUniformf("u_cameraPos", camera.position);
+        shader.setUniformf("u_cameraPos", world.camera.position);
 
         ScreenUtils.clear(0, 0, 0, 1);
 
         viewport.apply();
-        renderer.render(world.world, camera.combined, (shape) -> {
-            With.translation(shape, camera.position.x, camera.position.y, () -> {
+        renderer.render(world.world, world.camera.combined, (shape) -> {
+            With.translation(shape, world.camera.position.x, world.camera.position.y, () -> {
                 shape.setColor(Color.BLACK);
                 shape.set(ShapeRenderer.ShapeType.Filled);
                 shape.rect(-200, -200, 400, 400);
@@ -154,6 +148,6 @@ public class GameScreen extends ScreenAdapter {
     }
 
     public OrthographicCamera getCamera() {
-        return camera;
+        return world.camera;
     }
 }

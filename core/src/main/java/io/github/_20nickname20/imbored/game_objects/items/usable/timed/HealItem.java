@@ -16,7 +16,7 @@ public abstract class HealItem extends TimedUsableItem {
     protected void onUseFinish(Entity holder) {
         if (holder instanceof DamagableEntity damagable) {
             damagable.heal(healAmount);
-            this.remove();
         }
+        super.onUseFinish(holder);
     }
 }

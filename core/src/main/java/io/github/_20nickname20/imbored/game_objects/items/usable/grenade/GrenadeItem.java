@@ -4,10 +4,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.items.usable.BaseGrenadeItem;
+import io.github._20nickname20.imbored.util.With;
 
 public class GrenadeItem extends BaseGrenadeItem {
     public GrenadeItem(Entity holder) {
-        super(holder, 2, 10f, 10, 75, 50);
+        super(holder, 2, 10f, 50, 75, 50);
     }
 
     @Override

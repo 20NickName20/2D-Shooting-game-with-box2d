@@ -1,6 +1,7 @@
 package io.github._20nickname20.imbored.game_objects.items.usable;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import io.github._20nickname20.imbored.game_objects.Entity;
@@ -13,6 +14,7 @@ import io.github._20nickname20.imbored.game_objects.items.UsableItem;
 import io.github._20nickname20.imbored.util.ClosestRaycast;
 import io.github._20nickname20.imbored.util.Ray;
 import io.github._20nickname20.imbored.util.Util;
+import io.github._20nickname20.imbored.util.With;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +56,8 @@ public abstract class BaseGrenadeItem extends UsableItem {
             if (rayTime > rayDisplayTime) {
                 toRemove.add(ray);
             }
-            Vector2 start = new Vector2(range * ray.fraction * Math.min(1, rayTime / rayDisplayTime), 0).rotateRad(ray.offsetAngle);
+            Vector2 start = new Vector2();
+            //Vector2 start = new Vector2(range * ray.fraction * Math.min(1, rayTime / rayDisplayTime), 0).rotateRad(ray.offsetAngle);
             Vector2 end = new Vector2(range * ray.fraction, 0).rotateAroundRad(new Vector2(), ray.offsetAngle);
             renderer.line(start, end);
         }
@@ -63,28 +66,9 @@ public abstract class BaseGrenadeItem extends UsableItem {
         }
     }
 
-    public void shootRay(float angle) {
-        Vector2 position = this.getPosition();
-        Vector2 impulse = Vector2.X.cpy().rotateRad(angle);
-        Vector2 endPosition = position.cpy().add(impulse.cpy().scl(range));
-        ClosestRaycast.RaycastResult result = ClosestRaycast.cast(this.getHolder().world, this.getHolder().b, position, endPosition);
-        if (result == null) {
-            rays.add(new Ray(1, angle, Util.time()));
-            return;
-        }
-
-        rays.add(new Ray(result.fraction, angle, Util.time()));
-        impulse.scl(power);
-        result.body.applyLinearImpulse(impulse.cpy().scl((float) (1f / Math.pow(result.body.getMass(), 0.9f))), result.point, true);
-        if (result.body.getUserData() instanceof DamagableEntity entity) {
-            entity.damage(damage);
-        }
-    }
-
     private void explode() {
-        for (float angle = 0; angle < Math.PI * 2; angle += Math.PI / 24f) {
-            shootRay(angle);
-        }
+        Entity holder = this.getHolder();
+        Util.explode(holder.gameWorld, holder.b, rays, holder.b.getPosition(), (float) (Math.PI / 24f), range, power, damage);
 
         this.remove();
         if (this.getHolder() instanceof DamagableEntity damagable) {
@@ -109,6 +93,14 @@ public abstract class BaseGrenadeItem extends UsableItem {
 
     @Override
     public void render(ShapeRenderer renderer, CursorEntity handHolder) {
-        renderRays(renderer);
+        renderer.setColor(1f, 0.6f, 0.1f, 1);
+        With.rotation(renderer, -handHolder.b.getAngle() * MathUtils.radiansToDegrees, () -> {
+            renderRays(renderer);
+        });
+    }
+
+    @Override
+    public boolean canPickup() {
+        return !this.isPinOut;
     }
 }

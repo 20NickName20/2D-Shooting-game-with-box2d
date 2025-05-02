@@ -104,8 +104,7 @@ public class MainInputProcessor extends InputAdapter {
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
-        gameScreen.getCamera().position.add(amountX, -amountY, 0);
-        gameScreen.getCamera().update();
+        gameScreen.world.cameraOffset.add(amountX, -amountY);
         return false;
     }
 

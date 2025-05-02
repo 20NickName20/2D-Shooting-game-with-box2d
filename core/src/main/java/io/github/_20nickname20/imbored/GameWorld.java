@@ -1,5 +1,7 @@
 package io.github._20nickname20.imbored;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Joint;
@@ -12,6 +14,7 @@ import io.github._20nickname20.imbored.game_objects.entities.ItemEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.handlers.EntityContactFilter;
 import io.github._20nickname20.imbored.handlers.EntityContactListener;
+import io.github._20nickname20.imbored.screens.GameScreen;
 import io.github._20nickname20.imbored.util.Constants;
 
 import java.util.HashSet;
@@ -19,6 +22,8 @@ import java.util.Set;
 
 public class GameWorld {
     public final World world;
+
+    public final OrthographicCamera camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());;
 
     private final Array<Body> bodies = new Array<>();
     private final Array<Body> bodies1 = new Array<>();
@@ -75,8 +80,9 @@ public class GameWorld {
             for (Body body : bodies) {
                 if (!(body.getUserData() instanceof Entity entity)) continue;
 
-                if (entity instanceof PlayerEntity) {
+                if (entity instanceof PlayerEntity player) {
                     playerCenter.add(entity.b.getPosition());
+                    registeredPlayers.add(player);
                     playerCount += 1;
                 }
 
@@ -94,13 +100,32 @@ public class GameWorld {
         }
     }
 
+    public boolean cameraFollowsPlayers = true;
+    public Vector2 cameraOffset = new Vector2();
+
+    private Set<PlayerEntity> registeredPlayers = new HashSet<>();
+
     public void update(float dt) {
+        registeredPlayers.clear();
         doPhysicsStep(dt * Constants.SIMULATION_SPEED);
 
         for (Entity entity : entitiesToSpawn) {
             entity.onSpawn(world);
         }
         entitiesToSpawn.clear();
+
+        if (!cameraFollowsPlayers) return;
+        Vector2 target = playerCenter.cpy().add(0, 10).add(cameraOffset);
+        if (!Float.isNaN(target.x) && !Float.isNaN(target.y)) {
+            Vector2 move = target.sub(camera.position.x, camera.position.y).scl(dt * 1.5f);
+            camera.position.add(move.x, move.y, 0);
+        }
+        float maxOffset = 0;
+        for (PlayerEntity player : registeredPlayers) {
+            maxOffset = Math.max(maxOffset, player.b.getPosition().dst(playerCenter));
+        }
+        if (maxOffset < 0.1f) return;
+        camera.zoom = 1 / GameScreen.zoom + 1f + (float) Math.pow(maxOffset, 0.65);
     }
 
     public ItemEntity dropItem(Vector2 location, Vector2 impulse, Item item) {

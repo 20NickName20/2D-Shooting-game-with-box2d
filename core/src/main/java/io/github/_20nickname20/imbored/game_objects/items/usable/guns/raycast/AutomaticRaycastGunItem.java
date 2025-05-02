@@ -11,6 +11,10 @@ public abstract class AutomaticRaycastGunItem extends RaycastGunItem {
 
     private boolean isShooting = false;
 
+    public boolean isShooting() {
+        return isShooting;
+    }
+
     @Override
     public void onStartUse(PlayerEntity player) {
         this.isShooting = true;

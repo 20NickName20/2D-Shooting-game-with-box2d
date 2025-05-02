@@ -10,11 +10,34 @@ public abstract class LivingEntity extends DamagableEntity implements Moving {
     protected Vector2 movement = new Vector2();
     private float lastXMovement = 0;
     private float lastYMovement = 0;
-    float maxWalkSpeed = 20;
-    protected float speed = 100;
+    public final float defaultMaxWalkSpeed;
+    private float maxWalkSpeed;
+    protected float speedModifier = 1;
 
-    public LivingEntity(GameWorld world, float x, float y, Shape shape, float maxHealth) {
+    public LivingEntity(GameWorld world, float x, float y, Shape shape, float maxHealth, float defaultMaxWalkSpeed) {
         super(world, x, y, shape, Material.FLESH, maxHealth);
+        this.defaultMaxWalkSpeed = defaultMaxWalkSpeed;
+        this.maxWalkSpeed = defaultMaxWalkSpeed;
+    }
+
+    public float getDefaultMaxWalkSpeed() {
+        return defaultMaxWalkSpeed;
+    }
+
+    public float getMaxWalkSpeed() {
+        return maxWalkSpeed;
+    }
+
+    public void setMaxWalkSpeed(float maxWalkSpeed) {
+        this.maxWalkSpeed = maxWalkSpeed;
+    }
+
+    public float getSpeedModifier() {
+        return speedModifier;
+    }
+
+    public void setSpeedModifier(float speedModifier) {
+        this.speedModifier = speedModifier;
     }
 
     @Override
@@ -25,8 +48,9 @@ public abstract class LivingEntity extends DamagableEntity implements Moving {
 
     @Override
     public void update(float dt) {
+        super.update(dt);
         if (this.b.getLinearVelocity().len() > maxWalkSpeed && this.b.getLinearVelocity().dot(this.getMovement()) > 0) return;
-        this.b.applyLinearImpulse(this.getMovement().cpy().scl(dt * speed), this.b.getPosition(), true);
+        this.b.applyLinearImpulse(this.getMovement().cpy().scl(dt * speedModifier * 100), this.b.getPosition(), true);
     }
 
     @Override

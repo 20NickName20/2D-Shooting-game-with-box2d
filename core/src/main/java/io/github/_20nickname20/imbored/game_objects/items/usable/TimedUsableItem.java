@@ -26,6 +26,7 @@ public abstract class TimedUsableItem extends UsableItem {
     public void render(ShapeRenderer renderer, CursorEntity handHolder) {
         if (handHolder == null) return;
 
+        if (usedTime < 0.1f) return;
         With.rotation(renderer, -handHolder.cursorDirection.angleDeg(), () -> {
             With.translation(renderer, 0, 5f, () -> {
                 BarDisplay.render(renderer, BAR_OUTTER_COLOR, BAR_INNER_COLOR, usedTime / useTime);
@@ -33,7 +34,9 @@ public abstract class TimedUsableItem extends UsableItem {
         });
     }
 
-    protected abstract void onUseFinish(Entity holder);
+    protected void onUseFinish(Entity holder) {
+        this.remove();
+    }
 
     @Override
     public void update(float dt) {

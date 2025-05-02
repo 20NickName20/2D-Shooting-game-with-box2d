@@ -7,8 +7,8 @@ import io.github._20nickname20.imbored.game_objects.entities.living.human.Cursor
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.RaycastGunItem;
 
-public class TestGunItem extends RaycastGunItem {
-    public TestGunItem(Entity holder) {
+public class GunItem extends RaycastGunItem {
+    public GunItem(Entity holder) {
         super(holder, 1f, 0.1f, 10f, 50f, 0.04f, 250f, MathUtils.degRad * 2, 0.025f);
     }
 

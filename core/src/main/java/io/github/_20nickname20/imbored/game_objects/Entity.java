@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public abstract class Entity {
+public abstract class Entity implements Removable {
     public Body b;
     protected final Shape shape;
     public final Material material;
@@ -28,6 +28,7 @@ public abstract class Entity {
     private final float spawnX, spawnY;
     private Runnable onSpawn = null;
     public float spawnTime;
+    private final Set<Effect> effects = new HashSet<>();
 
     public Entity(GameWorld gameWorld, float x, float y, Shape shape, Material material) {
         this.spawnX = x;
@@ -51,8 +52,22 @@ public abstract class Entity {
         onSpawn.run();
     }
 
-    public void update(float dt) {
+    private final Set<Effect> toRemove = new HashSet<>();
 
+    public void update(float dt) {
+        for (Effect effect : effects) {
+            effect.update(dt);
+            if (effect.isRemoved()) {
+                toRemove.add(effect);
+            }
+        }
+
+        effects.removeAll(toRemove);
+    }
+
+    public void applyEffect(Effect effect) {
+        effect.onApply(this);
+        effects.add(effect);
     }
 
     public boolean render(ShapeRenderer renderer) {

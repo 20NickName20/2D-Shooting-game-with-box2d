@@ -10,7 +10,7 @@ import io.github._20nickname20.imbored.game_objects.items.usable.guns.RaycastGun
 
 public class ShotgunItem extends RaycastGunItem {
     public ShotgunItem(Entity holder) {
-        super(holder, 2.5f, 0.7f, 10, 20, 0.15f, 100, MathUtils.degRad * 5,0.05f);
+        super(holder, 2.5f, 0.7f, 7.5f, 20, 0.15f, 100, MathUtils.degRad * 5,0.05f);
     }
 
     @Override

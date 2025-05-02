@@ -6,7 +6,7 @@ import io.github._20nickname20.imbored.game_objects.entities.InventoryHolder;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 
-public abstract class Item {
+public abstract class Item implements Removable {
     private final float size;
     private Entity holder;
     private boolean isRemoved = false;
@@ -68,5 +68,9 @@ public abstract class Item {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public boolean canPickup() {
+        return true;
     }
 }

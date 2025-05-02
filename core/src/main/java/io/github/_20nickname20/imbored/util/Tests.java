@@ -48,17 +48,20 @@ public class Tests {
         }
         world.spawn(new PlayerEntity(world, 0, -40, new PlayerKeyboardController(new PlayerKeyboardController.KeyboardMapping())));
         for (Controller controller : Controllers.getControllers()) {
-            gameScreen.addXInputControllerPlayer(controller, 0);
+            gameScreen.addControllerPlayer(controller, 0);
         }
     }
 
     public void crates() {
         LootGenerator randomLoot = new TestRandomLoot();
-        for (int x = -10; x < 11; x++) {
-            int height = MathUtils.random(1, 6);
-            for (int y = 0; y < height; y++) {
-                boolean type = MathUtils.randomBoolean();
-                world.spawn(new BoxEntity(world, x * 60 + MathUtils.random(0, 0.25f), -48 + y * 4, 2, 2, type ? Material.WOOD : Material.METAL, type ? 150 : 300));
+        for (float x = -15; x < 16; x++) {
+            for (int i = -2; i < 3; i++) {
+                if (MathUtils.random(1, 5) > 2) continue;
+                int height = MathUtils.random(1, (int) (10f - (float) Math.sin(x / 10) * 7f));
+                for (int y = 0; y < height; y++) {
+                    boolean type = MathUtils.randomBoolean();
+                    world.spawn(new BoxEntity(world, x * 60 + MathUtils.random(0, 0.25f) + i * 6f, -48 + y * 4, 2, 2, type ? Material.WOOD : Material.METAL, type ? 150 : 300));
+                }
             }
 
             CrateEntity entity = new CrateEntity(world, x * 60 + 30, -40, 3.5f, 3.5f, 200);
@@ -68,9 +71,9 @@ public class Tests {
             world.spawn(entity);
         }
 
-        world.spawn(new PlayerEntity(world, 15, -40, new PlayerKeyboardController(new PlayerKeyboardController.KeyboardMapping())));
+        // world.spawn(new PlayerEntity(world, 15, -40, new PlayerKeyboardController(new PlayerKeyboardController.KeyboardMapping())));
         for (Controller controller : Controllers.getControllers()) {
-            gameScreen.addXInputControllerPlayer(controller, 15);
+            gameScreen.addControllerPlayer(controller, 15);
         }
     }
 

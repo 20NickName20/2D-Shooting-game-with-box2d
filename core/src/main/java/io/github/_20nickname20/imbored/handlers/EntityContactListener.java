@@ -13,7 +13,6 @@ public class EntityContactListener implements ContactListener {
         }
         if (bodyB.getUserData() instanceof Entity entity) {
             entity.beginContact(bodyA);
-
         }
     }
 

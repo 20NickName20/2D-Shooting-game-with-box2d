@@ -4,6 +4,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.TimeUtils;
+import io.github._20nickname20.imbored.GameWorld;
+import io.github._20nickname20.imbored.game_objects.entities.DamagableEntity;
+
+import java.util.List;
 
 import static io.github._20nickname20.imbored.Main.startTime;
 
@@ -44,5 +48,28 @@ public class Util {
         shape.dispose();
 
         return body;
+    }
+
+    private static void shootRay(GameWorld world, Body ignored, List<Ray> rays, Vector2 position, float angle, float range, float power, float damage) {
+        Vector2 impulse = Vector2.X.cpy().rotateRad(angle);
+        Vector2 endPosition = position.cpy().add(impulse.cpy().scl(range));
+        ClosestRaycast.RaycastResult result = ClosestRaycast.cast(world.world, ignored, position, endPosition);
+        if (result == null) {
+            rays.add(new Ray(1, angle, Util.time()));
+            return;
+        }
+
+        rays.add(new Ray(result.fraction, angle, Util.time()));
+        impulse.scl(power);
+        result.body.applyLinearImpulse(impulse, result.point, true);
+        if (result.body.getUserData() instanceof DamagableEntity entity) {
+            entity.damage(damage);
+        }
+    }
+
+    public static void explode(GameWorld world, Body ignored, List<Ray> rays, Vector2 position, float stepAngle, float range, float power, float damage) {
+        for (float angle = 0; angle < Math.PI * 2; angle += stepAngle) {
+            shootRay(world, ignored, rays, position, angle, range, power, damage);
+        }
     }
 }
