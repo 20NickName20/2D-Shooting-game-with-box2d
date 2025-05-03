@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.entities.DamagableEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
+import io.github._20nickname20.imbored.game_objects.items.ammo.AutomaticRifleCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.AutomaticRaycastGunItem;
 import io.github._20nickname20.imbored.render.BarDisplay;
 import io.github._20nickname20.imbored.util.With;
@@ -15,7 +16,7 @@ public class MinigunItem extends AutomaticRaycastGunItem {
     private float overheat = 0f;
 
     public MinigunItem(Entity holder) {
-        super(holder, 2, 0.05f, 5, 100, 100, 6.5f, 0.08f, 175f, MathUtils.degRad * 10);
+        super(holder, 2, 0.05f, 5, 100, 100, 12, 6.5f, 0.08f, 175f, MathUtils.degRad * 10, AutomaticRifleCartridgeItem.class);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class MinigunItem extends AutomaticRaycastGunItem {
             if (this.getHolder() instanceof DamagableEntity damagable) {
                 damagable.damage(50f);
                 if (damagable instanceof CursorEntity cursorEntity) {
-                    cursorEntity.b.applyLinearImpulse(cursorEntity.cursorDirection.cpy().scl(-80), cursorEntity.b.getPosition(), true);
+                    cursorEntity.b.applyLinearImpulse(cursorEntity.getCursorDirection().scl(-80), cursorEntity.b.getPosition(), true);
                 }
             }
         }

@@ -128,7 +128,7 @@ public class MainInputProcessor extends InputAdapter {
         }
         if (keycode == Input.Keys.ENTER) {
             gameScreen.world.spawn(
-                new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, -30, new PlayerKeyboardController2(new PlayerKeyboardController2.KeyboardMapping()))
+                new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, -30, new PlayerKeyboardController2(new PlayerKeyboardController.KeyboardMapping()))
             );
         }
         if (!isAdminEnabled) return false;

@@ -3,15 +3,11 @@ package io.github._20nickname20.imbored.game_objects.items.usable;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.entities.DamagableEntity;
-import io.github._20nickname20.imbored.game_objects.entities.InventoryHolder;
-import io.github._20nickname20.imbored.game_objects.entities.ItemEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.game_objects.items.UsableItem;
-import io.github._20nickname20.imbored.util.ClosestRaycast;
 import io.github._20nickname20.imbored.util.Ray;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.util.With;
@@ -87,8 +83,8 @@ public abstract class BaseGrenadeItem extends UsableItem {
     }
 
     @Override
-    public void onDeselect(InventoryHolder holder) {
-
+    public void onUnequip(PlayerEntity holder) {
+        this.isEquipped = false;
     }
 
     @Override

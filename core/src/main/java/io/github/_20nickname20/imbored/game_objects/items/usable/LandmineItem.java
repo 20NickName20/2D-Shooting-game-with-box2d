@@ -2,11 +2,7 @@ package io.github._20nickname20.imbored.game_objects.items.usable;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Shape;
-import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.game_objects.Entity;
-import io.github._20nickname20.imbored.game_objects.Material;
-import io.github._20nickname20.imbored.game_objects.entities.InventoryHolder;
 import io.github._20nickname20.imbored.game_objects.entities.LandmineEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
@@ -22,10 +18,10 @@ public class LandmineItem extends UsableItem {
         Vector2 cursorPosition = player.getCursorPosition();
         LandmineEntity entity = new LandmineEntity(player.gameWorld, cursorPosition.x, cursorPosition.y);
         entity.onSpawnAction(() -> {
-            entity.b.applyLinearImpulse(player.cursorDirection.cpy().scl(30), entity.b.getPosition(), true);
+            entity.b.applyLinearImpulse(player.getCursorDirection().scl(30), entity.b.getPosition(), true);
         });
         player.gameWorld.spawn(entity);
-        player.removeSelectedItem();
+        player.removeEquippedItem();
     }
 
     @Override
@@ -34,19 +30,8 @@ public class LandmineItem extends UsableItem {
     }
 
     @Override
-    public void onSelect(InventoryHolder holder) {
-        super.onSelect(holder);
-        if (holder instanceof CursorEntity cursorEntity) {
-            cursorEntity.setCursorDistance(8);
-        }
-    }
-
-    @Override
-    public void onDeselect(InventoryHolder holder) {
-        super.onDeselect(holder);
-        if (holder instanceof CursorEntity cursorEntity) {
-            cursorEntity.setCursorDistance(cursorEntity.getDefaultCursorDistance());
-        }
+    public float getCursorDistance() {
+        return 9;
     }
 
     @Override

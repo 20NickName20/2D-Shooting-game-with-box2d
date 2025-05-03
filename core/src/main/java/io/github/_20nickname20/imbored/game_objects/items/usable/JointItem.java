@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.util.FindBody;
 import io.github._20nickname20.imbored.game_objects.entities.BlockEntity;
-import io.github._20nickname20.imbored.game_objects.entities.InventoryHolder;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.game_objects.items.UsableItem;
 
@@ -80,25 +79,19 @@ public abstract class JointItem extends UsableItem {
             bodyB = closest;
             posB = connectPoint;
             createJoint(bodyA, bodyB, posA, posB);
-            player.removeSelectedItem();
+            player.removeEquippedItem();
         }
     }
 
     @Override
-    public void onSelect(InventoryHolder holder) {
-        super.onSelect(holder);
-        if (holder instanceof PlayerEntity player) {
-            player.setCursorDistance(7);
-        }
+    public float getCursorDistance() {
+        return 7;
     }
 
     @Override
-    public void onDeselect(InventoryHolder holder) {
-        super.onDeselect(holder);
+    public void onUnequip(PlayerEntity holder) {
+        super.onUnequip(holder);
         reset();
-        if (holder instanceof PlayerEntity player) {
-            player.setCursorDistance(player.getDefaultCursorDistance());
-        }
     }
 
     public abstract void createJoint(Body bodyA, Body bodyB, Vector2 posA, Vector2 posB);

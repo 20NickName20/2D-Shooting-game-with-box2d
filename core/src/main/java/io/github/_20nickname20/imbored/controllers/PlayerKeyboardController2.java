@@ -12,70 +12,9 @@ import io.github._20nickname20.imbored.screens.GameScreen;
 import static io.github._20nickname20.imbored.Main.inputMultiplexer;
 
 public class PlayerKeyboardController2 extends PlayerController implements InputProcessor {
-    public static class KeyboardMapping {
-        public int leftKey = Keys.A;
-        public int rightKey = Keys.D;
-        public int jumpKey = Keys.SPACE;
-        public int modeSwitchKey = Keys.E;
-        public int modeUseKey = Keys.Q;
-        public int scrollItemLeftKey = Keys.TAB;
-        public int scrollItemRightKey = Keys.R;
-        public int dropItemKey = Keys.Z;
-        public int throwKey = Keys.NUM_1;
-        public int containerScrollLeftKey = Keys.LEFT_BRACKET;
-        public int containerScrollRightKey = Keys.RIGHT_BRACKET;
-        public int containerTakeOutKey = Keys.O;
-        public int containerPutKey = Keys.P;
+    PlayerKeyboardController.KeyboardMapping mapping;
 
-        public KeyboardMapping setLeftKey(int leftKey) {
-            this.leftKey = leftKey;
-            return this;
-        }
-
-        public KeyboardMapping setRightKey(int rightKey) {
-            this.rightKey = rightKey;
-            return this;
-        }
-
-        public KeyboardMapping setJumpKey(int jumpKey) {
-            this.jumpKey = jumpKey;
-            return this;
-        }
-
-        public KeyboardMapping setModeSwitchKey(int modeSwitchKey) {
-            this.modeSwitchKey = modeSwitchKey;
-            return this;
-        }
-
-        public KeyboardMapping setModeUseKey(int modeUseKey) {
-            this.modeUseKey = modeUseKey;
-            return this;
-        }
-
-        public KeyboardMapping setScrollItemLeftKey(int scrollItemLeftKey) {
-            this.scrollItemLeftKey = scrollItemLeftKey;
-            return this;
-        }
-
-        public KeyboardMapping setScrollItemRightKey(int scrollItemRightKey) {
-            this.scrollItemRightKey = scrollItemRightKey;
-            return this;
-        }
-
-        public KeyboardMapping setDropItemKey(int dropItemKey) {
-            this.dropItemKey = dropItemKey;
-            return this;
-        }
-
-        public KeyboardMapping setThrowKey(int throwKey) {
-            this.throwKey = throwKey;
-            return this;
-        }
-    }
-
-    KeyboardMapping mapping;
-
-    public PlayerKeyboardController2(KeyboardMapping mapping) {
+    public PlayerKeyboardController2(PlayerKeyboardController.KeyboardMapping mapping) {
         this.mapping = mapping;
     }
 
@@ -126,22 +65,16 @@ public class PlayerKeyboardController2 extends PlayerController implements Input
             return false;
         }
         if (i == mapping.scrollItemLeftKey) {
-            if (player.getMode() == PlayerEntity.Mode.INV) {
-                player.scrollItem(-1);
-                return false;
-            }
+            player.scrollItem(-1);
         }
         if (i == mapping.scrollItemRightKey) {
-            if (player.getMode() == PlayerEntity.Mode.INV) {
-                player.scrollItem(1);
-                return false;
-            }
+            player.scrollItem(1);
         }
         if (i == mapping.modeSwitchKey) {
-            player.nextMode();
+            this.switchMode();
         }
         if (i == mapping.dropItemKey) {
-            player.dropSelectedItem();
+            player.dropEquippedItem();
         }
         if (i == mapping.throwKey) {
             player.throwGrabbed();
@@ -156,12 +89,12 @@ public class PlayerKeyboardController2 extends PlayerController implements Input
             player.takeOutOfContainer();
         }
         if (i == mapping.containerPutKey) {
-            player.putSelectedToContainer();
+            player.putEquippedToContainer();
+        }
+        if (i == mapping.modeUseKey) {
+            this.startUseMode();
         }
 
-        if (i == Keys.NUM_0) {
-            player.popBob = !player.popBob;
-        }
         return false;
     }
 
@@ -182,6 +115,9 @@ public class PlayerKeyboardController2 extends PlayerController implements Input
                 player.clearXMovement();
             }
             return false;
+        }
+        if (i == mapping.modeUseKey) {
+            this.startUseMode();
         }
 
         return false;

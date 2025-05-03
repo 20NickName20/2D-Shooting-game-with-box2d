@@ -3,12 +3,11 @@ package io.github._20nickname20.imbored.game_objects.loot;
 import com.badlogic.gdx.math.MathUtils;
 import io.github._20nickname20.imbored.game_objects.Item;
 import io.github._20nickname20.imbored.game_objects.LootGenerator;
-import io.github._20nickname20.imbored.game_objects.effects.SpeedEffect;
 import io.github._20nickname20.imbored.game_objects.items.usable.GrappleHookItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.LandmineItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.grenade.GrenadeItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.ShotgunItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.GunItem;
+import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.PistolItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.automatic.AutomaticRifleItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.automatic.MinigunItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.joint.distance.HardDistanceJointItem;
@@ -23,7 +22,7 @@ public class TestRandomLoot implements LootGenerator {
     @Override
     public List<Item> generate(float amountMultiplier) {
         Class<? extends Item> type = switch (MathUtils.random(16)) {
-            case 0 -> GunItem.class;
+            case 0 -> PistolItem.class;
             case 1 -> AutomaticRifleItem.class;
             case 2 -> ShotgunItem.class;
             case 3 -> BandageItem.class;

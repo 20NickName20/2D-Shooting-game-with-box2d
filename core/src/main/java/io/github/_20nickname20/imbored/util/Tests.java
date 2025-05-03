@@ -16,6 +16,7 @@ import io.github._20nickname20.imbored.game_objects.entities.block.BoxEntity;
 import io.github._20nickname20.imbored.game_objects.entities.container.CrateEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.game_objects.loot.TestRandomLoot;
+import io.github._20nickname20.imbored.game_objects.loot.supply.AmmoSupplyLoot;
 import io.github._20nickname20.imbored.game_objects.loot.supply.GunSupplyLoot;
 import io.github._20nickname20.imbored.game_objects.loot.supply.HealSupplyLoot;
 import io.github._20nickname20.imbored.game_objects.loot.supply.StuffSupplyLoot;
@@ -59,6 +60,7 @@ public class Tests {
         LootGenerator gunLoot = new GunSupplyLoot();
         LootGenerator healLoot = new HealSupplyLoot();
         LootGenerator stuffLoot = new StuffSupplyLoot();
+        LootGenerator ammoLoot = new AmmoSupplyLoot();
 
         for (float x = -15; x < 16; x++) {
             for (int i = -2; i < 3; i++) {
@@ -71,9 +73,10 @@ public class Tests {
             }
 
             CrateEntity entity = new CrateEntity(world, x * 60 + 30, -40, 3.5f, 3.5f, 200);
-            LootGenerator lootGenerator = switch (MathUtils.random(2)) {
+            LootGenerator lootGenerator = switch (MathUtils.random(4)) {
                 case 0 -> gunLoot;
                 case 1 -> healLoot;
+                case 2 -> ammoLoot;
                 default -> stuffLoot;
             };
 
