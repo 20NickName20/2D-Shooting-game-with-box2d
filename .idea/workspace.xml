@@ -4,17 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4a78e742-e078-4be3-8f79-d9f4c33b45bc" name="Changes" comment="Bugfix and new stuff&#10;Nerf rifle and added minigun which can overheat and explode&#10;Add explode() function as util&#10;Add landmines&#10;Add status effects&#10;Add energy drink to add speed status effect&#10;Add first aid kit&#10;Tweak progress bar display">
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerKeyboardController2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_04_2025_19_48__Changes_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_04_2025_19_48__Changes_1.xml" beforeDir="false" />
+    <list default="true" id="4a78e742-e078-4be3-8f79-d9f4c33b45bc" name="Changes" comment="Add Mouse Cursor movement :3">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/assets.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/handlers/MainInputProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/handlers/MainInputProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/screens/GameScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/screens/GameScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lwjgl3/build/resources/main/assets.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerKeyboardController2.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerKeyboardController2.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -344,7 +336,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746193426326</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Add Mouse Cursor movement :3">
+      <option name="closed" value="true" />
+      <created>1746278547498</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1746278547498</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -363,6 +363,7 @@
     <MESSAGE value="Misc changes&#10;Added healer items&#10;Added grenades&#10;Made camera follow players&#10;Fixed item updates in containers&#10;Changed shoot ray rendering a bit" />
     <MESSAGE value="Bugfix&#10;Changed player movement and increased density&#10;Fixed a container extract bug" />
     <MESSAGE value="Bugfix and new stuff&#10;Nerf rifle and added minigun which can overheat and explode&#10;Add explode() function as util&#10;Add landmines&#10;Add status effects&#10;Add energy drink to add speed status effect&#10;Add first aid kit&#10;Tweak progress bar display" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bugfix and new stuff&#10;Nerf rifle and added minigun which can overheat and explode&#10;Add explode() function as util&#10;Add landmines&#10;Add status effects&#10;Add energy drink to add speed status effect&#10;Add first aid kit&#10;Tweak progress bar display" />
+    <MESSAGE value="Add Mouse Cursor movement :3" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Mouse Cursor movement :3" />
   </component>
 </project>

@@ -1,6 +1,7 @@
 package io.github._20nickname20.imbored.controllers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
@@ -139,9 +140,6 @@ public class PlayerKeyboardController2 extends PlayerController implements Input
         if (i == mapping.modeSwitchKey) {
             player.nextMode();
         }
-        if (i == mapping.modeUseKey) {
-            this.startUseMode();
-        }
         if (i == mapping.dropItemKey) {
             player.dropSelectedItem();
         }
@@ -186,9 +184,6 @@ public class PlayerKeyboardController2 extends PlayerController implements Input
             return false;
         }
 
-        if (i == mapping.modeUseKey) {
-            this.stopUseMode();
-        }
         return false;
     }
 
@@ -198,12 +193,18 @@ public class PlayerKeyboardController2 extends PlayerController implements Input
     }
 
     @Override
-    public boolean touchDown(int i, int i1, int i2, int i3) {
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if (button == Input.Buttons.LEFT) {
+            this.startUseMode();
+        }
         return false;
     }
 
     @Override
-    public boolean touchUp(int i, int i1, int i2, int i3) {
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if (button == Input.Buttons.LEFT) {
+            this.stopUseMode();
+        }
         return false;
     }
 
@@ -229,6 +230,7 @@ public class PlayerKeyboardController2 extends PlayerController implements Input
     @Override
     public boolean scrolled(float v, float v1) {
         player.scrollItem((int) v1);
+
         return false;
     }
 }

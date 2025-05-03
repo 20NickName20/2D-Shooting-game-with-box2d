@@ -116,6 +116,7 @@ public class MainInputProcessor extends InputAdapter {
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
+        if (!isAdminEnabled) return false;
         gameScreen.world.cameraOffset.add(amountX, -amountY);
         return false;
     }
