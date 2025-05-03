@@ -7,7 +7,6 @@ import io.github._20nickname20.imbored.game_objects.entities.living.human.Cursor
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.game_objects.items.UsableItem;
 import io.github._20nickname20.imbored.render.BarDisplay;
-import io.github._20nickname20.imbored.util.With;
 
 public abstract class TimedUsableItem extends UsableItem {
     private final float useTime;
@@ -17,21 +16,15 @@ public abstract class TimedUsableItem extends UsableItem {
     }
 
     private float usedTime = 0;
+    private final BarDisplay progressBar = new BarDisplay(new Color(0.2f, 0, 0.7f, 1), new Color(0.9f, 0.6f, 0f, 1), 0, 0.3f);
     private boolean isUsing = false;
-
-    private final static Color BAR_OUTTER_COLOR = new Color(0.6f, 0.2f, 0, 1);
-    private final static Color BAR_INNER_COLOR = new Color(0.95f, 0.9f, 0, 1);
 
     @Override
     public void render(ShapeRenderer renderer, CursorEntity handHolder) {
         if (handHolder == null) return;
 
-        if (usedTime < 0.1f) return;
-        With.rotation(renderer, -handHolder.cursorDirection.angleDeg(), () -> {
-            With.translation(renderer, 0, 5f, () -> {
-                BarDisplay.render(renderer, BAR_OUTTER_COLOR, BAR_INNER_COLOR, usedTime / useTime);
-            });
-        });
+        if (progressBar.getDisplayValue() < 0.001f) return;
+        this.renderBar(renderer, handHolder, 5, progressBar);
     }
 
     protected void onUseFinish(Entity holder) {
@@ -43,11 +36,13 @@ public abstract class TimedUsableItem extends UsableItem {
         super.update(dt);
         if (isUsing) {
             usedTime += dt;
+            progressBar.setTargetValue(usedTime / useTime);
         }
         if (usedTime >= useTime) {
             onUseFinish(this.getHolder());
             isUsing = false;
         }
+        progressBar.update(dt);
     }
 
     @Override
@@ -59,5 +54,6 @@ public abstract class TimedUsableItem extends UsableItem {
     public void onEndUse(PlayerEntity player) {
         isUsing = false;
         usedTime = 0;
+        progressBar.setTargetValue(0);
     }
 }

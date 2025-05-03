@@ -29,6 +29,10 @@ public class BarDisplay {
         this.lastUpdateTime = Util.time();
     }
 
+    public float getDisplayValue() {
+        return displayValue;
+    }
+
     public boolean isRising() {
         return targetValue > displayValue + 0.001f;
     }

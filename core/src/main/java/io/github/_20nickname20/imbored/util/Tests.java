@@ -76,8 +76,14 @@ public class Tests {
                 case 1 -> healLoot;
                 default -> stuffLoot;
             };
+
             entity.getInventory().addAll(lootGenerator.generate(1));
             world.spawn(entity);
+
+            if (MathUtils.randomBoolean()) {
+                BlockEntity entity1 = new BlockEntity(world, x * 60 + 30, -35, Shapes.circleShape(2.5f), Material.ROCK, 220);
+                world.spawn(entity1);
+            }
         }
 
         for (Controller controller : Controllers.getControllers()) {

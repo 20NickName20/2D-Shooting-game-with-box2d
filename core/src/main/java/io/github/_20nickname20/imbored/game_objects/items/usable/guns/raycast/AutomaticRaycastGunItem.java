@@ -27,6 +27,7 @@ public abstract class AutomaticRaycastGunItem extends RaycastGunItem {
 
     @Override
     public void update(float dt) {
+        super.update(dt);
         if (this.isShooting) {
             if (this.getHolder() instanceof PlayerEntity player) {
                 shootAttempt(player);

@@ -137,7 +137,7 @@ public class MainInputProcessor extends InputAdapter {
             LootGenerator healLoot = new HealSupplyLoot();
             LootGenerator stuffLoot = new StuffSupplyLoot();
 
-            Vector2 worldPos = gameScreen.getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+            Vector2 worldPos = GameScreen.getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
             CrateEntity entity = new CrateEntity(gameScreen.world, worldPos.x, worldPos.y, 3.5f, 3.5f, 200);
             LootGenerator lootGenerator = switch (MathUtils.random(2)) {
                 case 0 -> gunLoot;

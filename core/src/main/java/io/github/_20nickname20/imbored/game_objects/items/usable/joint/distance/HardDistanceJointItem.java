@@ -6,6 +6,6 @@ import io.github._20nickname20.imbored.game_objects.items.usable.joint.DistanceJ
 
 public class HardDistanceJointItem extends DistanceJointItem {
     public HardDistanceJointItem(Entity holder) {
-        super(holder, 0.5f, 10f, Color.WHITE, 100f, 0.01f, 1f);
+        super(holder, 0.5f, 10f, Color.WHITE, 100f, 0.01f);
     }
 }

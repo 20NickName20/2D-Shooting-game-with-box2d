@@ -13,13 +13,12 @@ import io.github._20nickname20.imbored.game_objects.items.usable.JointItem;
 import io.github._20nickname20.imbored.render.JointDisplay;
 
 public abstract class DistanceJointItem extends JointItem {
-    private final float frequency, damping, lengthScale;
+    private final float frequency, damping;
 
-    public DistanceJointItem(Entity holder, float size, float maxDistance, Color color, float frequency, float damping, float lengthScale) {
+    public DistanceJointItem(Entity holder, float size, float maxDistance, Color color, float frequency, float damping) {
         super(holder, size, maxDistance, color);
         this.frequency = frequency;
         this.damping = damping;
-        this.lengthScale = lengthScale;
     }
 
     @Override
@@ -29,7 +28,6 @@ public abstract class DistanceJointItem extends JointItem {
         defJoint.frequencyHz = frequency;
         defJoint.dampingRatio = damping;
         defJoint.initialize(bodyA, bodyB, posA, posB);
-        defJoint.length *= lengthScale;
         DistanceJoint joint = (DistanceJoint) bodyA.getWorld().createJoint(defJoint);
         joint.setUserData(new JointDisplay(this.color));
     }

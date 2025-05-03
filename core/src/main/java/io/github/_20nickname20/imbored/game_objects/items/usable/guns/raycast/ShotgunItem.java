@@ -18,7 +18,7 @@ public class ShotgunItem extends RaycastGunItem {
         for (int i = -2; i <= 2; i++) {
             shootRay(player, (float) (Math.PI / 48f) * i);
         }
-        ammo -= 1;
+        this.useAmmo();
     }
 
     @Override

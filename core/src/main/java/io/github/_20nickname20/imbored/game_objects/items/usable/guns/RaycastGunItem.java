@@ -89,6 +89,7 @@ public abstract class RaycastGunItem extends BaseGunItem {
 
     @Override
     public void render(ShapeRenderer renderer, CursorEntity handHolder) {
+        super.render(renderer, handHolder);
         if (handHolder == null) return;
         renderRays(renderer, handHolder.getCursorDistance());
     }

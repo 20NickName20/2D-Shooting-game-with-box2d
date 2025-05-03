@@ -6,6 +6,6 @@ import io.github._20nickname20.imbored.game_objects.items.usable.joint.DistanceJ
 
 public class RubberDistanceJointItem extends DistanceJointItem {
     public RubberDistanceJointItem(Entity holder) {
-        super(holder, 0.5f, 20f, Color.CYAN, 5f, 0.5f, 0.75f);
+        super(holder, 0.5f, 20f, Color.CYAN, 5f, 0.5f);
     }
 }

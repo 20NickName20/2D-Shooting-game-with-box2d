@@ -5,6 +5,8 @@ import com.badlogic.gdx.math.Vector2;
 import io.github._20nickname20.imbored.game_objects.entities.InventoryHolder;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.render.BarDisplay;
+import io.github._20nickname20.imbored.util.With;
 
 public abstract class Item implements Removable {
     private final float size;
@@ -26,6 +28,15 @@ public abstract class Item implements Removable {
     }
 
     public abstract void render(ShapeRenderer renderer, CursorEntity handHolder);
+
+    protected void renderBar(ShapeRenderer renderer, CursorEntity handHolder, float yTranslation, BarDisplay barDisplay) {
+        if (handHolder == null) return;
+        With.rotation(renderer, -handHolder.cursorDirection.angleDeg(), () -> {
+            With.translation(renderer, 0, yTranslation, () -> {
+                barDisplay.render(renderer);
+            });
+        });
+    }
 
     public void update(float dt) {
 
