@@ -4,9 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4a78e742-e078-4be3-8f79-d9f4c33b45bc" name="Changes" comment="Add Mouse Cursor movement :3">
+    <list default="true" id="4a78e742-e078-4be3-8f79-d9f4c33b45bc" name="Changes" comment="Add Mouse Buttons controls :3">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerKeyboardController2.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerKeyboardController2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/BaseGunItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/BaseGunItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/RaycastGunItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/RaycastGunItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/AutomaticRaycastGunItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/AutomaticRaycastGunItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/GunItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/GunItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/ShotgunItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/ShotgunItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/automatic/AutomaticRifleItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/automatic/AutomaticRifleItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/automatic/MinigunItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/automatic/MinigunItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/loot/supply/GunSupplyLoot.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/loot/supply/GunSupplyLoot.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,11 +148,11 @@
       <recent name="io.github._20nickname20.imbored.util" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast" />
       <recent name="io.github._20nickname20.imbored.controllers" />
       <recent name="io.github._20nickname20.imbored.game_objects.loot.supply" />
       <recent name="io.github._20nickname20.imbored.game_objects.items.usable.timed.heal" />
       <recent name="io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.automatic" />
-      <recent name="io.github._20nickname20.imbored.render" />
     </key>
   </component>
   <component name="RunManager" selected="Gradle.imbored [run]">
@@ -344,7 +351,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746278547498</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Add Mouse Buttons controls :3">
+      <option name="closed" value="true" />
+      <created>1746279660807</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1746279660807</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -364,6 +379,7 @@
     <MESSAGE value="Bugfix&#10;Changed player movement and increased density&#10;Fixed a container extract bug" />
     <MESSAGE value="Bugfix and new stuff&#10;Nerf rifle and added minigun which can overheat and explode&#10;Add explode() function as util&#10;Add landmines&#10;Add status effects&#10;Add energy drink to add speed status effect&#10;Add first aid kit&#10;Tweak progress bar display" />
     <MESSAGE value="Add Mouse Cursor movement :3" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Mouse Cursor movement :3" />
+    <MESSAGE value="Add Mouse Buttons controls :3" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Mouse Buttons controls :3" />
   </component>
 </project>

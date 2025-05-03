@@ -5,8 +5,8 @@ import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.RaycastGunItem;
 
 public abstract class AutomaticRaycastGunItem extends RaycastGunItem {
-    public AutomaticRaycastGunItem(Entity holder, float size, float cooldown, float damage, float power, float recoilScale, float range, float maxScatterAngle) {
-        super(holder, size, cooldown, damage, power, recoilScale, range, maxScatterAngle, cooldown / 4);
+    public AutomaticRaycastGunItem(Entity holder, float size, float cooldown, float damage, int ammo, int maxAmmo, float power, float recoilScale, float range, float maxScatterAngle) {
+        super(holder, size, cooldown, damage, ammo, maxAmmo, power, recoilScale, range, maxScatterAngle, cooldown / 4);
     }
 
     private boolean isShooting = false;

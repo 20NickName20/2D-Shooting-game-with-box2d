@@ -28,8 +28,8 @@ public abstract class RaycastGunItem extends BaseGunItem {
     // TODO: ADD LASER!!!! (shoots thru 5 entities)
 
     protected float range;
-    public RaycastGunItem(Entity holder, float size, float cooldown, float damage, float power, float recoilScale, float range, float maxScatterAngle, float rayDisplayTime) {
-        super(holder, size, cooldown, damage);
+    public RaycastGunItem(Entity holder, float size, float cooldown, float damage, int ammo, int maxAmmo, float power, float recoilScale, float range, float maxScatterAngle, float rayDisplayTime) {
+        super(holder, size, cooldown, damage, ammo, maxAmmo);
         this.power = power;
         this.recoilScale = recoilScale;
         this.range = range;
@@ -60,6 +60,7 @@ public abstract class RaycastGunItem extends BaseGunItem {
 
     @Override
     protected void onShoot(PlayerEntity player) {
+        super.onShoot(player);
         shootRay(player, 0);
     }
 

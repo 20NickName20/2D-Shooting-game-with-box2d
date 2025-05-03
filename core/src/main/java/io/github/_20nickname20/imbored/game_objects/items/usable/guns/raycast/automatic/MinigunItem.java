@@ -3,25 +3,19 @@ package io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.a
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.entities.DamagableEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.AutomaticRaycastGunItem;
 import io.github._20nickname20.imbored.render.BarDisplay;
-import io.github._20nickname20.imbored.util.Ray;
-import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.util.With;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MinigunItem extends AutomaticRaycastGunItem {
     private final float defaultCooldown = 0.05f;
     private float overheat = 0f;
 
     public MinigunItem(Entity holder) {
-        super(holder, 2, 0.05f, 5, 6.5f, 0.08f, 175f, MathUtils.degRad * 10);
+        super(holder, 2, 0.05f, 5, 100, 100, 6.5f, 0.08f, 175f, MathUtils.degRad * 10);
     }
 
     @Override
