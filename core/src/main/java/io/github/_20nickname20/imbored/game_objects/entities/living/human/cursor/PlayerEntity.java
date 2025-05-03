@@ -86,8 +86,9 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
 
     public void unequipItem() {
         if (equippedItem == null) return;
-        equippedItem.onUnequip(this);
+        Item removed = equippedItem;
         equippedItem = null;
+        removed.onUnequip(this);
         this.setCursorDistance(handCursorDistance);
     }
 

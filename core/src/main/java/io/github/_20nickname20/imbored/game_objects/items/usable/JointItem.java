@@ -70,8 +70,8 @@ public abstract class JointItem extends UsableItem {
         Vector2 pos = player.getCursorPosition();
         Body closest = getClosestBodyForConnecting(player.world, pos);
         if (closest == null) return;
-        Vector2 connectPoint = FindBody.closestPoint(closest, pos);
         if (closest == bodyA) return;
+        Vector2 connectPoint = FindBody.closestPoint(closest, pos);
         if (bodyA.getPosition().dst(bodyAPos) > 0.1) return;
         if (!MathUtils.isEqual(bodyA.getAngle(), bodyAAngle, 0.01f)) return;
         if (connectPoint.dst(posA) > maxDistance) return;
