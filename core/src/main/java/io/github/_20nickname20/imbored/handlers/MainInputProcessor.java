@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import io.github._20nickname20.imbored.controllers.PlayerKeyboardController;
+import io.github._20nickname20.imbored.controllers.PlayerKeyboardController2;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.LootGenerator;
 import io.github._20nickname20.imbored.game_objects.Material;
@@ -27,7 +28,7 @@ public class MainInputProcessor extends InputAdapter {
     GameScreen gameScreen;
     private MouseJoint mouseJoint = null;
     private Entity grabbed = null;
-
+    public boolean isAdminEnabled = false;
     public MainInputProcessor(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
     }
@@ -36,7 +37,8 @@ public class MainInputProcessor extends InputAdapter {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Vector2 point = gameScreen.getViewport().unproject(new Vector2(screenX, screenY));
+        if (!isAdminEnabled) return false;
+        Vector2 point = GameScreen.getViewport().unproject(new Vector2(screenX, screenY));
         if (button == Input.Buttons.RIGHT) {
             startX = point.x;
             startY = point.y;
@@ -61,6 +63,7 @@ public class MainInputProcessor extends InputAdapter {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if (!isAdminEnabled) return false;
         Vector2 point = gameScreen.getViewport().unproject(new Vector2(screenX, screenY));
         if (button == Input.Buttons.MIDDLE) {
             pressedBefore = false;
@@ -91,6 +94,7 @@ public class MainInputProcessor extends InputAdapter {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+        if (!isAdminEnabled) return false;
         Vector2 worldPos = gameScreen.getViewport().unproject(new Vector2(screenX, screenY));
         Vector2 move = new Vector2(screenX, screenY).sub(mousePos);
         mousePos.set(screenX, screenY);
@@ -123,9 +127,10 @@ public class MainInputProcessor extends InputAdapter {
         }
         if (keycode == Input.Keys.ENTER) {
             gameScreen.world.spawn(
-                new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, -30, new PlayerKeyboardController(new PlayerKeyboardController.KeyboardMapping()))
+                new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, -30, new PlayerKeyboardController2(new PlayerKeyboardController2.KeyboardMapping()))
             );
         }
+        if (!isAdminEnabled) return false;
         if (keycode == Input.Keys.B) {
             LootGenerator gunLoot = new GunSupplyLoot();
             LootGenerator healLoot = new HealSupplyLoot();

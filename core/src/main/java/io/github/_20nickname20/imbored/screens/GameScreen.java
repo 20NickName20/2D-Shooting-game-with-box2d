@@ -26,8 +26,8 @@ import static io.github._20nickname20.imbored.Main.inputMultiplexer;
 
 public class GameScreen extends ScreenAdapter {
     public final Main game;
-    private final Viewport viewport;
-    public static final float zoom = 0.5f;
+    private static Viewport viewport;
+    public static final float zoom = 0.135f;
 
     private final GameLineRenderer renderer;
     ShaderProgram shader;
@@ -143,7 +143,7 @@ public class GameScreen extends ScreenAdapter {
         this.ground = ground;
     }
 
-    public Viewport getViewport() {
+    public static Viewport getViewport() {
         return viewport;
     }
 

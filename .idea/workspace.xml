@@ -5,31 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4a78e742-e078-4be3-8f79-d9f4c33b45bc" name="Changes" comment="Bugfix and new stuff&#10;Nerf rifle and added minigun which can overheat and explode&#10;Add explode() function as util&#10;Add landmines&#10;Add status effects&#10;Add energy drink to add speed status effect&#10;Add first aid kit&#10;Tweak progress bar display">
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/GrappleHookItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/loot/supply/GunSupplyLoot.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/loot/supply/HealSupplyLoot.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/loot/supply/StuffSupplyLoot.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerKeyboardController2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_04_2025_19_48__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_04_2025_19_48__Changes_1.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/assets.txt" beforeDir="false" afterPath="$PROJECT_DIR$/assets/assets.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/GameWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/GameWorld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerGamepadController.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerGamepadController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerKeyboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerKeyboardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/Inventory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/DamagableEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/DamagableEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/ItemEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/ItemEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/LandmineEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/LandmineEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/living/human/cursor/PlayerEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/living/human/cursor/PlayerEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/BaseGrenadeItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/BaseGrenadeItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/RaycastGunItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/RaycastGunItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/GunItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/GunItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/loot/TestRandomLoot.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/loot/TestRandomLoot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/assets.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/handlers/MainInputProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/handlers/MainInputProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/render/BarDisplay.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/render/BarDisplay.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/screens/GameScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/screens/GameScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/screens/MainMenuScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/screens/MainMenuScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/util/Tests.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/util/Tests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/util/Util.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/util/Util.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lwjgl3/build/resources/main/assets.txt" beforeDir="false" afterPath="$PROJECT_DIR$/lwjgl3/build/resources/main/assets.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lwjgl3/build/resources/main/assets.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,7 +90,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/20NickName20/2D-Shooting-game-with-box2d.git&quot;,
-    &quot;accountId&quot;: &quot;369494db-f454-4aa3-bb97-16e1e22191b8&quot;
+    &quot;accountId&quot;: &quot;673ea8b7-157f-479b-9640-c4391e7d23e9&quot;
   }
 }</component>
   <component name="ProblemsViewState">
@@ -123,28 +108,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.imbored [dist].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.imbored [run].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Shell Script.start build.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_directory_selection&quot;: &quot;C:/Users/USER/libgdx_projects/imbored/core/src/main/java/io/github/_20nickname20/imbored/util&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/USER/Downloads/Telegram Desktop/glsl-plugin-idea-1.1.5.zip&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.imbored [dist].executor": "Run",
+    "Gradle.imbored [run].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Shell Script.start build.executor": "Run",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_directory_selection": "C:/Users/USER/libgdx_projects/imbored/core/src/main/java/io/github/_20nickname20/imbored/util",
+    "last_opened_file_path": "C:/Users/USER/Downloads/Telegram Desktop/glsl-plugin-idea-1.1.5.zip",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="io.github._20nickname20.imbored.util.Shapes" />
@@ -163,11 +149,11 @@
       <recent name="io.github._20nickname20.imbored.util" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="io.github._20nickname20.imbored.controllers" />
       <recent name="io.github._20nickname20.imbored.game_objects.loot.supply" />
       <recent name="io.github._20nickname20.imbored.game_objects.items.usable.timed.heal" />
       <recent name="io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.automatic" />
       <recent name="io.github._20nickname20.imbored.render" />
-      <recent name="io.github._20nickname20.imbored.entities" />
     </key>
   </component>
   <component name="RunManager" selected="Gradle.imbored [run]">
