@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import io.github._20nickname20.imbored.game_objects.Item;
 import io.github._20nickname20.imbored.game_objects.LootGenerator;
 import io.github._20nickname20.imbored.game_objects.items.usable.grenade.GrenadeItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.GunItem;
+import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.PistolItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.ShotgunItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.automatic.AutomaticRifleItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.automatic.MinigunItem;
@@ -23,7 +23,7 @@ public class GunSupplyLoot implements LootGenerator {
                 case 1 -> AutomaticRifleItem.class;
                 case 2 -> ShotgunItem.class;
                 case 3 -> GrenadeItem.class;
-                default -> GunItem.class;
+                default -> PistolItem.class;
             };
 
             loot.add(Item.createFromType(type, null));

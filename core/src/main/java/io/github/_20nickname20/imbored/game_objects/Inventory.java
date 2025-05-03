@@ -57,9 +57,7 @@ public class Inventory {
         if (scrolledSlot < 0) {
             scrolledSlot += count;
         }
-        getSelectedItem().onDeselect(holder);
         selectedSlot = scrolledSlot % count;
-        getSelectedItem().onSelect(holder);
     }
 
     public boolean canFit(Item item) {
@@ -111,6 +109,12 @@ public class Inventory {
             selectedSlot -= 1;
         }
         return removed;
+    }
+
+    public void removeItem(Item item) {
+        int index = items.indexOf(item);
+        if (index == -1) return;
+        removeItem(index);
     }
 
     public Item removeSelectedItem() {

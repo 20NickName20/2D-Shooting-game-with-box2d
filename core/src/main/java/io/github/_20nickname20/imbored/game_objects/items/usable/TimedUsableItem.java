@@ -9,13 +9,13 @@ import io.github._20nickname20.imbored.game_objects.items.UsableItem;
 import io.github._20nickname20.imbored.render.BarDisplay;
 
 public abstract class TimedUsableItem extends UsableItem {
-    private final float useTime;
-    public TimedUsableItem(Entity holder, float size, float useTime) {
+    private final float requiredUseTime;
+    public TimedUsableItem(Entity holder, float size, float requiredUseTime) {
         super(holder, size);
-        this.useTime = useTime;
+        this.requiredUseTime = requiredUseTime;
     }
 
-    private float usedTime = 0;
+    private float useTime = 0;
     private final BarDisplay progressBar = new BarDisplay(new Color(0.2f, 0, 0.7f, 1), new Color(0.9f, 0.6f, 0f, 1), 0, 0.3f);
     private boolean isUsing = false;
 
@@ -35,10 +35,10 @@ public abstract class TimedUsableItem extends UsableItem {
     public void update(float dt) {
         super.update(dt);
         if (isUsing) {
-            usedTime += dt;
-            progressBar.setTargetValue(usedTime / useTime);
+            useTime += dt;
+            progressBar.setTargetValue(useTime / requiredUseTime);
         }
-        if (usedTime >= useTime) {
+        if (useTime >= requiredUseTime) {
             onUseFinish(this.getHolder());
             isUsing = false;
         }
@@ -53,7 +53,7 @@ public abstract class TimedUsableItem extends UsableItem {
     @Override
     public void onEndUse(PlayerEntity player) {
         isUsing = false;
-        usedTime = 0;
+        useTime = 0;
         progressBar.setTargetValue(0);
     }
 }

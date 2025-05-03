@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.joints.*;
 import io.github._20nickname20.imbored.*;
-import io.github._20nickname20.imbored.controllers.PlayerGamepadController;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.Inventory;
 import io.github._20nickname20.imbored.game_objects.Item;
@@ -29,30 +28,31 @@ import static io.github._20nickname20.imbored.util.With.translation;
 
 public class PlayerEntity extends CursorEntity implements InventoryHolder {
     private float food = 100;
-    private float maxFood = 100;
+    private final float maxFood = 100;
     private BarDisplay foodBar = new BarDisplay(new Color(0.6f, 0.2f, 0, 1), new Color(0.9f, 0.8f, 0, 1), 1, 1);
 
     private float thirst = 100;
-    private float maxThirst = 100;
+    private final float maxThirst = 100;
 
-    private float infection; //TODO: set values
+    private float infection;
 
     PlayerController controller;
     private float lastJumpTime = 0;
 
-    private Mode mode = Mode.GRAB;
-    private float maxGrabForce = 200;
-    private float grabRadius = 6;
-    private float grabCursorDistance = 8;
-    private float throwPower = 55;
+    private final float maxGrabForce = 200;
+    private final float grabRadius = 6;
+    private final float throwPower = 55;
 
-    private float itemCursorDistance = 4;
-    private float itemDropPower = 15;
+    private final float itemDropPower = 15;
+
+    private final float handCursorDistance = 8;
 
     private Entity grabbedEntity;
-    private InteractiveContainerEntity container;
+    private InteractiveContainerEntity currentContainer;
     private MouseJoint grabMouseJoint;
     private DistanceJoint grabDistanceJoint;
+
+    private Item equippedItem = null;
 
     public boolean popBob = false;
 
@@ -62,48 +62,38 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
 
     public PlayerEntity(GameWorld world, float x, float y, PlayerController controller) {
         super(world, x, y, 100, 20);
-        this.setCursorDistance(getDefaultCursorDistance());
+        this.setCursorDistance(getHandCursorDistance());
         this.controller = controller;
         controller.register(this);
     }
 
-    public void setMode(Mode mode) {
-        this.mode = mode;
-        this.cursorDistance = getDefaultCursorDistance();
-        if (mode != Mode.GRAB) {
+    public void equipSelectedItem() {
+        Item item = inventory.getSelectedItem();
+        if (item == null) return;
+        if (equippedItem != null) {
+            equippedItem.onUnequip(this);
+        } else {
             put();
         }
-        if (mode != Mode.INV) {
-            deselectItem();
-            container = null;
-        } else {
-            selectItem();
-        }
+        item.onEquip(this);
+        equippedItem = inventory.getSelectedItem();
+        this.setCursorDistance(equippedItem.getCursorDistance());
     }
 
-    public void nextMode() {
-        Mode[] modes = Mode.values();
-        for (int i = 1; i <= modes.length; i++) {
-            if (modes[i - 1] == mode) {
-                setMode(modes[i % modes.length]);
-                return;
-            }
-        }
+    public Item getEquippedItem() {
+        return equippedItem;
+    }
+
+    public void unequipItem() {
+        if (equippedItem == null) return;
+        equippedItem.onUnequip(this);
+        equippedItem = null;
+        this.setCursorDistance(handCursorDistance);
     }
 
     @Override
-    public float getDefaultCursorDistance() {
-        if (mode == Mode.GRAB) {
-            return grabCursorDistance;
-        }
-        if (mode == Mode.INV) {
-            return itemCursorDistance;
-        }
-        return 1;
-    }
-
-    public Mode getMode() {
-        return mode;
+    public float getHandCursorDistance() {
+        return handCursorDistance;
     }
 
     @Override
@@ -132,6 +122,9 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     }
 
     public void scrollItem(int amount) {
+        if (isApplyingSelectedToEquipped) {
+            stopApplyingSelectedToEquipped();
+        }
         inventory.scroll(amount);
     }
 
@@ -140,6 +133,9 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     public void update(float dt) {
         super.update(dt);
         inventory.update(dt);
+        if (equippedItem != null && equippedItem.isRemoved()) {
+            unequipItem();
+        }
         controller.update(dt);
 
         foodBar.update(dt);
@@ -149,13 +145,10 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
 
         if (popBob && time - lastPopBobTime > 0.01f) {
             lastPopBobTime = time;
-            gameWorld.dropItem(cursorPosition, cursorDirection.cpy().scl(itemDropPower * 5).rotateDeg(MathUtils.random(-20f, 20f)), new TestRandomLoot().generate(1).get(0));
+            gameWorld.dropItem(cursorPosition, this.getCursorDirection().scl(itemDropPower * 5).rotateDeg(MathUtils.random(-20f, 20f)), new TestRandomLoot().generate(1).get(0));
         }
 
-        if (mode == Mode.GRAB && grabbedEntity != null) {
-//            cursorDirection.add(grabbedEntity.b.getLinearVelocity().cpy().scl(dt / 5f));
-//            cursorDirection.nor();
-
+        if (grabbedEntity != null) {
             Vector2 toGrabbed = grabbedEntity.b.getPosition().sub(this.b.getPosition());
 
             if (toGrabbed.dot(cursorDirection) < -0.5) {
@@ -171,26 +164,26 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
 
             grabMouseJoint.setTarget(cursorPosition);
         }
-        if (mode == Mode.INV) {
-            Vector2 position = this.b.getPosition();
-            Body closest = FindBody.closestFiltered(world, position, (body) -> {
-                if (!(body.getUserData() instanceof InteractiveContainerEntity filteredContainer)) return false;
-                Vector2 pos = body.getPosition();
-                if (pos.cpy().sub(this.b.getPosition()).dot(cursorDirection) < 0) return false;
-                if (pos.dst(position) > filteredContainer.getInteractDistance()) return false;
-                return true;
-            });
-            if (closest == null) {
-                container = null;
-            } else if (closest.getUserData() instanceof InteractiveContainerEntity container) {
-                container.renderInv();
-                this.container = container;
-            }
+
+        Vector2 position = this.b.getPosition();
+        Body closest = FindBody.closestFiltered(world, position, (body) -> {
+            if (!(body.getUserData() instanceof InteractiveContainerEntity filteredContainer)) return false;
+            Vector2 pos = body.getPosition();
+            if (pos.cpy().sub(this.b.getPosition()).dot(cursorDirection) < 0) return false;
+            if (pos.dst(position) > filteredContainer.getInteractDistance()) return false;
+            return true;
+        });
+        if (closest == null) {
+            currentContainer = null;
+        } else if (closest.getUserData() instanceof InteractiveContainerEntity container) {
+            container.renderInv();
+            this.currentContainer = container;
         }
     }
 
-    public void grab() {
-        if (grabbedEntity != null) return;
+    public boolean grab() {
+        if (equippedItem != null) return true;
+        if (grabbedEntity != null) return true;
         Vector2 cursorPosition = this.getCursorPosition();
 
         Body grabbed = FindBody.closestFiltered(world, cursorPosition, (body) -> {
@@ -200,7 +193,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
             if (body.getPosition().dst(cursorPosition) > grabRadius) return false;
             return true;
         });
-        if (grabbed == null) return;
+        if (grabbed == null) return false;
 
         Vector2 grabPoint = FindBody.closestPoint(grabbed, cursorPosition);
 
@@ -228,7 +221,8 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
 
         grabbedEntity = (Entity) grabbed.getUserData();
         ((Grabbable) grabbedEntity).onGrabbed(this);
-    }
+        return true;
+    } // TODO: If not able to grab, then try to equip selected item
 
     public void put() {
         if (grabDistanceJoint == null) return;
@@ -244,57 +238,67 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     public void throwGrabbed() {
         if (grabDistanceJoint == null) return;
         grabbedEntity.b.resetMassData();
-        grabbedEntity.b.applyLinearImpulse(cursorDirection.cpy().scl(throwPower), grabDistanceJoint.getAnchorB(), true);
-        this.b.applyLinearImpulse(cursorDirection.cpy().scl(-throwPower / 4), this.b.getPosition(), true);
+        grabbedEntity.b.applyLinearImpulse(this.getCursorDirection().scl(throwPower), grabDistanceJoint.getAnchorB(), true);
+        this.b.applyLinearImpulse(this.getCursorDirection().scl(-throwPower / 4), this.b.getPosition(), true);
         put();
     }
 
     public void startUsingItem() {
-        if (mode != Mode.INV) return;
-        Item item = inventory.getSelectedItem();
-        if (item == null) return;
-        if (!(item instanceof UsableItem usable)) return;
+        if (equippedItem == null) return;
+        if (!(equippedItem instanceof UsableItem usable)) return;
         usable.onStartUse(this);
     }
 
     public void stopUsingItem() {
-        if (mode != Mode.INV) return;
-        Item item = inventory.getSelectedItem();
-        if (item == null) return;
-        if (!(item instanceof UsableItem usable)) return;
+        if (equippedItem == null) return;
+        if (!(equippedItem instanceof UsableItem usable)) return;
         usable.onEndUse(this);
-    }
-
-    public void selectItem() {
-        Item item = inventory.getSelectedItem();
-        if (item == null) return;
-        item.onSelect(this);
-    }
-
-    public void deselectItem() {
-        Item item = inventory.getSelectedItem();
-        if (item == null) return;
-        item.onDeselect(this);
     }
 
     public void removeSelectedItem() {
         inventory.removeSelectedItem();
     }
 
-    public ItemEntity dropSelectedItem() {
-        if (mode != Mode.INV) return null;
-        if (inventory.getSelectedItem() == null) return null;
-        deselectItem();
+    private boolean isApplyingSelectedToEquipped = false;
+
+    public void startApplyingSelectedToEquipped() {
+        if (inventory.isEmpty()) return;
+        if (equippedItem == null) return;
+        Item selectedItem = inventory.getSelectedItem();
+        if (selectedItem == equippedItem) return;
+        isApplyingSelectedToEquipped = true;
+
+        selectedItem.onApplyToOtherStart(equippedItem);
+        equippedItem.onOtherAppliedStart(selectedItem);
+    }
+
+    public void stopApplyingSelectedToEquipped() {
+        if (!isApplyingSelectedToEquipped) return;
+        isApplyingSelectedToEquipped = false;
+        Item selectedItem = inventory.getSelectedItem();
+
+        selectedItem.onApplyToOtherStop(equippedItem);
+        equippedItem.onOtherAppliedStop(selectedItem);
+    }
+
+    public Item removeEquippedItem() {
+        if (equippedItem == null) return null;
+        inventory.removeItem(equippedItem);
+        Item removed = equippedItem;
+        unequipItem();
+        return removed;
+    }
+
+    public ItemEntity dropEquippedItem() {
         Vector2 cursorPosition = this.getCursorPosition();
-        return gameWorld.dropItem(cursorPosition, this.cursorDirection.cpy().scl(itemDropPower).add(this.b.getLinearVelocity()), inventory.removeSelectedItem());
+        Item item = removeEquippedItem();
+        if (item == null) return null;
+        return gameWorld.dropItem(cursorPosition, this.getCursorDirection().scl(itemDropPower).add(this.b.getLinearVelocity()), item);
     }
 
     public boolean pickupItem(ItemEntity entity) {
         if (!entity.canPickup()) return false;
         if (!inventory.add(entity.item)) return false;
-        if (inventory.amount() == 1) {
-            entity.item.onSelect(this);
-        }
         entity.remove();
         entity.item.onPickup(this);
         return true;
@@ -314,22 +318,28 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     }
 
     public void scrollContainer(int amount) {
-        if (container == null) return;
-        container.scrollItem(amount);
+        if (currentContainer == null) {
+            scrollItem(amount);
+            return;
+        }
+        currentContainer.scrollItem(amount);
     }
 
     public void takeOutOfContainer() {
-        if (container == null) return;
-        container.takeOutSelected(this.b.getPosition().cpy().sub(container.b.getPosition()).nor().scl(itemDropPower * 2));
+        if (currentContainer == null) return;
+        currentContainer.takeOutSelected(this.b.getPosition().cpy().sub(currentContainer.b.getPosition()).nor().scl(itemDropPower * 2));
     }
 
-    public void putSelectedToContainer() {
-        if (container == null) return;
+    public void putEquippedToContainer() {
+        if (equippedItem == null) {
+            equipSelectedItem();
+        }
+        if (currentContainer == null) return;
         if (inventory.isEmpty()) return;
-        Item item = inventory.removeSelectedItem();
-        item.onDeselect(this);
-        if (container.putItem(item)) return;
-        gameWorld.dropItem(getCursorPosition(), this.cursorDirection.cpy().scl(itemDropPower), item);
+        Item item = removeEquippedItem();
+        if (item == null) return;
+        if (currentContainer.putItem(item)) return;
+        gameWorld.dropItem(getCursorPosition(), this.getCursorDirection().scl(itemDropPower), item);
     }
 
     @Override
@@ -345,24 +355,20 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         float cursorDistance = getCursorDistance();
         renderer.setColor(1, 1, 1, 0.5f);
 
-        Item selectedItem = inventory.getSelectedItem();
-
         float angle = cursorDirection.angleDeg();
         With.rotation(renderer, angle, () -> {
             renderer.line(0, 0, cursorDistance, 0);
             translation(renderer, cursorDistance, 0, () -> {
                 renderer.circle(0, 0, 1.2f);
-                if (mode == Mode.INV && selectedItem != null) {
-                    selectedItem.render(renderer, this);
+                if (equippedItem != null) {
+                    equippedItem.render(renderer, this);
                 }
             });
         });
 
-        if (mode == Mode.INV) {
-            translation(renderer, 0, -7f, () -> {
-                inventory.renderPart(renderer, 3);
-            });
-        }
+        With.translation(renderer, 0, -7f, () -> {
+            inventory.renderPart(renderer, 3);
+        });
 
         if (food < 10 || foodBar.isRising()) {
             With.translation(renderer, 0, -8.5f, () -> {
@@ -385,10 +391,5 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     @Override
     public Entity getEntity() {
         return this;
-    }
-
-    public enum Mode {
-        GRAB,
-        INV
     }
 }

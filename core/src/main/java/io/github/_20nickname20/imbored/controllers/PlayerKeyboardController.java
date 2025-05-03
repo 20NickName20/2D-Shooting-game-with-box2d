@@ -1,7 +1,6 @@
 package io.github._20nickname20.imbored.controllers;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import io.github._20nickname20.imbored.PlayerController;
 
@@ -125,25 +124,19 @@ public class PlayerKeyboardController extends PlayerController implements InputP
             return false;
         }
         if (i == mapping.scrollItemLeftKey) {
-            if (player.getMode() == PlayerEntity.Mode.INV) {
-                player.scrollItem(-1);
-                return false;
-            }
+            player.scrollItem(-1);
         }
         if (i == mapping.scrollItemRightKey) {
-            if (player.getMode() == PlayerEntity.Mode.INV) {
-                player.scrollItem(1);
-                return false;
-            }
+            player.scrollItem(1);
         }
         if (i == mapping.modeSwitchKey) {
-            player.nextMode();
+            this.switchMode();
         }
         if (i == mapping.modeUseKey) {
             this.startUseMode();
         }
         if (i == mapping.dropItemKey) {
-            player.dropSelectedItem();
+            player.dropEquippedItem();
         }
         if (i == mapping.throwKey) {
             player.throwGrabbed();
@@ -158,7 +151,7 @@ public class PlayerKeyboardController extends PlayerController implements InputP
             player.takeOutOfContainer();
         }
         if (i == mapping.containerPutKey) {
-            player.putSelectedToContainer();
+            player.putEquippedToContainer();
         }
 
         if (i == Keys.NUM_0) {

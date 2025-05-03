@@ -17,19 +17,23 @@ public abstract class CursorEntity extends HumanEntity {
         return cursorDistance;
     }
 
+    public Vector2 getCursorDirection() {
+        return cursorDirection.cpy();
+    }
+
     public void setCursorDistance(float distance) {
         this.cursorDistance = distance;
     }
 
     public Vector2 getCursorRelative() {
-        return cursorDirection.cpy().scl(getCursorDistance());
+        return getCursorDirection().scl(getCursorDistance());
     }
 
     public Vector2 getCursorPosition() {
         return this.b.getPosition().cpy().add(getCursorRelative());
     }
 
-    public float getDefaultCursorDistance() {
+    public float getHandCursorDistance() {
         return 8;
     }
 }
