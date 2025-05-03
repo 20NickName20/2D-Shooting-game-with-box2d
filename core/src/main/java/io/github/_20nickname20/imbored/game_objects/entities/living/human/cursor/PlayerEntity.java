@@ -181,9 +181,9 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         }
     }
 
-    public void grab() {
-        if (equippedItem != null) return;
-        if (grabbedEntity != null) return;
+    public boolean grab() {
+        if (equippedItem != null) return true;
+        if (grabbedEntity != null) return true;
         Vector2 cursorPosition = this.getCursorPosition();
 
         Body grabbed = FindBody.closestFiltered(world, cursorPosition, (body) -> {
@@ -193,7 +193,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
             if (body.getPosition().dst(cursorPosition) > grabRadius) return false;
             return true;
         });
-        if (grabbed == null) return;
+        if (grabbed == null) return false;
 
         Vector2 grabPoint = FindBody.closestPoint(grabbed, cursorPosition);
 
@@ -221,6 +221,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
 
         grabbedEntity = (Entity) grabbed.getUserData();
         ((Grabbable) grabbedEntity).onGrabbed(this);
+        return true;
     } // TODO: If not able to grab, then try to equip selected item
 
     public void put() {
@@ -317,7 +318,10 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     }
 
     public void scrollContainer(int amount) {
-        if (currentContainer == null) return;
+        if (currentContainer == null) {
+            scrollItem(amount);
+            return;
+        }
         currentContainer.scrollItem(amount);
     }
 

@@ -11,7 +11,9 @@ public abstract class PlayerController {
 
     protected final void startUseMode() {
         if (player.getEquippedItem() == null) {
-            player.grab();
+            if (!player.grab()) {
+                player.equipSelectedItem();
+            }
         } else {
             player.startUsingItem();
         }
