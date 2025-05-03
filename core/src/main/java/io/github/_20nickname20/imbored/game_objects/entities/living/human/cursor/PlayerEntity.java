@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.joints.*;
 import io.github._20nickname20.imbored.*;
+import io.github._20nickname20.imbored.controllers.PlayerGamepadController;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.Inventory;
 import io.github._20nickname20.imbored.game_objects.Item;
@@ -16,6 +17,7 @@ import io.github._20nickname20.imbored.game_objects.entities.container.Interacti
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.items.UsableItem;
 import io.github._20nickname20.imbored.game_objects.loot.TestRandomLoot;
+import io.github._20nickname20.imbored.render.BarDisplay;
 import io.github._20nickname20.imbored.render.JointDisplay;
 import io.github._20nickname20.imbored.util.FindBody;
 import io.github._20nickname20.imbored.util.Util;
@@ -26,7 +28,14 @@ import java.util.List;
 import static io.github._20nickname20.imbored.util.With.translation;
 
 public class PlayerEntity extends CursorEntity implements InventoryHolder {
-    float food, thirst, infection; //TODO: set values
+    private float food = 100;
+    private float maxFood = 100;
+    private BarDisplay foodBar = new BarDisplay(new Color(0.6f, 0.2f, 0, 1), new Color(0.9f, 0.8f, 0, 1), 1, 1);
+
+    private float thirst = 100;
+    private float maxThirst = 100;
+
+    private float infection; //TODO: set values
 
     PlayerController controller;
     private float lastJumpTime = 0;
@@ -48,6 +57,8 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     public boolean popBob = false;
 
     public final Inventory inventory = new Inventory(this, 20);
+
+    public float customColor = MathUtils.random();
 
     public PlayerEntity(GameWorld world, float x, float y, PlayerController controller) {
         super(world, x, y, 100, 20);
@@ -98,7 +109,9 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     @Override
     public void onDestroy() {
         if (this.isRemoved()) return;
-        gameWorld.spawn(new PlayerEntity(gameWorld, gameWorld.camera.position.x, 50, controller));
+        PlayerEntity newPlayer = new PlayerEntity(gameWorld, gameWorld.camera.position.x, -20, controller);
+        newPlayer.customColor = this.customColor + 0.1f;
+        gameWorld.spawn(newPlayer);
         super.onDestroy();
     }
 
@@ -128,6 +141,8 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         super.update(dt);
         inventory.update(dt);
         controller.update(dt);
+
+        foodBar.update(dt);
 
         Vector2 cursorPosition = getCursorPosition();
         float time = Util.time();
@@ -348,7 +363,18 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
                 inventory.renderPart(renderer, 3);
             });
         }
-        return false;
+
+        if (food < 10 || foodBar.isRising()) {
+            With.translation(renderer, 0, -8.5f, () -> {
+                foodBar.render(renderer);
+            });
+        }
+
+        renderer.setColor(Util.fromHSV(customColor, 1, 1));
+        for (float i = 0; i < 2; i += 0.75f) {
+            renderer.rect(-1.75f + i, -3.5f + i, 3.5f - i * 2, 7f - i * 2);
+        }
+        return true;
     }
 
     @Override

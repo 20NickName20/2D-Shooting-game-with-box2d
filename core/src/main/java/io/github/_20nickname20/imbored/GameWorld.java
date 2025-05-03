@@ -80,6 +80,10 @@ public class GameWorld {
             for (Body body : bodies) {
                 if (!(body.getUserData() instanceof Entity entity)) continue;
 
+                if (body.getPosition().y > 100) {
+                    body.applyLinearImpulse(new Vector2(0, -100), body.getPosition(), true);
+                }
+
                 if (entity instanceof PlayerEntity player) {
                     playerCenter.add(entity.b.getPosition());
                     registeredPlayers.add(player);
@@ -125,7 +129,7 @@ public class GameWorld {
             maxOffset = Math.max(maxOffset, player.b.getPosition().dst(playerCenter));
         }
         if (maxOffset < 0.1f) return;
-        camera.zoom = 1 / GameScreen.zoom + 1f + (float) Math.pow(maxOffset, 0.65);
+        camera.zoom = Math.max(1 / GameScreen.zoom + 1f + (float) Math.pow(maxOffset, 0.65), 5.5f);
     }
 
     public ItemEntity dropItem(Vector2 location, Vector2 impulse, Item item) {

@@ -104,6 +104,10 @@ public class PlayerKeyboardController extends PlayerController implements InputP
             player.cursorDirection.add(0.1f, 0);
         }
         player.cursorDirection.nor();
+
+        if (Gdx.input.isKeyPressed(Keys.C)) {
+            player.customColor += dt / 4;
+        }
     }
 
     @Override

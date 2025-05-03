@@ -1,9 +1,1 @@
-hs_err_pid10636.log
-hs_err_pid11224.log
-hs_err_pid14500.log
-hs_err_pid15772.log
-hs_err_pid16444.log
-hs_err_pid21512.log
-hs_err_pid7568.log
-hs_err_pid8716.log
-hs_err_pid8948.log
+hs_err_pid14608.log

@@ -94,9 +94,13 @@ public abstract class BaseGrenadeItem extends UsableItem {
     @Override
     public void render(ShapeRenderer renderer, CursorEntity handHolder) {
         renderer.setColor(1f, 0.6f, 0.1f, 1);
-        With.rotation(renderer, -handHolder.b.getAngle() * MathUtils.radiansToDegrees, () -> {
+        if (handHolder != null) {
+            With.rotation(renderer, -handHolder.b.getAngle() * MathUtils.radiansToDegrees, () -> {
+                renderRays(renderer);
+            });
+        } else {
             renderRays(renderer);
-        });
+        }
     }
 
     @Override

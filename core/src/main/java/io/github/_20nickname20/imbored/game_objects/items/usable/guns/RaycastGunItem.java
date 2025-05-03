@@ -37,7 +37,6 @@ public abstract class RaycastGunItem extends BaseGunItem {
         this.rayDisplayTime = rayDisplayTime;
     }
 
-    //TODO: make damaging ray as util
     public void shootRay(PlayerEntity player, float offsetAngle) {
         Body playerBody = player.b;
         offsetAngle += MathUtils.random(-maxScatterAngle, maxScatterAngle);

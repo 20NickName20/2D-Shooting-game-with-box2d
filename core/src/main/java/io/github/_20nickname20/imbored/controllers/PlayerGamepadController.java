@@ -3,6 +3,7 @@ package io.github._20nickname20.imbored.controllers;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.ControllerMapping;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import io.github._20nickname20.imbored.PlayerController;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
@@ -37,6 +38,10 @@ public class PlayerGamepadController extends PlayerController implements Control
     public void update(float dt) {
         player.cursorDirection.add(targetCursorDirection.cpy().scl(dt * 70));
         player.cursorDirection.nor();
+
+        if (controller.getButton(mapping.buttonStart)) {
+            player.customColor += dt / 4;
+        }
     }
 
     @Override

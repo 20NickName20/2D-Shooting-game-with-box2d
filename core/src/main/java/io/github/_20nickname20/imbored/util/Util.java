@@ -1,5 +1,6 @@
 package io.github._20nickname20.imbored.util;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -9,6 +10,7 @@ import io.github._20nickname20.imbored.game_objects.entities.DamagableEntity;
 
 import java.util.List;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
 import static io.github._20nickname20.imbored.Main.startTime;
 
 public class Util {
@@ -71,5 +73,32 @@ public class Util {
         for (float angle = 0; angle < Math.PI * 2; angle += stepAngle) {
             shootRay(world, ignored, rays, position, angle, range, power, damage);
         }
+    }
+
+    public static Color fromHSV(final float hue, final float saturation, final float value) {
+        //vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+        final float
+            Kx=1f,
+            Ky=2f/3f,
+            Kz=1f/3f,
+            Kw=3f;
+        //vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+        final float
+            px=Math.abs(fract(hue+Kx)*6f-Kw),
+            py=Math.abs(fract(hue+Ky)*6f-Kw),
+            pz=Math.abs(fract(hue+Kz)*6f-Kw);
+        //return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+        return new Color(
+            value*mix(Kx,clamp(px-Kx,0f,1f),saturation),
+            value*mix(Kx,clamp(py-Kx,0f,1f),saturation),
+            value*mix(Kx,clamp(pz-Kz,0f,1f),saturation),
+            1f
+        );
+    }
+    public static float fract(final float x) {
+        return x-(int)x;
+    }
+    public static float mix(final float x, final float y, final float a) {
+        return x*(1f-a)+y*a;
     }
 }

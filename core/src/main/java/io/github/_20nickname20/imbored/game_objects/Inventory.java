@@ -75,6 +75,16 @@ public class Inventory {
         return true;
     }
 
+    public List<Item> addAll(Collection<Item> collection) {
+        List<Item> didNotFit = new ArrayList<>();
+        for (Item item : collection) {
+            if (!this.add(item)) {
+                didNotFit.add(item);
+            }
+        }
+        return didNotFit;
+    }
+
     public Item get(int index) {
         if (index < 0 || index >= items.size()) return null;
         return items.get(index);

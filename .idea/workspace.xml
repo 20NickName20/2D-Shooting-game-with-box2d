@@ -4,38 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4a78e742-e078-4be3-8f79-d9f4c33b45bc" name="Changes" comment="Bugfix&#10;Changed player movement and increased density&#10;Fixed a container extract bug">
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/Effect.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/Removable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/effects/SpeedEffect.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/LandmineEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/LandmineItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/automatic/MinigunItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/timed/heal/FirstAidKitItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/timed/modirfiers/EnergyDrinkItem.java" afterDir="false" />
+    <list default="true" id="4a78e742-e078-4be3-8f79-d9f4c33b45bc" name="Changes" comment="Bugfix and new stuff&#10;Nerf rifle and added minigun which can overheat and explode&#10;Add explode() function as util&#10;Add landmines&#10;Add status effects&#10;Add energy drink to add speed status effect&#10;Add first aid kit&#10;Tweak progress bar display">
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/GrappleHookItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/loot/supply/GunSupplyLoot.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/loot/supply/HealSupplyLoot.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/loot/supply/StuffSupplyLoot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/assets.txt" beforeDir="false" afterPath="$PROJECT_DIR$/assets/assets.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/GameWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/GameWorld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/Entity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/Item.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/Item.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerGamepadController.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerGamepadController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerKeyboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerKeyboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/Inventory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/DamagableEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/DamagableEntity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/ItemEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/ItemEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/LivingEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/LivingEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/living/HumanEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/living/HumanEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/living/human/CursorEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/living/human/CursorEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/LandmineEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/LandmineEntity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/living/human/cursor/PlayerEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/living/human/cursor/PlayerEntity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/BaseGrenadeItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/BaseGrenadeItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/TimedUsableItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/TimedUsableItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/grenade/GrenadeItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/grenade/GrenadeItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/AutomaticRaycastGunItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/AutomaticRaycastGunItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/ShotgunItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/ShotgunItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/TestGunItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/GunItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/automatic/AutomaticRifleItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/automatic/AutomaticRifleItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/timed/HealItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/timed/HealItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/RaycastGunItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/RaycastGunItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/GunItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/GunItem.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/loot/TestRandomLoot.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/loot/TestRandomLoot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/handlers/EntityContactListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/handlers/EntityContactListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/handlers/MainInputProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/handlers/MainInputProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/render/BarDisplay.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/render/BarDisplay.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/screens/GameScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/screens/GameScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/screens/MainMenuScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/screens/MainMenuScreen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/util/Tests.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/util/Tests.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/util/Util.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/util/Util.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lwjgl3/build/resources/main/assets.txt" beforeDir="false" afterPath="$PROJECT_DIR$/lwjgl3/build/resources/main/assets.txt" afterDir="false" />
@@ -172,11 +163,11 @@
       <recent name="io.github._20nickname20.imbored.util" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="io.github._20nickname20.imbored.game_objects.loot.supply" />
       <recent name="io.github._20nickname20.imbored.game_objects.items.usable.timed.heal" />
       <recent name="io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.automatic" />
       <recent name="io.github._20nickname20.imbored.render" />
       <recent name="io.github._20nickname20.imbored.entities" />
-      <recent name="io.github._20nickname20.imbored.items" />
     </key>
   </component>
   <component name="RunManager" selected="Gradle.imbored [run]">
@@ -359,7 +350,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746107814988</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Bugfix and new stuff&#10;Nerf rifle and added minigun which can overheat and explode&#10;Add explode() function as util&#10;Add landmines&#10;Add status effects&#10;Add energy drink to add speed status effect&#10;Add first aid kit&#10;Tweak progress bar display">
+      <option name="closed" value="true" />
+      <created>1746193426326</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1746193426326</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -377,6 +376,7 @@
     <MESSAGE value="Commit" />
     <MESSAGE value="Misc changes&#10;Added healer items&#10;Added grenades&#10;Made camera follow players&#10;Fixed item updates in containers&#10;Changed shoot ray rendering a bit" />
     <MESSAGE value="Bugfix&#10;Changed player movement and increased density&#10;Fixed a container extract bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bugfix&#10;Changed player movement and increased density&#10;Fixed a container extract bug" />
+    <MESSAGE value="Bugfix and new stuff&#10;Nerf rifle and added minigun which can overheat and explode&#10;Add explode() function as util&#10;Add landmines&#10;Add status effects&#10;Add energy drink to add speed status effect&#10;Add first aid kit&#10;Tweak progress bar display" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bugfix and new stuff&#10;Nerf rifle and added minigun which can overheat and explode&#10;Add explode() function as util&#10;Add landmines&#10;Add status effects&#10;Add energy drink to add speed status effect&#10;Add first aid kit&#10;Tweak progress bar display" />
   </component>
 </project>

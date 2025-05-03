@@ -3,13 +3,21 @@ package io.github._20nickname20.imbored.handlers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
+import io.github._20nickname20.imbored.controllers.PlayerKeyboardController;
 import io.github._20nickname20.imbored.game_objects.Entity;
+import io.github._20nickname20.imbored.game_objects.LootGenerator;
 import io.github._20nickname20.imbored.game_objects.Material;
 import io.github._20nickname20.imbored.game_objects.entities.StaticEntity;
+import io.github._20nickname20.imbored.game_objects.entities.container.CrateEntity;
+import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.game_objects.loot.supply.GunSupplyLoot;
+import io.github._20nickname20.imbored.game_objects.loot.supply.HealSupplyLoot;
+import io.github._20nickname20.imbored.game_objects.loot.supply.StuffSupplyLoot;
 import io.github._20nickname20.imbored.util.FindBody;
 import io.github._20nickname20.imbored.screens.GameScreen;
 import io.github._20nickname20.imbored.screens.MainMenuScreen;
@@ -112,6 +120,26 @@ public class MainInputProcessor extends InputAdapter {
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.ESCAPE) {
             gameScreen.game.setScreen(new MainMenuScreen(gameScreen.game));
+        }
+        if (keycode == Input.Keys.ENTER) {
+            gameScreen.world.spawn(
+                new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, -30, new PlayerKeyboardController(new PlayerKeyboardController.KeyboardMapping()))
+            );
+        }
+        if (keycode == Input.Keys.B) {
+            LootGenerator gunLoot = new GunSupplyLoot();
+            LootGenerator healLoot = new HealSupplyLoot();
+            LootGenerator stuffLoot = new StuffSupplyLoot();
+
+            Vector2 worldPos = gameScreen.getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+            CrateEntity entity = new CrateEntity(gameScreen.world, worldPos.x, worldPos.y, 3.5f, 3.5f, 200);
+            LootGenerator lootGenerator = switch (MathUtils.random(2)) {
+                case 0 -> gunLoot;
+                case 1 -> healLoot;
+                default -> stuffLoot;
+            };
+            entity.getInventory().addAll(lootGenerator.generate(1));
+            gameScreen.world.spawn(entity);
         }
         return false;
     }

@@ -42,12 +42,11 @@ public class MainMenuScreen extends ScreenAdapter {
 
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         viewport = new FitViewport(16, 9, camera);
-        camera.zoom /= GameScreen.zoom;
         viewport.apply();
         camera.update();
 
         font.setUseIntegerPositions(false);
-        font.getData().setScale(viewport.getWorldHeight() / Gdx.graphics.getHeight() * 10);
+        font.getData().setScale(viewport.getWorldHeight() / Gdx.graphics.getHeight());
 
         ControllerListener listener = new ControllerAdapter() {
             @Override
@@ -68,7 +67,7 @@ public class MainMenuScreen extends ScreenAdapter {
         batch.begin();
         font.setColor(Color.BLACK);
         font.draw(batch, "Добро пожаловать в Коробки резня летс гоо!", 1, 1.5f);
-        font.draw(batch, "Tap anywhere to begin!", 1, -1);
+        font.draw(batch, "Tap anywhere to begin!", 1, 1);
         batch.setColor(Color.BLUE);
         batch.line(0,0,10,10);
         batch.line(10,10,20,0);

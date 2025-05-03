@@ -21,12 +21,12 @@ import java.util.List;
 public abstract class DamagableEntity extends Entity {
     protected float health, maxHealth;
     protected float lastHealthChange = 0;
+    private final BarDisplay healthBar = new BarDisplay(new Color(0.6f, 0.2f, 0, 1), new Color(0.5f, 1, 0, 1), 1, 1);
 
     public DamagableEntity(GameWorld world, float x, float y, Shape shape, Material material, float maxHealth) {
         super(world, x, y, shape, material);
         this.maxHealth = maxHealth;
         this.health = maxHealth;
-        this.displayHealth = maxHealth;
     }
 
     public float getHealth() {
@@ -44,6 +44,7 @@ public abstract class DamagableEntity extends Entity {
         if (this.health > this.maxHealth) {
             this.health = maxHealth;
         }
+        healthBar.setTargetValue(health / maxHealth);
     }
 
     public void damage(float amount) {
@@ -53,6 +54,7 @@ public abstract class DamagableEntity extends Entity {
         if (this.health <= 0) {
             onDestroy();
         }
+        healthBar.setTargetValue(health / maxHealth);
     }
 
     public void kill() {
@@ -89,17 +91,16 @@ public abstract class DamagableEntity extends Entity {
         this.damage(len / 10);
     }
 
-    private float displayHealth;
-    private final static Color BAR_OUTTER_COLOR = new Color(0.6f, 0.2f, 0, 1);
-    private final static Color BAR_INNER_COLOR = new Color(0.5f, 1, 0, 1);
+    @Override
+    public void update(float dt) {
+        super.update(dt);
+        healthBar.update(dt);
+    }
+
     @Override
     public boolean render(ShapeRenderer renderer) {
-        float time = Util.time();
-        float dt = time - lastHealthChange;
-        displayHealth += (health - displayHealth) * dt;
-        if (time - lastHealthChange > 1) return false;
         With.translation(renderer, 0, 5, () -> {
-            BarDisplay.render(renderer, BAR_OUTTER_COLOR, BAR_INNER_COLOR, displayHealth / maxHealth);
+            healthBar.render(renderer);
         });
         return false;
     }

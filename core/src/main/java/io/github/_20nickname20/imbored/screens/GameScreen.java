@@ -27,7 +27,7 @@ import static io.github._20nickname20.imbored.Main.inputMultiplexer;
 public class GameScreen extends ScreenAdapter {
     public final Main game;
     private final Viewport viewport;
-    public static final float zoom = 0.075f;
+    public static final float zoom = 0.5f;
 
     private final GameLineRenderer renderer;
     ShaderProgram shader;
@@ -95,12 +95,12 @@ public class GameScreen extends ScreenAdapter {
 
         viewport.apply();
         renderer.render(world.world, world.camera.combined, (shape) -> {
-            With.translation(shape, world.camera.position.x, world.camera.position.y, () -> {
-                shape.setColor(Color.BLACK);
-                shape.set(ShapeRenderer.ShapeType.Filled);
-                shape.rect(-200, -200, 400, 400);
-                shape.set(ShapeRenderer.ShapeType.Line);
-            });
+            // With.translation(shape, world.camera.position.x, world.camera.position.y, () -> {
+            //     shape.setColor(Color.BLACK);
+            //     shape.set(ShapeRenderer.ShapeType.Filled);
+            //     shape.rect(-200, -200, 400, 400);
+            //     shape.set(ShapeRenderer.ShapeType.Line);
+            // });
             if (debugController != null && Gdx.input.isKeyPressed(Input.Keys.F3)) {
                 With.translation(shape, -70, 40, () -> {
                     shape.setColor(0.75f, 0.75f, 0.75f, 1);

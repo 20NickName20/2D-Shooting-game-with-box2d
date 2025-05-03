@@ -16,6 +16,9 @@ import io.github._20nickname20.imbored.game_objects.entities.block.BoxEntity;
 import io.github._20nickname20.imbored.game_objects.entities.container.CrateEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.game_objects.loot.TestRandomLoot;
+import io.github._20nickname20.imbored.game_objects.loot.supply.GunSupplyLoot;
+import io.github._20nickname20.imbored.game_objects.loot.supply.HealSupplyLoot;
+import io.github._20nickname20.imbored.game_objects.loot.supply.StuffSupplyLoot;
 import io.github._20nickname20.imbored.screens.GameScreen;
 
 public class Tests {
@@ -53,10 +56,13 @@ public class Tests {
     }
 
     public void crates() {
-        LootGenerator randomLoot = new TestRandomLoot();
+        LootGenerator gunLoot = new GunSupplyLoot();
+        LootGenerator healLoot = new HealSupplyLoot();
+        LootGenerator stuffLoot = new StuffSupplyLoot();
+
         for (float x = -15; x < 16; x++) {
             for (int i = -2; i < 3; i++) {
-                if (MathUtils.random(1, 5) > 2) continue;
+                if (MathUtils.random(2) == 0) continue;
                 int height = MathUtils.random(1, (int) (10f - (float) Math.sin(x / 10) * 7f));
                 for (int y = 0; y < height; y++) {
                     boolean type = MathUtils.randomBoolean();
@@ -65,26 +71,17 @@ public class Tests {
             }
 
             CrateEntity entity = new CrateEntity(world, x * 60 + 30, -40, 3.5f, 3.5f, 200);
-            for (int i = 0; i < 5; i++) {
-                entity.getInventory().add(randomLoot.generate(1).get(0));
-            }
+            LootGenerator lootGenerator = switch (MathUtils.random(2)) {
+                case 0 -> gunLoot;
+                case 1 -> healLoot;
+                default -> stuffLoot;
+            };
+            entity.getInventory().addAll(lootGenerator.generate(1));
             world.spawn(entity);
         }
 
-        // world.spawn(new PlayerEntity(world, 15, -40, new PlayerKeyboardController(new PlayerKeyboardController.KeyboardMapping())));
         for (Controller controller : Controllers.getControllers()) {
             gameScreen.addControllerPlayer(controller, 15);
         }
-    }
-
-    void distanceJointTest() {
-        Entity box1 = new BlockEntity(world, -50, 0, Shapes.boxShape(4, 4), Material.WOOD, 150);
-        Entity box2 = new BlockEntity(world, -30, 0, Shapes.circleShape(4), Material.WOOD, 150);
-        DistanceJointDef defJoint = new DistanceJointDef ();
-        //defJoint.length = 10;
-        defJoint.frequencyHz = 5;
-        defJoint.dampingRatio = 0.5f;
-        defJoint.initialize(box1.b, box2.b, box1.b.getPosition(), box2.b.getPosition());
-        DistanceJoint joint = (DistanceJoint) world.world.createJoint(defJoint);
     }
 }

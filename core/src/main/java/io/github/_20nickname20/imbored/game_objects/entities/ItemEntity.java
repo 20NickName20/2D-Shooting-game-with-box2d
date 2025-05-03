@@ -36,7 +36,7 @@ public class ItemEntity extends BlockEntity {
 
     @Override
     public boolean shouldCollide(Entity other) {
-        if (other instanceof InteractiveContainerEntity) {
+        if (Util.time() - this.spawnTime < PICKUP_DELAY && other instanceof InteractiveContainerEntity) {
             return false;
         }
         if (other instanceof ItemEntity) {
