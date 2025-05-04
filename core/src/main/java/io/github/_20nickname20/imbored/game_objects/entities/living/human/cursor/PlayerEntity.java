@@ -236,6 +236,10 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         grabMouseJoint = null;
     }
 
+    public boolean isGrabbed() {
+        return grabbedEntity != null;
+    }
+
     public void throwGrabbed() {
         if (grabDistanceJoint == null) return;
         grabbedEntity.b.resetMassData();
@@ -290,14 +294,14 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         return removed;
     }
 
-    public ItemEntity dropEquippedItem() {
+    public void dropEquippedItem() {
         Vector2 cursorPosition = this.getCursorPosition();
         if (equippedItem == null) {
             equipSelectedItem();
         }
         Item item = removeEquippedItem();
-        if (item == null) return null;
-        return gameWorld.dropItem(cursorPosition, this.getCursorDirection().scl(itemDropPower).add(this.b.getLinearVelocity()), item);
+        if (item == null) return;
+        gameWorld.dropItem(cursorPosition, this.getCursorDirection().scl(itemDropPower).add(this.b.getLinearVelocity()), item);
     }
 
     public boolean pickupItem(ItemEntity entity) {

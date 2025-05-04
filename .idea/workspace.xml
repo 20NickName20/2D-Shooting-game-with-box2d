@@ -4,18 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4a78e742-e078-4be3-8f79-d9f4c33b45bc" name="Changes" comment="Fix Stackoverflow on connect joint item">
+    <list default="true" id="4a78e742-e078-4be3-8f79-d9f4c33b45bc" name="Changes" comment="Update keyboard and mouse controls&#10;Make equipped item slot highlighted">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/GameWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/GameWorld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerGamepadController.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerGamepadController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerKeyboardController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerKeyboardController2.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerKeyboardAndMouseController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/Entity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/Inventory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerKeyboardAndMouseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerKeyboardAndMouseController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/living/human/cursor/PlayerEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/living/human/cursor/PlayerEntity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/loot/supply/AmmoSupplyLoot.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/loot/supply/AmmoSupplyLoot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/handlers/MainInputProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/handlers/MainInputProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/util/Tests.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/util/Tests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -353,7 +347,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746314233468</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Update keyboard and mouse controls&#10;Make equipped item slot highlighted">
+      <option name="closed" value="true" />
+      <created>1746346886092</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1746346886092</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -373,6 +375,7 @@
     <MESSAGE value="Bugfix&#10;Changed player movement and increased density&#10;Fixed a container extract bug" />
     <MESSAGE value="Bugfix and new stuff&#10;Nerf rifle and added minigun which can overheat and explode&#10;Add explode() function as util&#10;Add landmines&#10;Add status effects&#10;Add energy drink to add speed status effect&#10;Add first aid kit&#10;Tweak progress bar display" />
     <MESSAGE value="Fix Stackoverflow on connect joint item" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix Stackoverflow on connect joint item" />
+    <MESSAGE value="Update keyboard and mouse controls&#10;Make equipped item slot highlighted" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update keyboard and mouse controls&#10;Make equipped item slot highlighted" />
   </component>
 </project>

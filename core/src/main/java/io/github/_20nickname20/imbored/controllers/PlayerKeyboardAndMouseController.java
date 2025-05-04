@@ -64,6 +64,7 @@ public class PlayerKeyboardAndMouseController extends PlayerController implement
             case Keys.RIGHT_BRACKET -> player.scrollContainer(1);
             case Keys.X -> player.takeOutOfContainer();
             case Keys.Q -> this.startUseMode();
+            case Keys.R -> player.stopApplyingSelectedToEquipped();
         }
         /// player.putEquippedToContainer();
 
@@ -89,6 +90,7 @@ public class PlayerKeyboardAndMouseController extends PlayerController implement
                 }
             }
             case Keys.Q -> this.stopUseMode();
+            case Keys.R -> player.stopApplyingSelectedToEquipped();
         }
 
         return false;
@@ -105,7 +107,11 @@ public class PlayerKeyboardAndMouseController extends PlayerController implement
             this.startUseMode();
         }
         if (button == Input.Buttons.RIGHT) {
-            player.dropEquippedItem();
+            if (player.isGrabbed()) {
+                player.throwGrabbed();
+            } else {
+                player.dropEquippedItem();
+            }
         }
         return false;
     }
