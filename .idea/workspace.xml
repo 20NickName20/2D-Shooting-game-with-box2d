@@ -75,7 +75,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="new-rendering" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -118,7 +118,6 @@
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Shell Script.start build.executor": "Run",
-    "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "C:/Users/USER/libgdx_projects/imbored/core/src/main/java/io/github/_20nickname20/imbored/util",
@@ -127,7 +126,6 @@
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.keymap"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -148,11 +146,11 @@
       <recent name="io.github._20nickname20.imbored.util" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast" />
       <recent name="io.github._20nickname20.imbored.controllers" />
       <recent name="io.github._20nickname20.imbored.game_objects.loot.supply" />
       <recent name="io.github._20nickname20.imbored.game_objects.items.usable.timed.heal" />
       <recent name="io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.automatic" />
-      <recent name="io.github._20nickname20.imbored.render" />
     </key>
   </component>
   <component name="RunManager" selected="Gradle.imbored [run]">
@@ -300,7 +298,7 @@
       <created>1746022178863</created>
       <option name="number" value="00010" />
       <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
+      <option name="project" value="LOCAL" /?
       <updated>1746022178863</updated>
     </task>
     <task id="LOCAL-00011" summary="Prepare to merge into master">
