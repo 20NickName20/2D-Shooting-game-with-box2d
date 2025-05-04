@@ -35,8 +35,7 @@ public class PlayerGamepadController extends PlayerController implements Control
 
     @Override
     public void update(float dt) {
-        player.cursorDirection.add(targetCursorDirection.cpy().scl(dt * 70));
-        player.cursorDirection.nor();
+        player.addCursorDirection(targetCursorDirection.cpy().scl(dt * 70));
 
         if (controller.getButton(mapping.buttonStart)) {
             player.customColor += dt / 4;
@@ -67,8 +66,7 @@ public class PlayerGamepadController extends PlayerController implements Control
             return false;
         }
         if (buttonCode == mapping.buttonX) {
-            player.throwGrabbed();
-            player.dropEquippedItem();
+            this.pushSmth();
             return false;
         }
         if (buttonCode == mapping.buttonDpadLeft) {
@@ -80,7 +78,7 @@ public class PlayerGamepadController extends PlayerController implements Control
             return false;
         }
         if (buttonCode == mapping.buttonDpadUp) {
-            player.putEquippedToContainer();
+            this.pushSmth();
             return false;
         }
         if (buttonCode == mapping.buttonDpadDown) {

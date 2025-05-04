@@ -3,6 +3,7 @@ package io.github._20nickname20.imbored.handlers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -30,6 +31,11 @@ public class MainInputProcessor extends InputAdapter {
     public boolean isAdminEnabled = false;
     public MainInputProcessor(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
+
+        if (Controllers.getControllers().isEmpty()) {
+            keyboardPlayer = new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, -30, new PlayerKeyboardAndMouseController());
+            gameScreen.world.spawn(keyboardPlayer);
+        }
     }
 
     float startX = 0, startY = 0;
@@ -63,7 +69,7 @@ public class MainInputProcessor extends InputAdapter {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (!isAdminEnabled) return false;
-        Vector2 point = gameScreen.getViewport().unproject(new Vector2(screenX, screenY));
+        Vector2 point = GameScreen.getViewport().unproject(new Vector2(screenX, screenY));
         if (button == Input.Buttons.MIDDLE) {
             pressedBefore = false;
             return false;

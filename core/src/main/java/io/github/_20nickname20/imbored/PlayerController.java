@@ -1,6 +1,7 @@
 package io.github._20nickname20.imbored;
 
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.game_objects.items.UsableItem;
 
 public abstract class PlayerController {
 
@@ -12,7 +13,9 @@ public abstract class PlayerController {
     protected final void startUseMode() {
         if (player.getEquippedItem() == null) {
             if (!player.grab()) {
-                player.equipSelectedItem();
+                if (player.getInventory().getSelectedItem() instanceof UsableItem) {
+                    player.equipSelectedItem();
+                }
             }
         } else {
             player.startUsingItem();
@@ -32,6 +35,16 @@ public abstract class PlayerController {
             player.unequipItem();
         } else {
             player.equipSelectedItem();
+        }
+    }
+
+    protected final void pushSmth() {
+        if (player.isGrabbed()) {
+            player.throwGrabbed();
+        } else if (player.hasContainer()) {
+            player.storeEquippedToContainer();
+        } else {
+            player.dropEquippedItem();
         }
     }
 

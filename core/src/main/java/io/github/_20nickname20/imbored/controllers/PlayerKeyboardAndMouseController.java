@@ -4,12 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.math.Vector2;
 import io.github._20nickname20.imbored.PlayerController;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.screens.GameScreen;
-
-import java.awt.*;
 
 import static io.github._20nickname20.imbored.Main.inputMultiplexer;
 
@@ -29,18 +28,17 @@ public class PlayerKeyboardAndMouseController extends PlayerController implement
     @Override
     public void update(float dt) {
         if (Gdx.input.isKeyPressed(Keys.UP)) {
-            player.cursorDirection.add(0, 0.1f);
+            player.addCursorDirection(0, 0.1f);
         }
         if (Gdx.input.isKeyPressed(Keys.DOWN)) {
-            player.cursorDirection.add(0, -0.1f);
+            player.addCursorDirection(0, -0.1f);
         }
         if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-            player.cursorDirection.add(-0.1f, 0);
+            player.addCursorDirection(-0.1f, 0);
         }
         if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-            player.cursorDirection.add(0.1f, 0);
+            player.addCursorDirection(0.1f, 0);
         }
-        player.cursorDirection.nor();
 
         if (Gdx.input.isKeyPressed(Keys.C)) {
             player.customColor += dt / 4;
@@ -56,17 +54,13 @@ public class PlayerKeyboardAndMouseController extends PlayerController implement
             case Keys.NUM_1 -> player.scrollItem(-1);
             case Keys.NUM_2 -> player.scrollItem(1);
             case Keys.E -> this.switchMode();
-            case Keys.Z -> {
-                player.throwGrabbed();
-                player.dropEquippedItem();
-            }
+            case Keys.Z -> this.pushSmth();
             case Keys.LEFT_BRACKET -> player.scrollContainer(-1);
             case Keys.RIGHT_BRACKET -> player.scrollContainer(1);
             case Keys.X -> player.takeOutOfContainer();
             case Keys.Q -> this.startUseMode();
-            case Keys.R -> player.stopApplyingSelectedToEquipped();
+            case Keys.R -> player.startApplyingSelectedToEquipped();
         }
-        /// player.putEquippedToContainer();
 
         return false;
     }
@@ -107,11 +101,7 @@ public class PlayerKeyboardAndMouseController extends PlayerController implement
             this.startUseMode();
         }
         if (button == Input.Buttons.RIGHT) {
-            if (player.isGrabbed()) {
-                player.throwGrabbed();
-            } else {
-                player.dropEquippedItem();
-            }
+            this.switchMode();
         }
         return false;
     }
@@ -132,14 +122,14 @@ public class PlayerKeyboardAndMouseController extends PlayerController implement
     @Override
     public boolean touchDragged(int screenX, int screenY, int i2) {
         Vector2 point = GameScreen.getViewport().unproject(new Vector2(screenX, screenY));
-        player.cursorDirection.set(point.sub(player.b.getPosition()));
+        player.setCursorDirection(point.sub(player.b.getPosition()));
         return false;
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         Vector2 point = GameScreen.getViewport().unproject(new Vector2(screenX, screenY));
-        player.cursorDirection.set(point.sub(player.b.getPosition()));
+        player.setCursorDirection(point.sub(player.b.getPosition()));
         return false;
     }
 
@@ -150,7 +140,6 @@ public class PlayerKeyboardAndMouseController extends PlayerController implement
         } else {
             player.scrollContainer((int) y);
         }
-
         return false;
     }
 }

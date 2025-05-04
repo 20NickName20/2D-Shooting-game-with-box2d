@@ -7,7 +7,7 @@ import io.github._20nickname20.imbored.game_objects.entities.living.HumanEntity;
 public abstract class CursorEntity extends HumanEntity {
 
     protected float cursorDistance = 0;
-    public final Vector2 cursorDirection = new Vector2(0, 1);
+    private final Vector2 cursorDirection = new Vector2(0, 1);
 
     public CursorEntity(GameWorld world, float x, float y, float maxHealth, float defaultMaxWalkSpeed) {
         super(world, x, y, maxHealth, defaultMaxWalkSpeed);
@@ -20,6 +20,22 @@ public abstract class CursorEntity extends HumanEntity {
     public Vector2 getCursorDirection() {
         return cursorDirection.cpy();
     }
+
+    public void setCursorDirection(Vector2 direction) {
+        this.cursorDirection.set(direction);
+        this.cursorDirection.nor();
+    }
+
+    public void addCursorDirection(Vector2 direction) {
+        this.cursorDirection.add(direction);
+        this.cursorDirection.nor();
+    }
+
+    public void addCursorDirection(float x, float y) {
+        this.cursorDirection.add(x, y);
+        this.cursorDirection.nor();
+    }
+
 
     public void setCursorDistance(float distance) {
         this.cursorDistance = distance;

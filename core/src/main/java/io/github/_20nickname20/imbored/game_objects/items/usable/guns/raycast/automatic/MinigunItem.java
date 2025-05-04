@@ -57,7 +57,7 @@ public class MinigunItem extends AutomaticRaycastGunItem {
         if (overheat < 0.1f) return;
         if (handHolder == null) return;
 
-        With.rotation(renderer, -handHolder.cursorDirection.angleDeg(), () -> {
+        With.rotation(renderer, -handHolder.getCursorDirection().angleDeg(), () -> {
             With.translation(renderer, 0, 6f, () -> {
                 BarDisplay.render(renderer, BAR_OUTTER_COLOR, BAR_INNER_COLOR, overheat / 1.3f);
             });

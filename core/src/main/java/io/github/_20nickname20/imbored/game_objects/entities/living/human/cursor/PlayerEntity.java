@@ -152,7 +152,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         if (grabbedEntity != null) {
             Vector2 toGrabbed = grabbedEntity.b.getPosition().sub(this.b.getPosition());
 
-            if (toGrabbed.dot(cursorDirection) < -0.5) {
+            if (toGrabbed.dot(this.getCursorDirection()) < -0.5) {
                 put();
                 return;
             }
@@ -170,7 +170,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         Body closest = FindBody.closestFiltered(world, position, (body) -> {
             if (!(body.getUserData() instanceof InteractiveContainerEntity filteredContainer)) return false;
             Vector2 pos = body.getPosition();
-            if (pos.cpy().sub(this.b.getPosition()).dot(cursorDirection) < 0) return false;
+            if (pos.cpy().sub(this.b.getPosition()).dot(this.getCursorDirection()) < 0) return false;
             if (pos.dst(position) > filteredContainer.getInteractDistance()) return false;
             return true;
         });
@@ -238,6 +238,10 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
 
     public boolean isGrabbed() {
         return grabbedEntity != null;
+    }
+
+    public boolean hasContainer() {
+        return currentContainer != null;
     }
 
     public void throwGrabbed() {
@@ -338,7 +342,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         currentContainer.takeOutSelected(this.b.getPosition().cpy().sub(currentContainer.b.getPosition()).nor().scl(itemDropPower * 2));
     }
 
-    public void putEquippedToContainer() {
+    public void storeEquippedToContainer() {
         if (equippedItem == null) {
             equipSelectedItem();
         }
@@ -363,7 +367,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         float cursorDistance = getCursorDistance();
         renderer.setColor(1, 1, 1, 0.5f);
 
-        float angle = cursorDirection.angleDeg();
+        float angle = this.getCursorDirection().angleDeg();
         With.rotation(renderer, angle, () -> {
             renderer.line(0, 0, cursorDistance, 0);
             translation(renderer, cursorDistance, 0, () -> {

@@ -34,7 +34,7 @@ public abstract class Item implements Removable {
 
     protected void renderBar(ShapeRenderer renderer, CursorEntity handHolder, float yTranslation, BarDisplay barDisplay) {
         if (handHolder == null) return;
-        With.rotation(renderer, -handHolder.cursorDirection.angleDeg(), () -> {
+        With.rotation(renderer, -handHolder.getCursorDirection().angleDeg(), () -> {
             With.translation(renderer, 0, yTranslation, () -> {
                 barDisplay.render(renderer);
             });

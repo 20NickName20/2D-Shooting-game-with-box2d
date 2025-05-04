@@ -4,12 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4a78e742-e078-4be3-8f79-d9f4c33b45bc" name="Changes" comment="Update keyboard and mouse controls&#10;Make equipped item slot highlighted">
+    <list default="true" id="4a78e742-e078-4be3-8f79-d9f4c33b45bc" name="Changes" comment="Small tweaks&#10;Change camera zoom calculation&#10;Change ammo generate amount&#10;Add R keybind to reload">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/GameWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/GameWorld.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/PlayerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/PlayerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerGamepadController.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerGamepadController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerKeyboardAndMouseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/controllers/PlayerKeyboardAndMouseController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/Item.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/Item.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/living/human/CursorEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/living/human/CursorEntity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/living/human/cursor/PlayerEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/entities/living/human/cursor/PlayerEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/loot/supply/AmmoSupplyLoot.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/loot/supply/AmmoSupplyLoot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/automatic/MinigunItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/game_objects/items/usable/guns/raycast/automatic/MinigunItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/handlers/MainInputProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/_20nickname20/imbored/handlers/MainInputProcessor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -355,7 +359,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746346886092</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Small tweaks&#10;Change camera zoom calculation&#10;Change ammo generate amount&#10;Add R keybind to reload">
+      <option name="closed" value="true" />
+      <created>1746349869839</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1746349869839</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -376,6 +388,7 @@
     <MESSAGE value="Bugfix and new stuff&#10;Nerf rifle and added minigun which can overheat and explode&#10;Add explode() function as util&#10;Add landmines&#10;Add status effects&#10;Add energy drink to add speed status effect&#10;Add first aid kit&#10;Tweak progress bar display" />
     <MESSAGE value="Fix Stackoverflow on connect joint item" />
     <MESSAGE value="Update keyboard and mouse controls&#10;Make equipped item slot highlighted" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update keyboard and mouse controls&#10;Make equipped item slot highlighted" />
+    <MESSAGE value="Small tweaks&#10;Change camera zoom calculation&#10;Change ammo generate amount&#10;Add R keybind to reload" />
+    <option name="LAST_COMMIT_MESSAGE" value="Small tweaks&#10;Change camera zoom calculation&#10;Change ammo generate amount&#10;Add R keybind to reload" />
   </component>
 </project>
