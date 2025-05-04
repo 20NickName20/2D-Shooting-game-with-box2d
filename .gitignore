@@ -1,12 +1,13 @@
 ## Gradle:
 # .gradle/
 # gradle-app.setting
-# /build/
+/build/
 # /android/build/
-# /core/build/
-# /lwjgl2/build/
-# /lwjgl3/build/
-# /html/build/
+/core/build/
+/lwjgl2/build/
+/lwjgl3/build/
+/html/build/
+/.idea/
 # /teavm/build/
 # /ios/build/
 # /ios-moe/build/

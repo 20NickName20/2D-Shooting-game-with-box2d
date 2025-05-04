@@ -75,6 +75,9 @@ public abstract class Entity implements Removable {
     }
 
     public boolean render(ShapeRenderer renderer) {
+        for (Effect effect : effects) {
+            effect.render(renderer, this);
+        }
         return false;
     }
 

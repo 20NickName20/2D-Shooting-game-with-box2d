@@ -6,6 +6,7 @@ import io.github._20nickname20.imbored.game_objects.LootGenerator;
 import io.github._20nickname20.imbored.game_objects.items.ammo.AutomaticRifleCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.ammo.PistolCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.ammo.ShotgunCartridgeItem;
+import io.github._20nickname20.imbored.game_objects.items.ammo.SniperRifleCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.GrappleHookItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.LandmineItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.joint.distance.HardDistanceJointItem;
@@ -20,10 +21,11 @@ public class AmmoSupplyLoot implements LootGenerator {
         List<Item> loot = new ArrayList<>();
         int amount = (int) MathUtils.random(3 * amountMultiplier, 4 * amountMultiplier);
         for (int i = 0; i < amount; i++) {
-            Class<? extends Item> type = switch (MathUtils.random(3)) {
-                case 0 -> PistolCartridgeItem.class;
+            Class<? extends Item> type = switch (MathUtils.random(4)) {
+                case 0 -> AutomaticRifleCartridgeItem.class;
                 case 1 -> ShotgunCartridgeItem.class;
-                default -> AutomaticRifleCartridgeItem.class;
+                case 2 -> SniperRifleCartridgeItem.class;
+                default -> PistolCartridgeItem.class;
             };
 
             loot.add(Item.createFromType(type, null));

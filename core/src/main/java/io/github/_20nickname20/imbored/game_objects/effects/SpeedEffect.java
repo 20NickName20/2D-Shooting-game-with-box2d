@@ -1,5 +1,7 @@
 package io.github._20nickname20.imbored.game_objects.effects;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import io.github._20nickname20.imbored.game_objects.Effect;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.entities.LivingEntity;
@@ -17,6 +19,8 @@ public class SpeedEffect extends Effect {
             living.setMaxWalkSpeed(living.defaultMaxWalkSpeed * 2 * this.amplifier);
         }
     }
+
+
 
     @Override
     public void remove() {

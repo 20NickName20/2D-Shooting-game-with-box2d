@@ -20,6 +20,7 @@ import java.util.List;
 
 public abstract class DamagableEntity extends Entity {
     protected float health, maxHealth;
+    private float damageScale = 1.0f;
     protected float lastHealthChange = 0;
     private final BarDisplay healthBar = new BarDisplay(new Color(0.6f, 0.2f, 0, 1), new Color(0.5f, 1, 0, 1), 1, 1);
 
@@ -27,6 +28,18 @@ public abstract class DamagableEntity extends Entity {
         super(world, x, y, shape, material);
         this.maxHealth = maxHealth;
         this.health = maxHealth;
+    }
+
+    public float getDamageScale() {
+        return damageScale;
+    }
+
+    public void setDamageScale(float damageScale) {
+        this.damageScale = damageScale;
+    }
+
+    public void scaleDamage(float scale) {
+        this.damageScale *= scale;
     }
 
     public float getHealth() {
@@ -49,6 +62,7 @@ public abstract class DamagableEntity extends Entity {
 
     public void damage(float amount) {
         if (isRemoved()) return;
+        amount *= damageScale;
         this.health -= amount;
         lastHealthChange = Util.time();
         if (this.health <= 0) {
@@ -99,6 +113,7 @@ public abstract class DamagableEntity extends Entity {
 
     @Override
     public boolean render(ShapeRenderer renderer) {
+        super.render(renderer);
         With.translation(renderer, 0, 5, () -> {
             healthBar.render(renderer);
         });

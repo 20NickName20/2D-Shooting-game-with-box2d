@@ -1,5 +1,7 @@
 package io.github._20nickname20.imbored.game_objects;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
 public abstract class Effect implements Removable {
     protected float timeLeft;
     protected final float initTime;
@@ -14,6 +16,10 @@ public abstract class Effect implements Removable {
 
     public void onApply(Entity appliedEntity) {
         this.appliedEntity = appliedEntity;
+    }
+
+    public void render(ShapeRenderer renderer, Entity entity) {
+
     }
 
     @Override

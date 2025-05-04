@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.MassData;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.*;
 import io.github._20nickname20.imbored.*;
 import io.github._20nickname20.imbored.game_objects.Entity;
@@ -64,6 +65,11 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         super(world, x, y, 100, 20);
         this.setCursorDistance(getHandCursorDistance());
         this.controller = controller;
+    }
+
+    @Override
+    public void onSpawn(World world) {
+        super.onSpawn(world);
         controller.register(this);
     }
 
