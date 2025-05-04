@@ -39,6 +39,10 @@ public abstract class Entity implements Removable {
         this.shape = shape;
     }
 
+    public final void spawn() {
+        gameWorld.spawn(this);
+    }
+
     public void onSpawnAction(Runnable onSpawn) {
         this.onSpawn = onSpawn;
     }

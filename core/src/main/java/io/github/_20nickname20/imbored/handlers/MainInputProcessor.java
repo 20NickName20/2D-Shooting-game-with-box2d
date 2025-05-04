@@ -3,13 +3,13 @@ package io.github._20nickname20.imbored.handlers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
-import io.github._20nickname20.imbored.controllers.PlayerKeyboardController;
-import io.github._20nickname20.imbored.controllers.PlayerKeyboardController2;
+import io.github._20nickname20.imbored.controllers.PlayerKeyboardAndMouseController;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.LootGenerator;
 import io.github._20nickname20.imbored.game_objects.Material;
@@ -31,6 +31,11 @@ public class MainInputProcessor extends InputAdapter {
     public boolean isAdminEnabled = false;
     public MainInputProcessor(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
+
+        if (Controllers.getControllers().isEmpty()) {
+            keyboardPlayer = new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, -30, new PlayerKeyboardAndMouseController());
+            gameScreen.world.spawn(keyboardPlayer);
+        }
     }
 
     float startX = 0, startY = 0;
@@ -64,7 +69,7 @@ public class MainInputProcessor extends InputAdapter {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (!isAdminEnabled) return false;
-        Vector2 point = gameScreen.getViewport().unproject(new Vector2(screenX, screenY));
+        Vector2 point = GameScreen.getViewport().unproject(new Vector2(screenX, screenY));
         if (button == Input.Buttons.MIDDLE) {
             pressedBefore = false;
             return false;
@@ -121,15 +126,23 @@ public class MainInputProcessor extends InputAdapter {
         return false;
     }
 
+    PlayerEntity keyboardPlayer;
+
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.ESCAPE) {
             gameScreen.game.setScreen(new MainMenuScreen(gameScreen.game));
         }
-        if (keycode == Input.Keys.ENTER) {
-            gameScreen.world.spawn(
-                new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, -30, new PlayerKeyboardController2(new PlayerKeyboardController2.KeyboardMapping()))
-            );
+        if (keycode == Input.Keys.NUM_LOCK) {
+            if (keyboardPlayer != null) {
+                keyboardPlayer.remove();
+                keyboardPlayer = null;
+                isAdminEnabled = true;
+                return false;
+            }
+            isAdminEnabled = false;
+            keyboardPlayer = new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, -30, new PlayerKeyboardAndMouseController());
+            gameScreen.world.spawn(keyboardPlayer);
         }
         if (!isAdminEnabled) return false;
         if (keycode == Input.Keys.B) {

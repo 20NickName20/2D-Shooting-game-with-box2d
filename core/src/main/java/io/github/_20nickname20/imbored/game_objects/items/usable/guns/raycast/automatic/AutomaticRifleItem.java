@@ -4,11 +4,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
+import io.github._20nickname20.imbored.game_objects.items.AmmoCartridgeItem;
+import io.github._20nickname20.imbored.game_objects.items.ammo.AutomaticRifleCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.AutomaticRaycastGunItem;
 
 public class AutomaticRifleItem extends AutomaticRaycastGunItem {
     public AutomaticRifleItem(Entity holder) {
-        super(holder, 2, 0.15f, 5, 47, 47, 6.5f, 0.08f, 175f, MathUtils.degRad * 10);
+        super(holder, 2, 0.15f, 5, 47, 47, 10, 6.5f, 0.08f, 175f, MathUtils.degRad * 10, AutomaticRifleCartridgeItem.class);
     }
 
     @Override

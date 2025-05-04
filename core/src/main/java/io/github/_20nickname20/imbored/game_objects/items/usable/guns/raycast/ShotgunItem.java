@@ -6,11 +6,12 @@ import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.Material;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.game_objects.items.ammo.ShotgunCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.RaycastGunItem;
 
 public class ShotgunItem extends RaycastGunItem {
     public ShotgunItem(Entity holder) {
-        super(holder, 2.5f, 0.7f, 7.5f,6,6, 20, 0.15f, 100, MathUtils.degRad * 5, 0.05f);
+        super(holder, 2.5f, 0.7f, 7.5f,6, 6, 8, 20, 0.15f, 100, MathUtils.degRad * 5, 0.05f, ShotgunCartridgeItem.class);
     }
 
     @Override

@@ -5,11 +5,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import io.github._20nickname20.imbored.game_objects.Entity;
+import io.github._20nickname20.imbored.game_objects.items.AmmoCartridgeItem;
 import io.github._20nickname20.imbored.util.ClosestRaycast;
 import io.github._20nickname20.imbored.util.Ray;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.game_objects.entities.DamagableEntity;
-import io.github._20nickname20.imbored.game_objects.entities.InventoryHolder;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.game_objects.items.usable.BaseGunItem;
@@ -28,8 +28,8 @@ public abstract class RaycastGunItem extends BaseGunItem {
     // TODO: ADD LASER!!!! (shoots thru 5 entities)
 
     protected float range;
-    public RaycastGunItem(Entity holder, float size, float cooldown, float damage, int ammo, int maxAmmo, float power, float recoilScale, float range, float maxScatterAngle, float rayDisplayTime) {
-        super(holder, size, cooldown, damage, ammo, maxAmmo);
+    public RaycastGunItem(Entity holder, float size, float cooldown, float damage, int ammo, int maxAmmo, float requiredReloadTime, float power, float recoilScale, float range, float maxScatterAngle, float rayDisplayTime, Class<? extends AmmoCartridgeItem> ammoTypeClass) {
+        super(holder, size, cooldown, damage, ammo, maxAmmo, requiredReloadTime, ammoTypeClass);
         this.power = power;
         this.recoilScale = recoilScale;
         this.range = range;
@@ -40,7 +40,7 @@ public abstract class RaycastGunItem extends BaseGunItem {
     public void shootRay(PlayerEntity player, float offsetAngle) {
         Body playerBody = player.b;
         offsetAngle += MathUtils.random(-maxScatterAngle, maxScatterAngle);
-        Vector2 impulse = player.cursorDirection.cpy();
+        Vector2 impulse = player.getCursorDirection();
         Vector2 endPosition = playerBody.getPosition().cpy().add(impulse.rotateRad(offsetAngle).cpy().scl(range));
         ClosestRaycast.RaycastResult result = ClosestRaycast.cast(player.world, playerBody, playerBody.getPosition(), endPosition);
         if (result == null) {
@@ -65,8 +65,8 @@ public abstract class RaycastGunItem extends BaseGunItem {
     }
 
     @Override
-    public void onDeselect(InventoryHolder holder) {
-        super.onDeselect(holder);
+    public void onUnequip(PlayerEntity holder) {
+        super.onUnequip(holder);
         rays.clear();
     }
 

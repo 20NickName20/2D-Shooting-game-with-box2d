@@ -42,6 +42,10 @@ public class GameWorld {
         entitiesToSpawn.add(entity);
     }
 
+    public void remove(Entity entity) {
+        entity.remove();
+    }
+
     public void remove(Joint joint) {
         jointsToRemove.add(joint);
     }
@@ -129,7 +133,7 @@ public class GameWorld {
             maxOffset = Math.max(maxOffset, player.b.getPosition().dst(playerCenter));
         }
         if (maxOffset < 0.1f) return;
-        camera.zoom = Math.max(1 / GameScreen.zoom + 1f + (float) Math.pow(maxOffset, 0.65), 5.5f);
+        camera.zoom = Math.max(1 / GameScreen.zoom + 1f + (float) Math.pow(maxOffset, 0.6) / 2, 5.5f);
     }
 
     public ItemEntity dropItem(Vector2 location, Vector2 impulse, Item item) {

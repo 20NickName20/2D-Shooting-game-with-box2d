@@ -1,6 +1,7 @@
 package io.github._20nickname20.imbored;
 
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.game_objects.items.UsableItem;
 
 public abstract class PlayerController {
 
@@ -10,20 +11,40 @@ public abstract class PlayerController {
     }
 
     protected final void startUseMode() {
-        if (player.getMode() == PlayerEntity.Mode.GRAB) {
-            player.grab();
-        }
-        if (player.getMode() == PlayerEntity.Mode.INV) {
+        if (player.getEquippedItem() == null) {
+            if (!player.grab()) {
+                if (player.getInventory().getSelectedItem() instanceof UsableItem) {
+                    player.equipSelectedItem();
+                }
+            }
+        } else {
             player.startUsingItem();
         }
     }
 
     protected final void stopUseMode() {
-        if (player.getMode() == PlayerEntity.Mode.GRAB) {
+        if (player.getEquippedItem() == null) {
             player.put();
-        }
-        if (player.getMode() == PlayerEntity.Mode.INV) {
+        } else {
             player.stopUsingItem();
+        }
+    }
+
+    protected final void switchMode() {
+        if (player.getEquippedItem() == player.getInventory().getSelectedItem()) {
+            player.unequipItem();
+        } else {
+            player.equipSelectedItem();
+        }
+    }
+
+    protected final void pushSmth() {
+        if (player.isGrabbed()) {
+            player.throwGrabbed();
+        } else if (player.hasContainer()) {
+            player.storeEquippedToContainer();
+        } else {
+            player.dropEquippedItem();
         }
     }
 

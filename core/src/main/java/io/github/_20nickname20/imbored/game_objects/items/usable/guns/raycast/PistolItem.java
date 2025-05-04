@@ -5,11 +5,12 @@ import com.badlogic.gdx.math.MathUtils;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.game_objects.items.ammo.PistolCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.RaycastGunItem;
 
-public class GunItem extends RaycastGunItem {
-    public GunItem(Entity holder) {
-        super(holder, 1f, 0.1f, 6.5f,12,12, 50f, 0.04f, 250f, MathUtils.degRad * 2, 0.025f);
+public class PistolItem extends RaycastGunItem {
+    public PistolItem(Entity holder) {
+        super(holder, 1f, 0.1f, 6.5f,12,12, 4, 50f, 0.04f, 250f, MathUtils.degRad * 2, 0.025f, PistolCartridgeItem.class);
     }
 
     @Override

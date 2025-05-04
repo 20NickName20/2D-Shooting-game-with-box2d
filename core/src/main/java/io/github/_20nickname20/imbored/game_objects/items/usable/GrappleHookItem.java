@@ -26,7 +26,7 @@ public class GrappleHookItem extends UsableItem {
 
     public void shootRay(PlayerEntity player) {
         Body playerBody = player.b;
-        Vector2 endPosition = playerBody.getPosition().cpy().add(player.cursorDirection.cpy().scl(range));
+        Vector2 endPosition = playerBody.getPosition().cpy().add(player.getCursorDirection().scl(range));
         ClosestRaycast.RaycastResult result = ClosestRaycast.cast(player.world, playerBody, playerBody.getPosition(), endPosition);
         if (result == null) return;
         if (!(result.body.getUserData() instanceof Entity entity)) return;
