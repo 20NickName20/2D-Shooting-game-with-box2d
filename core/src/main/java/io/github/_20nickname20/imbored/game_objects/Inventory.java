@@ -93,7 +93,7 @@ public class Inventory {
     }
 
     public List<Item> getItems() {
-        return (List<Item>) items.clone();
+        return Collections.unmodifiableList(items);
     }
 
     public Item getSelectedItem() {
@@ -138,7 +138,6 @@ public class Inventory {
     }
 
     void renderSlot(ShapeRenderer renderer, boolean active, float x, float y) {
-        renderer.setColor(0.5f, 0.5f, 0.5f, 1f);
         renderer.rect(x - 2, y - 2, 4, 4);
         if (active) {
             renderer.rect(x - 2.2f, y - 2.2f, 4.4f, 4.4f);
@@ -147,16 +146,25 @@ public class Inventory {
 
     public static final float slotSize = 4.6f;
 
-    public void renderPart(ShapeRenderer renderer, int slotAmount) {
+    public void renderPart(ShapeRenderer renderer, int slotAmount, Item special) {
         int range = slotAmount / 2;
         for (int i = -range; i <= range; i++) {
-            renderSlot(renderer, i == 0, i * slotSize, 0);
             Item item = this.get(i + this.getSelectedSlot());
+            if (special != null && item == special) {
+                renderer.setColor(0.9f, 0.4f, 0.4f, 1f);
+            } else {
+                renderer.setColor(0.5f, 0.5f, 0.5f, 1f);
+            }
+            renderSlot(renderer, i == 0, i * slotSize, 0);
             if (item != null) {
                 translation(renderer, i * slotSize, 0, () -> {
                     item.render(renderer, null);
                 });
             }
         }
+    }
+
+    public void renderPart(ShapeRenderer renderer, int slotAmount) {
+        renderPart(renderer, slotAmount, null);
     }
 }

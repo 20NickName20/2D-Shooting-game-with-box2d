@@ -9,14 +9,11 @@ import io.github._20nickname20.imbored.PlayerController;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.screens.GameScreen;
 
+import java.awt.*;
+
 import static io.github._20nickname20.imbored.Main.inputMultiplexer;
 
-public class PlayerKeyboardController2 extends PlayerController implements InputProcessor {
-    PlayerKeyboardController.KeyboardMapping mapping;
-
-    public PlayerKeyboardController2(PlayerKeyboardController.KeyboardMapping mapping) {
-        this.mapping = mapping;
-    }
+public class PlayerKeyboardAndMouseController extends PlayerController implements InputProcessor {
 
     @Override
     public void register(PlayerEntity player) {
@@ -52,72 +49,46 @@ public class PlayerKeyboardController2 extends PlayerController implements Input
 
     @Override
     public boolean keyDown(int i) {
-        if (i == mapping.jumpKey) {
-            player.jump();
-            return false;
+        switch (i) {
+            case Keys.SPACE -> player.jump();
+            case Keys.A -> player.setXMovement(-1);
+            case Keys.D -> player.setXMovement(1);
+            case Keys.NUM_1 -> player.scrollItem(-1);
+            case Keys.NUM_2 -> player.scrollItem(1);
+            case Keys.E -> this.switchMode();
+            case Keys.Z -> {
+                player.throwGrabbed();
+                player.dropEquippedItem();
+            }
+            case Keys.LEFT_BRACKET -> player.scrollContainer(-1);
+            case Keys.RIGHT_BRACKET -> player.scrollContainer(1);
+            case Keys.X -> player.takeOutOfContainer();
+            case Keys.Q -> this.startUseMode();
         }
-        if (i == mapping.leftKey) {
-            player.setXMovement(-1);
-            return false;
-        }
-        if (i == mapping.rightKey) {
-            player.setXMovement(1);
-            return false;
-        }
-        if (i == mapping.scrollItemLeftKey) {
-            player.scrollItem(-1);
-        }
-        if (i == mapping.scrollItemRightKey) {
-            player.scrollItem(1);
-        }
-        if (i == mapping.modeSwitchKey) {
-            this.switchMode();
-        }
-        if (i == mapping.dropItemKey) {
-            player.dropEquippedItem();
-        }
-        if (i == mapping.throwKey) {
-            player.throwGrabbed();
-        }
-        if (i == mapping.containerScrollLeftKey) {
-            player.scrollContainer(-1);
-        }
-        if (i == mapping.containerScrollRightKey) {
-            player.scrollContainer(1);
-        }
-        if (i == mapping.containerTakeOutKey) {
-            player.takeOutOfContainer();
-        }
-        if (i == mapping.containerPutKey) {
-            player.putEquippedToContainer();
-        }
-        if (i == mapping.modeUseKey) {
-            this.startUseMode();
-        }
+        /// player.putEquippedToContainer();
 
         return false;
     }
 
     @Override
     public boolean keyUp(int i) {
-        if (i == mapping.rightKey) {
-            if (Gdx.input.isKeyPressed(mapping.leftKey)) {
-                player.setXMovement(-1);
-            } else {
-                player.clearXMovement();
+        switch (i) {
+            case Keys.D -> {
+                if (Gdx.input.isKeyPressed(Keys.A)) {
+                    player.setXMovement(-1);
+                } else {
+                    player.clearXMovement();
+                }
+                return false;
             }
-            return false;
-        }
-        if (i == mapping.leftKey) {
-            if (Gdx.input.isKeyPressed(mapping.rightKey)) {
-                player.setXMovement(1);
-            } else {
-                player.clearXMovement();
+            case Keys.A -> {
+                if (Gdx.input.isKeyPressed(Keys.D)) {
+                    player.setXMovement(1);
+                } else {
+                    player.clearXMovement();
+                }
             }
-            return false;
-        }
-        if (i == mapping.modeUseKey) {
-            this.startUseMode();
+            case Keys.Q -> this.stopUseMode();
         }
 
         return false;
@@ -132,6 +103,9 @@ public class PlayerKeyboardController2 extends PlayerController implements Input
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT) {
             this.startUseMode();
+        }
+        if (button == Input.Buttons.RIGHT) {
+            player.dropEquippedItem();
         }
         return false;
     }
@@ -164,8 +138,12 @@ public class PlayerKeyboardController2 extends PlayerController implements Input
     }
 
     @Override
-    public boolean scrolled(float v, float v1) {
-        player.scrollItem((int) v1);
+    public boolean scrolled(float x, float y) {
+        if (!Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+            player.scrollItem((int) y);
+        } else {
+            player.scrollContainer((int) y);
+        }
 
         return false;
     }

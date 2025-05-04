@@ -18,7 +18,7 @@ public class AmmoSupplyLoot implements LootGenerator {
     @Override
     public List<Item> generate(float amountMultiplier) {
         List<Item> loot = new ArrayList<>();
-        int amount = (int) MathUtils.random(4 * amountMultiplier, 6 * amountMultiplier);
+        int amount = (int) MathUtils.random(1 * amountMultiplier, 3 * amountMultiplier);
         for (int i = 0; i < amount; i++) {
             Class<? extends Item> type = switch (MathUtils.random(3)) {
                 case 0 -> PistolCartridgeItem.class;

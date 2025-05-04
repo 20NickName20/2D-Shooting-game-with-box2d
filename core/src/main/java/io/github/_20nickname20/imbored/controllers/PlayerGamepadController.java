@@ -67,8 +67,8 @@ public class PlayerGamepadController extends PlayerController implements Control
             return false;
         }
         if (buttonCode == mapping.buttonX) {
-            player.dropEquippedItem();
             player.throwGrabbed();
+            player.dropEquippedItem();
             return false;
         }
         if (buttonCode == mapping.buttonDpadLeft) {

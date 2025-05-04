@@ -56,7 +56,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
 
     public boolean popBob = false;
 
-    public final Inventory inventory = new Inventory(this, 20);
+    private final Inventory inventory = new Inventory(this, 20);
 
     public float customColor = MathUtils.random();
 
@@ -292,6 +292,9 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
 
     public ItemEntity dropEquippedItem() {
         Vector2 cursorPosition = this.getCursorPosition();
+        if (equippedItem == null) {
+            equipSelectedItem();
+        }
         Item item = removeEquippedItem();
         if (item == null) return null;
         return gameWorld.dropItem(cursorPosition, this.getCursorDirection().scl(itemDropPower).add(this.b.getLinearVelocity()), item);
@@ -368,7 +371,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         });
 
         With.translation(renderer, 0, -7f, () -> {
-            inventory.renderPart(renderer, 3);
+            inventory.renderPart(renderer, 3, equippedItem);
         });
 
         if (food < 10 || foodBar.isRising()) {

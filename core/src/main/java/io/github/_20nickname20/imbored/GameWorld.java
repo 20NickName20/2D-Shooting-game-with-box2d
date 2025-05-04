@@ -42,6 +42,10 @@ public class GameWorld {
         entitiesToSpawn.add(entity);
     }
 
+    public void remove(Entity entity) {
+        entity.remove();
+    }
+
     public void remove(Joint joint) {
         jointsToRemove.add(joint);
     }
