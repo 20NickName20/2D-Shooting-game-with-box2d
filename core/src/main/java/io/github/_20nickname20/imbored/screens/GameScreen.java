@@ -101,6 +101,7 @@ public class GameScreen extends ScreenAdapter {
             //     shape.rect(-200, -200, 400, 400);
             //     shape.set(ShapeRenderer.ShapeType.Line);
             // });
+            AdminTool.renderPart(shape, 12);
             if (debugController != null && Gdx.input.isKeyPressed(Input.Keys.F3)) {
                 With.translation(shape, -70, 40, () -> {
                     shape.setColor(0.75f, 0.75f, 0.75f, 1);
