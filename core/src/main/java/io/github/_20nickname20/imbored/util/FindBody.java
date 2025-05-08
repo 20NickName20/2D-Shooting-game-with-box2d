@@ -16,7 +16,6 @@ public class FindBody {
         Array<Body> bodies = new Array<>();
         world.getBodies(bodies);
         for (Body body : bodies) {
-            if (body.getType() == BodyDef.BodyType.StaticBody) continue;
             for (Fixture fixture : body.getFixtureList()) {
                 if (fixture.testPoint(point)) {
                     return body;

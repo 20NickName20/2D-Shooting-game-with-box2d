@@ -169,6 +169,8 @@ public class GameWorld {
 
     private final Set<PlayerEntity> players = new HashSet<>();
 
+    public Body anyStaticBody;
+
     public void spawn(Entity entity) {
         if (entity == null) {
             throw new RuntimeException("ENTITY IS FUCKING NULL");
@@ -233,6 +235,10 @@ public class GameWorld {
             }
             for (Body body : bodies) {
                 if (!(body.getUserData() instanceof Entity entity)) continue;
+
+                if (body.getType() == BodyDef.BodyType.StaticBody) {
+                    anyStaticBody = body;
+                }
 
                 if (body.getPosition().y > 300) {
                     body.applyLinearImpulse(new Vector2(0, -100), body.getPosition(), true);

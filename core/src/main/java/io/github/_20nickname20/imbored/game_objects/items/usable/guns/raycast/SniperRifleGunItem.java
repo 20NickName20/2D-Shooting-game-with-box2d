@@ -95,9 +95,10 @@ public class SniperRifleGunItem extends RaycastGunItem {
     public void render(ShapeRenderer renderer, CursorEntity handHolder) {
         super.render(renderer, handHolder);
         renderer.setColor(0.3f, 0.5f, 0.2f, 1);
-        renderer.rectLine(-0.75f, -0.75f, 0.1f, 0.1f, 0.8f);
-        renderer.rectLine(0, 0, 6.5f, 0, 0.9f);
-        renderer.rectLine(3.0f, 0.7f, 0.3f, 0.7f, 0.5f);
+
+        renderer.rectLine(-0.75f, -0.75f, 0.1f, 0.1f, 0.6f);
+        renderer.rectLine(0, 0, 4f, 0, 0.55f);
+        renderer.rectLine(3.0f, 0.5f, 0.3f, 0.5f, 0.34f);
     }
 
     @Override

@@ -12,4 +12,5 @@ dependencies {
   }
 
   implementation "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
+  implementation 'org.reflections:reflections:0.10.2'
 }

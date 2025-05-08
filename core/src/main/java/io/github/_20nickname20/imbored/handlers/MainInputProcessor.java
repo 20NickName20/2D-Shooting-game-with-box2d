@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import io.github._20nickname20.imbored.AdminTool;
+import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.controllers.PlayerKeyboardAndMouseController;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.LootGenerator;
@@ -30,103 +32,53 @@ import io.github._20nickname20.imbored.util.Shapes;
 
 public class MainInputProcessor extends InputAdapter {
     GameScreen gameScreen;
-    private MouseJoint mouseJoint = null;
-    private Entity grabbed = null;
-    public boolean isAdminEnabled = false;
+    Camera camera;
+
     public MainInputProcessor(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
+        this.camera = GameScreen.getViewport().getCamera();
 
         if (Controllers.getControllers().isEmpty()) {
             keyboardPlayer = new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, 120, new PlayerKeyboardAndMouseController());
             gameScreen.world.spawn(keyboardPlayer);
         }
-    }
 
-    float startX = 0, startY = 0;
+        AdminTool.world = gameScreen.world;
+    }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (!isAdminEnabled) return false;
-        Vector2 point = GameScreen.getViewport().unproject(new Vector2(screenX, screenY));
-        if (button == Input.Buttons.RIGHT) {
-            startX = point.x;
-            startY = point.y;
-            return false;
-        }
-        if (button != Input.Buttons.LEFT) return false;
-        if (mouseJoint != null) return false;
-        Body body = FindBody.atPoint(gameScreen.world.world, point);
-        if (body == null) return false;
-        if (!(body.getUserData() instanceof Entity entity)) return false;
-        grabbed = entity;
-        MouseJointDef mouseJointDef = new MouseJointDef();
-        mouseJointDef.target.set(point);
-        mouseJointDef.bodyA = gameScreen.getGround();
-        mouseJointDef.bodyB = body;
-        mouseJointDef.maxForce = 15000;
-        mouseJointDef.collideConnected = true;
-        mouseJoint = (MouseJoint) gameScreen.world.world.createJoint(mouseJointDef);
-        mouseJoint.setTarget(point);
-        return true;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        if (!isAdminEnabled) return false;
-        Vector2 point = GameScreen.getViewport().unproject(new Vector2(screenX, screenY));
-        if (button == Input.Buttons.MIDDLE) {
-            pressedBefore = false;
-            return false;
-        }
-        if (button == Input.Buttons.RIGHT) {
-            float endX = point.x;
-            float endY = point.y;
-            float centerX = (startX + endX) / 2;
-            float centerY = (startY + endY) / 2;
-            float sideX = Math.abs(centerX - endX);
-            float sideY = Math.abs(centerY - endY);
-            if (sideX < 1 || sideY < 1) return false;
-            gameScreen.world.spawn(
-                new GroundEntity(gameScreen.world, centerX, centerY, Shapes.boxShape(sideX, sideY))
-            );
-        }
-        if (button != Input.Buttons.LEFT) return false;
-        if (mouseJoint == null) return false;
-        if (!grabbed.isRemoved()) gameScreen.world.world.destroyJoint(mouseJoint);
-        mouseJoint = null;
-        grabbed = null;
-        return true;
-    }
-
-    Vector2 mousePos = new Vector2();
-    boolean pressedBefore = false;
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        if (!isAdminEnabled) return false;
-        Vector2 worldPos = gameScreen.getViewport().unproject(new Vector2(screenX, screenY));
-        Vector2 move = new Vector2(screenX, screenY).sub(mousePos);
-        mousePos.set(screenX, screenY);
-
-        if (mouseJoint != null) {
-            mouseJoint.setTarget(worldPos);
-            return true;
-        }
-
-        if (pressedBefore && Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
-            move.scl(1f / 20f);
-            gameScreen.getCamera().position.add(-move.x, move.y, 0);
-            gameScreen.getCamera().update();
-        }
-        pressedBefore = Gdx.input.isButtonPressed(Input.Buttons.MIDDLE);
-
+        if (!AdminTool.isEnabled) return false;
+        Vector2 worldPoint = GameScreen.getViewport().unproject(new Vector2(screenX, screenY));
+        Vector2 screenPoint = worldPoint.cpy().sub(camera.position.x, camera.position.y);
+        AdminTool.onClickPressed(worldPoint, screenPoint, button);
         return false;
     }
 
     @Override
-    public boolean scrolled(float amountX, float amountY) {
-        if (!isAdminEnabled) return false;
-        gameScreen.world.cameraOffset.add(amountX, -amountY);
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if (!AdminTool.isEnabled) return false;
+        Vector2 worldPoint = GameScreen.getViewport().unproject(new Vector2(screenX, screenY));
+        Vector2 screenPoint = worldPoint.cpy().sub(camera.position.x, camera.position.y);
+        AdminTool.onClickReleased(worldPoint, screenPoint, button);
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        if (!AdminTool.isEnabled) return false;
+        Vector2 worldPoint = GameScreen.getViewport().unproject(new Vector2(screenX, screenY));
+        Vector2 screenPoint = worldPoint.cpy().sub(camera.position.x, camera.position.y);
+        AdminTool.onMouseMove(worldPoint, screenPoint);
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        if (!AdminTool.isEnabled) return false;
+        Vector2 worldPoint = GameScreen.getViewport().unproject(new Vector2(screenX, screenY));
+        Vector2 screenPoint = worldPoint.cpy().sub(camera.position.x, camera.position.y);
+        AdminTool.onMouseMove(worldPoint, screenPoint);
         return false;
     }
 
@@ -134,40 +86,14 @@ public class MainInputProcessor extends InputAdapter {
 
     @Override
     public boolean keyDown(int keycode) {
-
         if (keycode == Input.Keys.TAB){
-            AdminTool.isEnabled = !AdminTool.isEnabled;  //Switch boolean for GameScreen to render
+            AdminTool.isEnabled = !AdminTool.isEnabled;  // Switch boolean for GameScreen to render
         }
         if (keycode == Input.Keys.ESCAPE) {
             gameScreen.game.setScreen(new MainMenuScreen(gameScreen.game));
         }
-//        if (keycode == Input.Keys.INSERT) {
-//            if (keyboardPlayer != null) {
-//                keyboardPlayer.remove();
-//                keyboardPlayer = null;
-//                isAdminEnabled = true;
-//                return false;
-//            }
-//            isAdminEnabled = false;
-//            keyboardPlayer = new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, 100, new PlayerKeyboardAndMouseController());
-//            gameScreen.world.spawn(keyboardPlayer);
-//        }
-        if (!isAdminEnabled) return false;
-        if (keycode == Input.Keys.B) {
-            LootGenerator gunLoot = new GunSupplyLoot();
-            LootGenerator healLoot = new HealSupplyLoot();
-            LootGenerator stuffLoot = new StuffSupplyLoot();
-
-            Vector2 worldPos = GameScreen.getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-            CrateEntity entity = new WoodenCrateEntity(gameScreen.world, worldPos.x, worldPos.y, 3.5f, 3.5f);
-            LootGenerator lootGenerator = switch (MathUtils.random(2)) {
-                case 0 -> gunLoot;
-                case 1 -> healLoot;
-                default -> stuffLoot;
-            };
-            entity.getInventory().addAll(lootGenerator.generate(1));
-            gameScreen.world.spawn(entity);
-        }
+        if (!AdminTool.isEnabled) return false;
+        AdminTool.keyPressed(keycode);
         return false;
     }
 }
