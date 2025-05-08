@@ -39,6 +39,11 @@ public class AdminTool {
     private static int materialMode = 0;
     private static PenRenderer batch = new PenRenderer();
     private static BitmapFont font;
+    private static FitViewport viewport;
+
+    private static final SpriteBatch batch = new SpriteBatch();
+    private static final BitmapFont font;
+
 
 
     static {
