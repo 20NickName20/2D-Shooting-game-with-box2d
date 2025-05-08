@@ -1,7 +1,11 @@
 package io.github._20nickname20.imbored;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -10,12 +14,14 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.Item;
 import io.github._20nickname20.imbored.game_objects.JointEntity;
 import io.github._20nickname20.imbored.game_objects.Material;
 import io.github._20nickname20.imbored.game_objects.entities.block.SimpleBlockEntity;
 import io.github._20nickname20.imbored.game_objects.entities.statics.GroundEntity;
+import io.github._20nickname20.imbored.render.PenRenderer;
 import io.github._20nickname20.imbored.util.FindBody;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.util.With;
@@ -29,16 +35,31 @@ public class AdminTool {
     private static final List<Item> items = new ArrayList<>();
     private static final Material[] materials = {Material.WOOD, Material.CLOTH, Material.ROCK, Material.METAL, Material.GROUND};
     private static int materialMode = 0;
+    private static PenRenderer batch = new PenRenderer();
+    private static BitmapFont font;
+    private static FitViewport viewport;
+    static OrthographicCamera camera;
+
+
 
     static {
         Reflections reflections = new Reflections("io.github._20nickname20.imbored");
-
         for (Class<? extends Item> type : reflections.getSubTypesOf(Item.class)) {
             if (ClassReflection.isAbstract(type)) continue;
             items.add(Item.createFromType(type, null));
-            System.out.println(type.getSimpleName());
+//            System.out.println(type.getSimpleName());
         }
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/PressStart2P-Regular.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+
+        parameter.characters += "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+        parameter.size = 13;
+
+        font = generator.generateFont(parameter);
+        generator.dispose();
     }
+
 
     public static boolean isEnabled = false;
     // Renders a slot
@@ -51,6 +72,13 @@ public class AdminTool {
                 renderer.rect(-2.2f, -2.2f, 4.4f, 4.4f);
             }
         });
+    }
+
+    static void renderText(){
+        batch.begin();
+        font.setColor(Color.WHITE);
+        font.draw(batch, materials[materialMode].shortName,1842 , 819.5f);
+        batch.end();
     }
 
     public static final float slotSize = 4.6f * 1.25f;
@@ -103,9 +131,11 @@ public class AdminTool {
             }
 
             renderer.setColor(materials[materialMode].color);
-            for (float r = 2; r < 3; r += 0.1f){
+            renderText();
+            for (float r = 2.5f; r < 3.5f; r += 0.1f){
                 renderer.circle(3, -10, r);
             }
+
         });
     }
 
@@ -147,39 +177,39 @@ public class AdminTool {
             world.dropItem(new Vector2(world.camera.position.x, world.camera.position.y), new Vector2(), Item.createFromType(items.get(index).getClass(), null));
         }
         if (button == Input.Buttons.RIGHT) {
-            if (mode == Mode.GRAB) {
-                if (mouseJoint != null) return;
-                Body body = FindBody.atPoint(world.world, worldPoint);
-                if (body == null) return;
-                if (body.getType() == BodyDef.BodyType.StaticBody) return;
-                if (!(body.getUserData() instanceof Entity entity)) return;
-                grabbedEntity = entity;
-                MouseJointDef mouseJointDef = new MouseJointDef();
-                mouseJointDef.target.set(worldPoint);
-                mouseJointDef.bodyA = world.anyStaticBody;
-                mouseJointDef.bodyB = body;
-                mouseJointDef.maxForce = 15000;
-                mouseJointDef.collideConnected = true;
-                mouseJoint = (MouseJoint) world.world.createJoint(mouseJointDef);
-                mouseJoint.setTarget(worldPoint);
-            }
-            if (mode == Mode.POLYGON) {
-                polygonVertices.add(worldPoint);
-            }
-            if (mode == Mode.JOINT) {
-                if (jointPosA == null) {
-                    jointPosA = worldPoint.cpy();
-                } else {
-                    JointEntity joint = new JointEntity(world, Color.CYAN, jointPosA, worldPoint, 5f, 0.5f);
-                    joint.spawn();
-                    jointPosA = null;
+            switch (mode){
+                case GRAB -> {
+                    if (mouseJoint != null) return;
+                    Body body = FindBody.atPoint(world.world, worldPoint);
+                    if (body == null) return;
+                    if (body.getType() == BodyDef.BodyType.StaticBody) return;
+                    if (!(body.getUserData() instanceof Entity entity)) return;
+                    grabbedEntity = entity;
+                    MouseJointDef mouseJointDef = new MouseJointDef();
+                    mouseJointDef.target.set(worldPoint);
+                    mouseJointDef.bodyA = world.anyStaticBody;
+                    mouseJointDef.bodyB = body;
+                    mouseJointDef.maxForce = 15000;
+                    mouseJointDef.collideConnected = true;
+                    mouseJoint = (MouseJoint) world.world.createJoint(mouseJointDef);
+                    mouseJoint.setTarget(worldPoint);
                 }
-            }
-            if (mode == Mode.DELETE) {
-                Body body = FindBody.atPoint(world.world, worldPoint);
-                if (body == null) return;
-                if (!(body.getUserData() instanceof Entity entity)) return;
-                entity.remove();
+                case POLYGON -> polygonVertices.add(worldPoint);
+                case JOINT -> {
+                    if (jointPosA == null) {
+                        jointPosA = worldPoint.cpy();
+                    } else {
+                        JointEntity joint = new JointEntity(world, Color.CYAN, jointPosA, worldPoint, 5f, 0.5f);
+                        joint.spawn();
+                        jointPosA = null;
+                    }
+                }
+                case DELETE -> {
+                    Body body = FindBody.atPoint(world.world, worldPoint);
+                    if (body == null) return;
+                    if (!(body.getUserData() instanceof Entity entity)) return;
+                    entity.remove();
+                }
             }
         }
     }

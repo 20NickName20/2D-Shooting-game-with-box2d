@@ -7,6 +7,7 @@ import io.github._20nickname20.imbored.game_objects.items.scrap.StoneItem;
 import io.github._20nickname20.imbored.game_objects.loot.ScrapLoot;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class Material {
@@ -15,7 +16,8 @@ public class Material {
 
 
     public static final Material GROUND = new Material("ground", new Color(0.5f, 0.9f, 0.5f, 1))
-        .setFriction(1.5f);
+        .setFriction(1.5f)
+        .setShortName("GRND");
     public static final Material WOOD = new Material("wood", new Color(0.5f, 0.4f, 0.1f, 1))
         .setDensity(0.1f)
         .setFriction(0.75f)
@@ -33,7 +35,8 @@ public class Material {
         .setFriction(0.7f)
         .setRestitution(0.05f)
         .setHealthPerUnit(7.5f)
-        .setLoot(new ScrapLoot(MetalScrapItem.class, 0.075f));
+        .setLoot(new ScrapLoot(MetalScrapItem.class, 0.075f))
+        .setShortName("METL");
     public static final Material ITEM = new Material("item", Color.WHITE)
         .setDensity(0.3f)
         .setFriction(0.7f)
@@ -42,16 +45,21 @@ public class Material {
     public static final Material FLESH = new Material("flesh", new Color(0.7f, 0.2f, 0.2f, 1))
         .setDensity(0.1f)
         .setFriction(0.85f)
-        .setRestitution(0.01f);
+        .setRestitution(0.01f)
+        .setHealthPerUnit(2.5f)
+        .setShortName("FLSH");
     public static final Material CLOTH = new Material("cloth", new Color(0.9f, 0.9f, 0.75f, 1))
         .setDensity(0.05f)
         .setFriction(0.6f)
-        .setRestitution(0.1f);
+        .setRestitution(0.1f)
+        .setHealthPerUnit(2f)
+        .setShortName("CLTH");
 
     public float density = 1;
     public float friction = 1;
     public float restitution = 0.001f;
     public float healthPerUnit = 1;
+    public String shortName;
     public final Color color;
     public LootGenerator loot = null;
 
@@ -60,6 +68,7 @@ public class Material {
     private Material(String id, Color color) {
         this.id = id;
         this.color = color;
+        this.shortName = id.substring(0, 4).toUpperCase();
 
         materialMap.put(id, this);
     }
@@ -90,6 +99,11 @@ public class Material {
 
     public Material setLoot(LootGenerator loot) {
         this.loot = loot;
+        return this;
+    }
+
+    public Material setShortName(String shortName) {
+        this.shortName = shortName;
         return this;
     }
 }

@@ -69,9 +69,6 @@ public class MainMenuScreen extends ScreenAdapter {
         font.draw(batch, "Добро пожаловать в Коробки резня летс гоо!", 1, 1.5f);
         font.draw(batch, "Tap anywhere to begin!", 1, 1);
         batch.setColor(Color.BLUE);
-        batch.line(0,0,10,10);
-        batch.line(10,10,20,0);
-        batch.line(0,0,20,0);
         batch.end();
 
         if (Gdx.input.isTouched() || Gdx.input.isKeyPressed(Input.Keys.SPACE) || setGame) {
