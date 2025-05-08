@@ -1,25 +1,26 @@
 package io.github._20nickname20.imbored.game_objects.entities;
 
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.physics.box2d.World;
 import io.github._20nickname20.imbored.GameWorld;
-import io.github._20nickname20.imbored.game_objects.Entity;
-import io.github._20nickname20.imbored.game_objects.Material;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
-import io.github._20nickname20.imbored.util.Util;
 
 public abstract class BlockEntity extends DamagableEntity implements Grabbable {
     private PlayerEntity grabber;
-    public final float maxHealth;
+    public float maxHealth = 1;
 
     public BlockEntity(GameWorld world, float x, float y, Shape shape) {
         super(world, x, y, shape);
-        this.maxHealth = this.area * getMaterial().healthPerUnit;
     }
 
     public BlockEntity(GameWorld world, EntityData data) {
         super(world, data);
+    }
+
+    @Override
+    public void onSpawn(World world) {
         this.maxHealth = this.area * getMaterial().healthPerUnit;
+        super.onSpawn(world);
     }
 
     @Override

@@ -2,6 +2,7 @@ package io.github._20nickname20.imbored.game_objects;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
@@ -47,7 +48,12 @@ public class JointEntity {
         defJoint.collideConnected = true;
         defJoint.frequencyHz = frequency;
         defJoint.dampingRatio = damping;
-        defJoint.initialize(FindBody.atPoint(world, initPoint1), FindBody.atPoint(world, initPoint2), initPoint1, initPoint2);
+        Body bodyA = FindBody.atPoint(world, initPoint1);
+        if (bodyA == null) return;
+        Body bodyB = FindBody.atPoint(world, initPoint2);
+        if (bodyB == null) return;
+        if (bodyA == bodyB) return;
+        defJoint.initialize(bodyA, bodyB, initPoint1, initPoint2);
         DistanceJoint joint = (DistanceJoint) world.createJoint(defJoint);
         joint.setUserData(this);
         this.j = joint;

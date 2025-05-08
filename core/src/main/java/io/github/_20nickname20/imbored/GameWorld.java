@@ -33,7 +33,7 @@ public class GameWorld {
     private final Map<Integer, Chunk> loadedChunks = new HashMap<>();
     private final Map<Integer, Set<Entity>> entitiesByChunk = new HashMap<>();
     public static final float CHUNK_WIDTH = 300f;
-    public static final int SIMULATION_DISTANCE = 2;
+    public static final int SIMULATION_DISTANCE = 3;
 
     private final List<Ray> rays = new ArrayList<>();
 

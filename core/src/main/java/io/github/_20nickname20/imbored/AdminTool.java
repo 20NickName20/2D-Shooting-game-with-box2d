@@ -11,42 +11,24 @@ import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import io.github._20nickname20.imbored.game_objects.Entity;
-import io.github._20nickname20.imbored.game_objects.Inventory;
 import io.github._20nickname20.imbored.game_objects.Item;
-import io.github._20nickname20.imbored.game_objects.entities.InventoryHolder;
+import io.github._20nickname20.imbored.game_objects.JointEntity;
+import io.github._20nickname20.imbored.game_objects.Material;
+import io.github._20nickname20.imbored.game_objects.entities.block.SimpleBlockEntity;
 import io.github._20nickname20.imbored.game_objects.entities.statics.GroundEntity;
-import io.github._20nickname20.imbored.game_objects.items.ammo.AutomaticRifleCartridgeItem;
-import io.github._20nickname20.imbored.game_objects.items.ammo.PistolCartridgeItem;
-import io.github._20nickname20.imbored.game_objects.items.ammo.ShotgunCartridgeItem;
-import io.github._20nickname20.imbored.game_objects.items.ammo.SniperRifleCartridgeItem;
-import io.github._20nickname20.imbored.game_objects.items.scrap.MetalScrapItem;
-import io.github._20nickname20.imbored.game_objects.items.scrap.PlankItem;
-import io.github._20nickname20.imbored.game_objects.items.scrap.StoneItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.grenade.GrenadeItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.PistolItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.ShotgunItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.SniperRifleGunItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.automatic.AutomaticRifleItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.automatic.MinigunItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.joint.distance.HardDistanceJointItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.joint.distance.RubberDistanceJointItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.timed.heal.BandageItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.timed.heal.FirstAidKitItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.timed.modirfiers.EnergyDrinkItem;
-import io.github._20nickname20.imbored.game_objects.items.usable.timed.modirfiers.ShieldPotionItem;
 import io.github._20nickname20.imbored.util.FindBody;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.util.With;
 import org.reflections.Reflections;
 
-import java.security.cert.PolicyNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Vector;
 
 public class AdminTool {
     private static final List<Item> items = new ArrayList<>();
+    private static final Material[] materials = {Material.WOOD, Material.CLOTH, Material.ROCK, Material.METAL, Material.GROUND};
+    private static int materialMode = 0;
 
     static {
         Reflections reflections = new Reflections("io.github._20nickname20.imbored");
@@ -74,16 +56,21 @@ public class AdminTool {
     public static final float slotSize = 4.6f * 1.25f;
     public static int activeSlot = 0;
 
-    // Calls a renderSlot() in int slotAmount
     public static void render(ShapeRenderer renderer, float dt) {
         if (!isEnabled) return;
-        With.translation(renderer, world.camera.position.x - 65, world.camera.position.y + 35, () -> renderFull(renderer));
+        With.translation(renderer, world.camera.position.x - 65, world.camera.position.y + 35, () -> renderItems(renderer));
         renderer.setColor(Color.OLIVE);
         for (Vector2 vertex : polygonVertices) {
             renderer.circle(vertex.x, vertex.y, 0.5f);
         }
 
         renderer.setColor(Color.WHITE);
+
+        if (jointPosA != null) {
+            renderer.circle(jointPosA.x, jointPosA.y, 1.4f);
+            renderer.circle(jointPosA.x, jointPosA.y, 1.55f);
+        }
+
         With.translation(renderer, world.camera.position.x + 65, world.camera.position.y + 35, () -> {
             switch (mode) {
                 case GRAB -> renderer.polygon(new float[] {
@@ -103,16 +90,26 @@ public class AdminTool {
                     1f, 4f,
                     -3.3f, 3.9f
                 });
+                case JOINT -> {
+                    renderer.circle(-3f, -3f, 1.3f);
+                    renderer.rectLine(-3f, -3f, 3f, 3f, 0.1f);
+                    renderer.circle(3f, 3f, 1.3f);
+                }
                 case DELETE -> {
                     renderer.setColor(Color.RED);
                     renderer.rectLine(-3.5f, -3.5f, 3.5f, 3.5f, 1.2f);
                     renderer.rectLine(-3.5f, 3.5f, 3.5f, -3.5f, 1.2f);
                 }
             }
+
+            renderer.setColor(materials[materialMode].color);
+            for (float r = 2; r < 3; r += 0.1f){
+                renderer.circle(3, -10, r);
+            }
         });
     }
 
-    public static void renderFull(ShapeRenderer renderer) {
+    public static void renderItems(ShapeRenderer renderer) {
         Random random = new Random(5_030_000);
 
         float time = Util.time();
@@ -130,6 +127,8 @@ public class AdminTool {
 
     private static MouseJoint mouseJoint;
     private static Entity grabbedEntity;
+
+    private static Vector2 jointPosA;
 
     public static GameWorld world;
 
@@ -167,6 +166,15 @@ public class AdminTool {
             if (mode == Mode.POLYGON) {
                 polygonVertices.add(worldPoint);
             }
+            if (mode == Mode.JOINT) {
+                if (jointPosA == null) {
+                    jointPosA = worldPoint.cpy();
+                } else {
+                    JointEntity joint = new JointEntity(world, Color.CYAN, jointPosA, worldPoint, 5f, 0.5f);
+                    joint.spawn();
+                    jointPosA = null;
+                }
+            }
             if (mode == Mode.DELETE) {
                 Body body = FindBody.atPoint(world.world, worldPoint);
                 if (body == null) return;
@@ -194,9 +202,11 @@ public class AdminTool {
     public static void keyPressed(int key) {
         switch (key) {
             case Input.Keys.R -> mode = Mode.values()[(mode.ordinal() + 1) % Mode.values().length];
+            case Input.Keys.M -> materialMode = (materialMode + 1) % materials.length;
             case Input.Keys.NUM_1 -> mode = Mode.GRAB;
             case Input.Keys.NUM_2 -> mode = Mode.POLYGON;
-            case Input.Keys.NUM_3 -> mode = Mode.DELETE;
+            case Input.Keys.NUM_3 -> mode = Mode.JOINT;
+            case Input.Keys.NUM_4 -> mode = Mode.DELETE;
             case Input.Keys.ENTER -> {
                 if (mode == Mode.POLYGON) {
                     if (polygonVertices.size() >= 3) {
@@ -216,8 +226,11 @@ public class AdminTool {
                         PolygonShape shape = new PolygonShape();
                         shape.set(vertices);
 
-                        world.spawn(new GroundEntity(world, center.x, center.y, shape));
-                        System.out.println("spawn");
+                        if (materials[materialMode] == Material.GROUND) {
+                            world.spawn(new GroundEntity(world, center.x, center.y, shape));
+                        } else {
+                            world.spawn(new SimpleBlockEntity(world, center.x, center.y, shape, materials[materialMode]));
+                        }
                     }
                     polygonVertices.clear();
                 }
@@ -228,6 +241,7 @@ public class AdminTool {
     enum Mode {
         GRAB,
         POLYGON,
+        JOINT,
         DELETE
     }
 }

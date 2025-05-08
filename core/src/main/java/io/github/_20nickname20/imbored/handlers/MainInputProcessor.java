@@ -86,8 +86,9 @@ public class MainInputProcessor extends InputAdapter {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.TAB){
+        if (keycode == Input.Keys.TAB || (AdminTool.isEnabled && keycode == Input.Keys.ESCAPE)){
             AdminTool.isEnabled = !AdminTool.isEnabled;  // Switch boolean for GameScreen to render
+            return false;
         }
         if (keycode == Input.Keys.ESCAPE) {
             gameScreen.game.setScreen(new MainMenuScreen(gameScreen.game));
