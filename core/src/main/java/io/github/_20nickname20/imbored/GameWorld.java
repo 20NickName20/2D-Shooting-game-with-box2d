@@ -32,10 +32,20 @@ public class GameWorld {
 
     private final Map<Integer, Chunk> loadedChunks = new HashMap<>();
     private final Map<Integer, Set<Entity>> entitiesByChunk = new HashMap<>();
+
     public static final float CHUNK_WIDTH = 300f;
     public static final int SIMULATION_DISTANCE = 3;
 
     private final List<Ray> rays = new ArrayList<>();
+    private boolean isFrozen;
+
+    public void setFrozen(boolean frozen) {
+        isFrozen = frozen;
+    }
+
+    public boolean isFrozen() {
+        return isFrozen;
+    }
 
     public Set<Entity> getEntitiesInChunk(int x) {
         return entitiesByChunk.get(x);
@@ -222,7 +232,9 @@ public class GameWorld {
         float frameTime = Math.min(dt, 0.25f);
         accumulator += frameTime;
         while (accumulator >= Constants.TIME_STEP) {
-            world.step(Constants.TIME_STEP, Constants.VELOCITY_ITERATIONS, Constants.POSITION_ITERATIONS);
+            if (!isFrozen) {
+                world.step(Constants.TIME_STEP, Constants.VELOCITY_ITERATIONS, Constants.POSITION_ITERATIONS);
+            }
             accumulator -= Constants.TIME_STEP;
             step++;
             if (step < Constants.UPDATES_LATENCY) continue;
