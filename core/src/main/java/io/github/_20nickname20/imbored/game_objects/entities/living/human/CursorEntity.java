@@ -9,8 +9,12 @@ public abstract class CursorEntity extends HumanEntity {
     protected float cursorDistance = 0;
     private final Vector2 cursorDirection = new Vector2(0, 1);
 
-    public CursorEntity(GameWorld world, float x, float y, float maxHealth, float defaultMaxWalkSpeed) {
-        super(world, x, y, maxHealth, defaultMaxWalkSpeed);
+    public CursorEntity(GameWorld world, float x, float y) {
+        super(world, x, y);
+    }
+
+    public CursorEntity(GameWorld world, EntityData data) {
+        super(world, data);
     }
 
     public float getCursorDistance() {

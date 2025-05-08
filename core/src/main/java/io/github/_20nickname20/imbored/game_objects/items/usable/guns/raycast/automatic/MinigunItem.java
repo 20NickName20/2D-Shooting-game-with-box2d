@@ -6,17 +6,96 @@ import com.badlogic.gdx.math.MathUtils;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.entities.DamagableEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
+import io.github._20nickname20.imbored.game_objects.items.AmmoCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.ammo.AutomaticRifleCartridgeItem;
+import io.github._20nickname20.imbored.game_objects.items.ammo.PistolCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.AutomaticRaycastGunItem;
 import io.github._20nickname20.imbored.render.BarDisplay;
 import io.github._20nickname20.imbored.util.With;
 
 public class MinigunItem extends AutomaticRaycastGunItem {
-    private final float defaultCooldown = 0.05f;
+    private static final float SIZE = 3.5f;
+    private static final float RANGE = 120f;
+    private static final float DAMAGE = 3f;
+    private static final float POWER = 2f;
+    private static final float RECOIL = 0.1f;
+    private static final float MAX_SCATTER_ANGLE = MathUtils.degRad * 10.5f;
+    private static final float REQUIRED_RELOAD_TIME = 15f;
+    private static final int MAX_AMMO = 100;
+    private static final float COOLDOWN = 0.03f;
+    private static final Class<? extends AmmoCartridgeItem> AMMO_TYPE = AutomaticRifleCartridgeItem.class;
+    private static final float RAY_LENGTH = 30f;
+    private static final float RAY_SPEED = 100;
+    private static final Color RAY_COLOR = Color.LIGHT_GRAY;
+
     private float overheat = 0f;
 
-    public MinigunItem(Entity holder) {
-        super(holder, 2, 0.05f, 5, 100, 100, 12, 6.5f, 0.08f, 175f, MathUtils.degRad * 10, AutomaticRifleCartridgeItem.class);
+    public MinigunItem(int ammo) {
+        super(ammo);
+    }
+
+    public MinigunItem() {
+        super(MAX_AMMO);
+    }
+
+    public MinigunItem(ItemData data) {
+        super(data);
+    }
+
+    @Override
+    public float getSize() {
+        return SIZE;
+    }
+    @Override
+    public float getRange() {
+        return RANGE;
+    }
+    @Override
+    public float getDamage() {
+        return DAMAGE;
+    }
+    @Override
+    public float getPower() {
+        return POWER;
+    }
+    @Override
+    public float getRecoil() {
+        return RECOIL;
+    }
+    @Override
+    public float getMaxScatterAngle() {
+        return MAX_SCATTER_ANGLE;
+    }
+    @Override
+    public float getRequiredReloadTime() {
+        return REQUIRED_RELOAD_TIME;
+    }
+    @Override
+    public int getMaxAmmo() {
+        return MAX_AMMO;
+    }
+    @Override
+    public float getCooldown() {
+        if (overheat > 0.8f) {
+            return Float.MAX_VALUE;
+        }
+        return COOLDOWN + COOLDOWN * overheat * 4;
+    }
+    @Override
+    public Class<? extends AmmoCartridgeItem> getAmmoType() {
+        return AMMO_TYPE;
+    }
+    @Override
+    public float getRayLength() {
+        return RAY_LENGTH;
+    }
+    @Override
+    public float getRaySpeed() {
+        return RAY_SPEED;
+    }
+    @Override
+    public Color getRayColor() {
+        return RAY_COLOR;
     }
 
     @Override
@@ -29,10 +108,6 @@ public class MinigunItem extends AutomaticRaycastGunItem {
         }
         overheat = MathUtils.clamp(overheat, 0f, 1.3f);
 
-        cooldown = defaultCooldown + defaultCooldown * overheat * 4;
-        if (overheat > 0.95f) {
-            cooldown = Float.MAX_VALUE;
-        }
         if (overheat > 1.29f) {
             this.remove();
             if (this.getHolder() instanceof DamagableEntity damagable) {
@@ -57,7 +132,7 @@ public class MinigunItem extends AutomaticRaycastGunItem {
         if (overheat < 0.1f) return;
         if (handHolder == null) return;
 
-        With.rotation(renderer, -handHolder.getCursorDirection().angleDeg(), () -> {
+        this.withNoRotation(renderer, handHolder, () -> {
             With.translation(renderer, 0, 6f, () -> {
                 BarDisplay.render(renderer, BAR_OUTTER_COLOR, BAR_INNER_COLOR, overheat / 1.3f);
             });

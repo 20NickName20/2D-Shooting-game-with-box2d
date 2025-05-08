@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
 import com.badlogic.gdx.utils.Array;
+import io.github._20nickname20.imbored.game_objects.JointEntity;
 import io.github._20nickname20.imbored.game_objects.Entity;
 
 import java.util.function.Consumer;
@@ -77,7 +78,7 @@ public class GameLineRenderer extends Box2DDebugRenderer {
         Color color;
         Vector2 position = body.getPosition();
         if (body.getUserData() instanceof Entity entity) {
-            color = entity.material.color;
+            color = entity.getMaterial().color;
             renderer.translate(position.x, position.y, 0);
             if (entity.render(renderer)) {
                 renderer.translate(-position.x, -position.y, 0);
@@ -185,9 +186,13 @@ public class GameLineRenderer extends Box2DDebugRenderer {
         Vector2 p2 = joint.getAnchorB();
 
         Color color;
-        if (joint.getUserData() instanceof JointDisplay display) {
-            if (!display.doRender) return;
-            color = display.color;
+        if (joint.getUserData() instanceof JointEntity jointEntity) {
+            color = jointEntity.color;
+        } else if (joint.getUserData() instanceof Color jointColor) {
+            color = jointColor;
+        } else if (joint.getUserData() instanceof Boolean bool) {
+            if (!bool) return;
+            color = Color.BLACK;
         } else {
             color = JOINT_COLOR;
         }

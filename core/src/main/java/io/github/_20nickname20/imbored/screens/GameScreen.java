@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -18,7 +19,6 @@ import io.github._20nickname20.imbored.controllers.PlayerGamepadController;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.handlers.MainInputProcessor;
 import io.github._20nickname20.imbored.render.GameLineRenderer;
-import io.github._20nickname20.imbored.util.Tests;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.util.With;
 
@@ -44,7 +44,6 @@ public class GameScreen extends ScreenAdapter {
     public GameScreen(Main game) {
         this.game = game;
 
-
         world = new GameWorld();
 
         viewport = new FitViewport(16, 9, world.camera);
@@ -62,13 +61,9 @@ public class GameScreen extends ScreenAdapter {
 
         inputMultiplexer.addProcessor(new MainInputProcessor(this));
 
-        init();
-    }
-
-    private void init() {
-        Tests tests = new Tests(this);
-        tests.plane();
-        tests.crates();
+        for (Controller controller : Controllers.getControllers()) {
+             addControllerPlayer(controller, 0);
+        }
     }
 
     public void addControllerPlayer(Controller controller, float x) {
@@ -77,7 +72,7 @@ public class GameScreen extends ScreenAdapter {
         System.out.println("Controller connected: " + controller.getName() + " ID: " + controller.getUniqueId());
 
         world.spawn(
-            new PlayerEntity(world, x, -30,
+            new PlayerEntity(world, x, 100,
                 new PlayerGamepadController(controller)
             )
         );
@@ -95,12 +90,14 @@ public class GameScreen extends ScreenAdapter {
 
         viewport.apply();
         renderer.render(world.world, world.camera.combined, (shape) -> {
-            // With.translation(shape, world.camera.position.x, world.camera.position.y, () -> {
-            //     shape.setColor(Color.BLACK);
-            //     shape.set(ShapeRenderer.ShapeType.Filled);
-            //     shape.rect(-200, -200, 400, 400);
-            //     shape.set(ShapeRenderer.ShapeType.Line);
-            // });
+            With.translation(shape, world.camera.position.x, world.camera.position.y, () -> {
+                shape.setColor(Color.BLACK);
+                shape.set(ShapeRenderer.ShapeType.Filled);
+                shape.rect(-200, -200, 400, 400);
+                shape.set(ShapeRenderer.ShapeType.Line);
+            });
+            world.renderRays(shape);
+
             With.translation(shape,world.camera.position.x,world.camera.position.y, () -> AdminTool.renderPart(shape, 12));
 
             if (debugController != null && Gdx.input.isKeyPressed(Input.Keys.F3)) {

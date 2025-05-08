@@ -12,21 +12,24 @@ import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor
 import io.github._20nickname20.imbored.game_objects.items.UsableItem;
 
 public abstract class JointItem extends UsableItem {
+    private static final float REACH = 6;
+
     private Body bodyA, bodyB;
     private Vector2 bodyAPos;
     private float bodyAAngle;
     protected Vector2 posA, posB;
     private boolean isATargeted = false;
-    protected final float maxDistance;
-    private float reach = 6;
 
-    protected final Color color;
-
-    public JointItem(Entity holder, float size, float maxDistance, Color color) {
-        super(holder, size);
-        this.maxDistance = maxDistance;
-        this.color = color;
+    public JointItem() {
+        super();
     }
+
+    public JointItem(ItemData data) {
+        super(data);
+    }
+
+    public abstract float getMaxDistance();
+    public abstract Color getColor();
 
     private void reset() {
         isATargeted = false;
@@ -58,7 +61,7 @@ public abstract class JointItem extends UsableItem {
             Entity entity = Entity.getEntity(body);
             if (entity == null) return false;
             if (!(entity instanceof BlockEntity)) return false;
-            if (body.getPosition().dst(pos) > reach) return false;
+            if (body.getPosition().dst(pos) > REACH) return false;
             return true;
         });
     }
@@ -74,11 +77,11 @@ public abstract class JointItem extends UsableItem {
         Vector2 connectPoint = FindBody.closestPoint(closest, pos);
         if (bodyA.getPosition().dst(bodyAPos) > 0.1) return;
         if (!MathUtils.isEqual(bodyA.getAngle(), bodyAAngle, 0.01f)) return;
-        if (connectPoint.dst(posA) > maxDistance) return;
+        if (connectPoint.dst(posA) > getMaxDistance()) return;
         if (closest.getUserData() instanceof BlockEntity) {
             bodyB = closest;
             posB = connectPoint;
-            createJoint(bodyA, bodyB, posA, posB);
+            createJoint(player, bodyA, bodyB, posA, posB);
             player.removeEquippedItem();
         }
     }
@@ -94,5 +97,5 @@ public abstract class JointItem extends UsableItem {
         reset();
     }
 
-    public abstract void createJoint(Body bodyA, Body bodyB, Vector2 posA, Vector2 posB);
+    public abstract void createJoint(PlayerEntity player, Body bodyA, Body bodyB, Vector2 posA, Vector2 posB);
 }

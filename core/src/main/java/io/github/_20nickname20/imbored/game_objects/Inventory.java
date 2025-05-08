@@ -12,11 +12,24 @@ public class Inventory {
     private float containedSize = 0;
     private final ArrayList<Item> items = new ArrayList<>();
     private int selectedSlot = 0;
-    private final InventoryHolder holder;
+    private InventoryHolder holder;
 
-    public Inventory(InventoryHolder holder, float sizeLimit) {
+    public Inventory(float sizeLimit) {
         this.sizeLimit = sizeLimit;
+    }
+
+    public Inventory(InventoryData data) {
+        this.sizeLimit = data.sizeLimit;
+        for (Item.ItemData itemData : data.items) {
+            this.add(Item.createFromData(itemData, null));
+        }
+    }
+
+    public void setHolder(InventoryHolder holder) {
         this.holder = holder;
+        for (Item item : items) {
+            item.setHolder(holder.getEntity());
+        }
     }
 
     public InventoryHolder getHolder() {
@@ -35,8 +48,13 @@ public class Inventory {
         return items.isEmpty();
     }
 
-    public void setSizeLimit(float sizeLimit) {
+    public List<Item> setSizeLimit(float sizeLimit) {
+        List<Item> didNotFit = new ArrayList<>();
+        while (containedSize > sizeLimit) {
+            this.removeItem(0);
+        }
         this.sizeLimit = sizeLimit;
+        return didNotFit;
     }
 
     public float getContainedSize() {
@@ -68,7 +86,7 @@ public class Inventory {
         if (item == null) return false;
         if (containedSize + item.getSize() > sizeLimit) return false;
         containedSize += item.getSize();
-        item.setHolder(holder.getEntity());
+        if (holder != null) item.setHolder(holder.getEntity());
         items.add(item);
         return true;
     }
@@ -166,5 +184,23 @@ public class Inventory {
 
     public void renderPart(ShapeRenderer renderer, int slotAmount) {
         renderPart(renderer, slotAmount, null);
+    }
+
+    public InventoryData createPersistentData() {
+        InventoryData data = new InventoryData();
+        Item.ItemData[] itemsData = new Item.ItemData[items.size()];
+        int i = 0;
+        for (Item item : items) {
+            itemsData[i] = item.createPersistentData();
+            i++;
+        }
+        data.items = itemsData;
+        data.sizeLimit = sizeLimit;
+        return data;
+    }
+
+    public static class InventoryData {
+        float sizeLimit;
+        Item.ItemData[] items;
     }
 }

@@ -1,5 +1,6 @@
 package io.github._20nickname20.imbored.game_objects.items.usable;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -16,20 +17,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BaseGrenadeItem extends UsableItem {
-    private final float power, damage, range;
     protected boolean isPinOut = false;
-    protected float timeLeft;
+    protected float timeLeft = getInitTime();
     private boolean isExploded = false;
-    private final float rayDisplayTime = 1.5f;
 
-    public BaseGrenadeItem(Entity holder, float size, float timeLeft, float power, float damage, float range) {
-        super(holder, size);
-        this.timeLeft = timeLeft;
-        this.power = power;
-        this.damage = damage;
-        this.range = range;
+    public BaseGrenadeItem() {
+        super();
     }
-    private final List<Ray> rays = new ArrayList<>();
+
+    public BaseGrenadeItem(ItemData data) {
+        super(data);
+    }
+
+    @Override
+    public float getSize() {
+        return 0;
+    }
+
+    public abstract float getPower();
+
+    public abstract float getDamage();
+
+    public abstract float getRange();
+
+    public abstract float getInitTime();
 
     @Override
     public void update(float dt) {
@@ -44,27 +55,9 @@ public abstract class BaseGrenadeItem extends UsableItem {
         }
     }
 
-    protected final void renderRays(ShapeRenderer renderer) {
-        ArrayList<Ray> toRemove = new ArrayList<>();
-        float time = Util.time();
-        for (Ray ray : rays) {
-            float rayTime = time - ray.time;
-            if (rayTime > rayDisplayTime) {
-                toRemove.add(ray);
-            }
-            Vector2 start = new Vector2();
-            //Vector2 start = new Vector2(range * ray.fraction * Math.min(1, rayTime / rayDisplayTime), 0).rotateRad(ray.offsetAngle);
-            Vector2 end = new Vector2(range * ray.fraction, 0).rotateAroundRad(new Vector2(), ray.offsetAngle);
-            renderer.line(start, end);
-        }
-        for (Ray removed : toRemove) {
-            rays.remove(removed);
-        }
-    }
-
     private void explode() {
         Entity holder = this.getHolder();
-        Util.explode(holder.gameWorld, holder.b, rays, holder.b.getPosition(), (float) (Math.PI / 24f), range, power, damage);
+        Util.explode(holder.gameWorld, holder.b, holder.b.getPosition(), (float) (Math.PI / 25f), getRange(), getPower(), getDamage(), 20 * MathUtils.degRad, 50, 40, Color.ORANGE);
 
         this.remove();
         if (this.getHolder() instanceof DamagableEntity damagable) {
@@ -85,18 +78,6 @@ public abstract class BaseGrenadeItem extends UsableItem {
     @Override
     public void onUnequip(PlayerEntity holder) {
         this.isEquipped = false;
-    }
-
-    @Override
-    public void render(ShapeRenderer renderer, CursorEntity handHolder) {
-        renderer.setColor(1f, 0.6f, 0.1f, 1);
-        if (handHolder != null) {
-            With.rotation(renderer, -handHolder.b.getAngle() * MathUtils.radiansToDegrees, () -> {
-                renderRays(renderer);
-            });
-        } else {
-            renderRays(renderer);
-        }
     }
 
     @Override

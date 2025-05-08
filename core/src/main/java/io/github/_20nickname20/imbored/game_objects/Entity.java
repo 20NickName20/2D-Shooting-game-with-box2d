@@ -1,22 +1,23 @@
 package io.github._20nickname20.imbored.game_objects;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Shape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
 import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.util.Util;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class Entity implements Removable {
     public Body b;
     protected final Shape shape;
-    public final Material material;
     public final GameWorld gameWorld;
     public final World world;
+    protected final float area;
+
+    private static final HashMap<UUID, Entity> entitiesByUuid = new HashMap<>();
+
+    protected EntityData persistentData = null;
 
     public Set<Body> contacts = new HashSet<>();
     private float lastContactTime = 0;
@@ -24,20 +25,48 @@ public abstract class Entity implements Removable {
 
     private boolean isRemoved = false;
 
-    public final UUID uuid = UUID.randomUUID();
+    public int chunkPos = 0;
+
+    public final UUID uuid;
     private final float spawnX, spawnY;
     private Runnable onSpawn = null;
     public float spawnTime;
     private final Set<Effect> effects = new HashSet<>();
 
-    public Entity(GameWorld gameWorld, float x, float y, Shape shape, Material material) {
+    public Entity(GameWorld gameWorld, float x, float y, Shape shape) {
         this.spawnX = x;
         this.spawnY = y;
-        this.material = material;
         this.gameWorld = gameWorld;
         this.world = gameWorld.world;
         this.shape = shape;
+        this.area = Util.getArea(shape);
+        this.uuid = UUID.randomUUID();
+        entitiesByUuid.put(this.uuid, this);
     }
+
+    public Entity(GameWorld gameWorld, EntityData data) {
+        this.gameWorld = gameWorld;
+        this.world = gameWorld.world;
+        this.persistentData = data;
+
+        this.uuid = UUID.fromString(data.uuid);
+        entitiesByUuid.put(this.uuid, this);
+        this.spawnX = data.posX;
+        this.spawnY = data.posY;
+
+        if (data.bodyType.equals("circle") || data.polygonVertices.length < 3) {
+            CircleShape circleShape = new CircleShape();
+            circleShape.setRadius(data.circleRadius);
+            this.shape = circleShape;
+        } else {
+            PolygonShape polygonShape = new PolygonShape();
+            polygonShape.set(data.polygonVertices);
+            this.shape = polygonShape;
+        }
+        this.area = Util.getArea(this.shape);
+    }
+
+    public abstract Material getMaterial();
 
     public final void spawn() {
         gameWorld.spawn(this);
@@ -48,9 +77,19 @@ public abstract class Entity implements Removable {
     }
 
     public void onSpawn(World world) {
-        b = Util.createBody(world, spawnX, spawnY, shape, material.density, material.friction, material.restitution);
+        b = Util.createBody(world, spawnX, spawnY, shape, getMaterial().density, getMaterial().friction, getMaterial().restitution);
         b.setUserData(this);
         spawnTime = Util.time();
+
+        if (persistentData != null) {
+            switch (persistentData.bodyType) {
+                case "static" -> b.setType(BodyDef.BodyType.StaticBody);
+                case "kinematic" -> b.setType(BodyDef.BodyType.KinematicBody);
+            }
+            b.setTransform(persistentData.posX, persistentData.posY, persistentData.angle);
+            b.setLinearVelocity(persistentData.velX, persistentData.velY);
+            b.setAngularVelocity(persistentData.angularVel);
+        }
 
         if (onSpawn == null) return;
         onSpawn.run();
@@ -113,12 +152,86 @@ public abstract class Entity implements Removable {
         return isRemoved;
     }
 
+    public Body getLastContactedBody() {
+        return lastContactedBody;
+    }
+
+    public EntityData createPersistentData() {
+        Shape shape = this.b.getFixtureList().get(0).getShape();
+
+        if (persistentData == null) {
+            persistentData = new EntityData();
+        }
+        persistentData.className = getClass().getName();
+        persistentData.uuid = uuid.toString();
+
+        persistentData.bodyType = switch (b.getType()) {
+            case DynamicBody -> "dynamic";
+            case StaticBody -> "static";
+            case KinematicBody -> "kinematic";
+        };
+        Vector2 pos = b.getPosition();
+        persistentData.posX = pos.x;
+        persistentData.posY = pos.y;
+        persistentData.angle = b.getAngle();
+        Vector2 vel = b.getLinearVelocity();
+        persistentData.velX = vel.x;
+        persistentData.velY = vel.y;
+        persistentData.angularVel = b.getAngularVelocity();
+
+        persistentData.circleRadius = shape.getRadius();
+        if (shape instanceof PolygonShape polygonShape) {
+            persistentData.shapeType = "poly";
+            int vertexCount = polygonShape.getVertexCount();
+            if (vertexCount > 2) {
+                persistentData.polygonVertices = new float[vertexCount * 2];
+                Vector2 result = new Vector2();
+                for (int i = 0; i < vertexCount; i++) {
+                    polygonShape.getVertex(i, result);
+                    persistentData.polygonVertices[i * 2] = result.x;
+                    persistentData.polygonVertices[i * 2 + 1] = result.y;
+                }
+            } else {
+                persistentData.shapeType = "circle";
+                persistentData.polygonVertices = new float[0];
+            }
+        } else {
+            persistentData.shapeType = "circle";
+            persistentData.polygonVertices = new float[0];
+        }
+
+        return persistentData;
+    }
+
     public static Entity getEntity(Body body) {
         if (body.getUserData() instanceof Entity entity) return entity;
         return null;
     }
 
-    public Body getLastContactedBody() {
-        return lastContactedBody;
+    public static Entity getByUuid(UUID uuid) {
+        return entitiesByUuid.get(uuid);
+    }
+
+    public static Entity createFromData(GameWorld world, EntityData data) {
+        try {
+            Class<?> clazz = Class.forName(data.className);
+            return (Entity) clazz.getConstructor(GameWorld.class, EntityData.class).newInstance(world, data);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static class EntityData {
+        public String className;
+        public String uuid;
+
+        public String bodyType;
+        public float posX, posY, velX, velY;
+        public float angle, angularVel;
+
+        public String shapeType;
+        public float[] polygonVertices;
+        public float circleRadius;
     }
 }

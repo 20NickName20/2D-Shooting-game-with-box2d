@@ -17,7 +17,9 @@ import io.github._20nickname20.imbored.game_objects.LootGenerator;
 import io.github._20nickname20.imbored.game_objects.Material;
 import io.github._20nickname20.imbored.game_objects.entities.StaticEntity;
 import io.github._20nickname20.imbored.game_objects.entities.container.CrateEntity;
+import io.github._20nickname20.imbored.game_objects.entities.container.crate.WoodenCrateEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.game_objects.entities.statics.GroundEntity;
 import io.github._20nickname20.imbored.game_objects.loot.supply.GunSupplyLoot;
 import io.github._20nickname20.imbored.game_objects.loot.supply.HealSupplyLoot;
 import io.github._20nickname20.imbored.game_objects.loot.supply.StuffSupplyLoot;
@@ -35,7 +37,7 @@ public class MainInputProcessor extends InputAdapter {
         this.gameScreen = gameScreen;
 
         if (Controllers.getControllers().isEmpty()) {
-            keyboardPlayer = new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, -30, new PlayerKeyboardAndMouseController());
+            keyboardPlayer = new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, 120, new PlayerKeyboardAndMouseController());
             gameScreen.world.spawn(keyboardPlayer);
         }
     }
@@ -85,7 +87,7 @@ public class MainInputProcessor extends InputAdapter {
             float sideY = Math.abs(centerY - endY);
             if (sideX < 1 || sideY < 1) return false;
             gameScreen.world.spawn(
-                new StaticEntity(gameScreen.world, centerX, centerY, Shapes.boxShape(sideX, sideY), Material.GROUND)
+                new GroundEntity(gameScreen.world, centerX, centerY, Shapes.boxShape(sideX, sideY))
             );
         }
         if (button != Input.Buttons.LEFT) return false;
@@ -143,7 +145,7 @@ public class MainInputProcessor extends InputAdapter {
                 return false;
             }
             isAdminEnabled = false;
-            keyboardPlayer = new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, -30, new PlayerKeyboardAndMouseController());
+            keyboardPlayer = new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, 100, new PlayerKeyboardAndMouseController());
             gameScreen.world.spawn(keyboardPlayer);
         }
         if (!isAdminEnabled) return false;
@@ -153,7 +155,7 @@ public class MainInputProcessor extends InputAdapter {
             LootGenerator stuffLoot = new StuffSupplyLoot();
 
             Vector2 worldPos = GameScreen.getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-            CrateEntity entity = new CrateEntity(gameScreen.world, worldPos.x, worldPos.y, 3.5f, 3.5f, 200);
+            CrateEntity entity = new WoodenCrateEntity(gameScreen.world, worldPos.x, worldPos.y, 3.5f, 3.5f);
             LootGenerator lootGenerator = switch (MathUtils.random(2)) {
                 case 0 -> gunLoot;
                 case 1 -> healLoot;

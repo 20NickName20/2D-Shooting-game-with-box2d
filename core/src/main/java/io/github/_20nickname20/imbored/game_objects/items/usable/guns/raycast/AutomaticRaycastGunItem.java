@@ -7,8 +7,12 @@ import io.github._20nickname20.imbored.game_objects.items.AmmoCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.RaycastGunItem;
 
 public abstract class AutomaticRaycastGunItem extends RaycastGunItem {
-    public AutomaticRaycastGunItem(Entity holder, float size, float cooldown, float damage, int ammo, int maxAmmo, float requiredReloadTime, float power, float recoilScale, float range, float maxScatterAngle, Class<? extends AmmoCartridgeItem> ammoTypeClass) {
-        super(holder, size, cooldown, damage, ammo, maxAmmo, requiredReloadTime, power, recoilScale, range, maxScatterAngle, cooldown / 4, ammoTypeClass);
+    public AutomaticRaycastGunItem(int ammo) {
+        super(ammo);
+    }
+
+    public AutomaticRaycastGunItem(ItemData data) {
+        super(data);
     }
 
     private boolean isShooting = false;

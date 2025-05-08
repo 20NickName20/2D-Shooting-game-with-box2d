@@ -8,8 +8,31 @@ import io.github._20nickname20.imbored.game_objects.entities.living.human.Cursor
 import io.github._20nickname20.imbored.game_objects.items.usable.timed.HealItem;
 
 public class FirstAidKitItem extends HealItem {
-    public FirstAidKitItem(Entity holder) {
-        super(holder, 2, 11, 100);
+    private static final float SIZE = 4f;
+    private static final float REQUIRED_USE_TIME = 10f;
+    private static final float HEAL_AMOUNT = 75f;
+
+    public FirstAidKitItem() {
+        super();
+    }
+
+    public FirstAidKitItem(ItemData data) {
+        super(data);
+    }
+
+    @Override
+    public float getSize() {
+        return SIZE;
+    }
+
+    @Override
+    public float getRequiredUseTime() {
+        return REQUIRED_USE_TIME;
+    }
+
+    @Override
+    public float getHealAmount() {
+        return HEAL_AMOUNT;
     }
 
     @Override

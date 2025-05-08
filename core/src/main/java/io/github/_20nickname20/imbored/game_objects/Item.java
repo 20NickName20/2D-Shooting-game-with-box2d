@@ -8,14 +8,18 @@ import io.github._20nickname20.imbored.render.BarDisplay;
 import io.github._20nickname20.imbored.util.With;
 
 public abstract class Item implements Removable {
-    private final float size;
     private Entity holder;
     private boolean isRemoved = false;
     protected boolean isEquipped = false;
 
-    public Item(Entity holder, float size) {
-        this.holder = holder;
-        this.size = size;
+    protected ItemData persistentData;
+
+    public Item() {
+
+    }
+
+    public Item(ItemData data) {
+        this.persistentData = data;
     }
 
     public float getCursorDistance() {
@@ -31,6 +35,11 @@ public abstract class Item implements Removable {
     }
 
     public abstract void render(ShapeRenderer renderer, CursorEntity handHolder);
+
+    protected final void withNoRotation(ShapeRenderer renderer, CursorEntity handHolder, Runnable runnable) {
+        if (handHolder == null) return;
+        With.rotation(renderer, -handHolder.getCursorDirection().angleDeg(), runnable);
+    }
 
     protected void renderBar(ShapeRenderer renderer, CursorEntity handHolder, float yTranslation, BarDisplay barDisplay) {
         if (handHolder == null) return;
@@ -53,9 +62,7 @@ public abstract class Item implements Removable {
         return isRemoved;
     }
 
-    public final float getSize() {
-        return size;
-    }
+    public abstract float getSize();
 
     public void onEquip(PlayerEntity holder) {
         isEquipped = true;
@@ -86,6 +93,7 @@ public abstract class Item implements Removable {
     }
 
     public final Vector2 getPosition() {
+        if (holder == null) return Vector2.Zero;
         if (isEquipped && holder instanceof CursorEntity cursorEntity) {
             return cursorEntity.getCursorPosition();
         }
@@ -96,11 +104,39 @@ public abstract class Item implements Removable {
         return true;
     }
 
+    public ItemData createPersistentData() {
+        if (persistentData == null) {
+            persistentData = new ItemData();
+        }
+
+        persistentData.className = this.getClass().getName();
+        return persistentData;
+    }
+
     public static Item createFromType(Class<? extends Item> typeClass, Entity holder) {
         try {
-            return typeClass.getConstructor(Entity.class).newInstance(holder);
+            Item item = typeClass.getConstructor().newInstance();
+            item.setHolder(holder);
+            return item;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
+    }
+
+    public static Item createFromData(ItemData data, Entity holder) {
+        try {
+            Class<?> clazz = Class.forName(data.className);
+            Item item = (Item) clazz.getConstructor(ItemData.class).newInstance(data);
+            item.setHolder(holder);
+            return item;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static class ItemData {
+        String className;
     }
 }

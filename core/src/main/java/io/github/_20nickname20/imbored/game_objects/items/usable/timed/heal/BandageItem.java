@@ -7,8 +7,31 @@ import io.github._20nickname20.imbored.game_objects.entities.living.human.Cursor
 import io.github._20nickname20.imbored.game_objects.items.usable.timed.HealItem;
 
 public class BandageItem extends HealItem {
-    public BandageItem(Entity holder) {
-        super(holder, 2, 5, 25);
+    private static final float SIZE = 2f;
+    private static final float REQUIRED_USE_TIME = 5f;
+    private static final float HEAL_AMOUNT = 25f;
+
+    public BandageItem() {
+        super();
+    }
+
+    public BandageItem(ItemData data) {
+        super(data);
+    }
+
+    @Override
+    public float getSize() {
+        return SIZE;
+    }
+
+    @Override
+    public float getRequiredUseTime() {
+        return REQUIRED_USE_TIME;
+    }
+
+    @Override
+    public float getHealAmount() {
+        return HEAL_AMOUNT;
     }
 
     @Override
