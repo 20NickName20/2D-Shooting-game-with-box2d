@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -34,12 +35,14 @@ import java.util.Random;
 
 public class AdminTool {
     private static final List<Item> items = new ArrayList<>();
-    private static final Material[] materials = {Material.WOOD, Material.CLOTH, Material.ROCK, Material.METAL, Material.GROUND};
+    private static final Material[] materials = {Material.WOOD, Material.CLOTH, Material.ROCK, Material.METAL, Material.GROUND, Material.FLESH};
     private static int materialMode = 0;
     private static PenRenderer batch = new PenRenderer();
     private static BitmapFont font;
     private static FitViewport viewport;
 
+    private static final SpriteBatch batch = new SpriteBatch();
+    private static final BitmapFont font;
 
 
 
@@ -48,7 +51,7 @@ public class AdminTool {
         for (Class<? extends Item> type : reflections.getSubTypesOf(Item.class)) {
             if (ClassReflection.isAbstract(type)) continue;
             items.add(Item.createFromType(type, null));
-//            System.out.println(type.getSimpleName());
+            // System.out.println(type.getSimpleName());
         }
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/PressStart2P-Regular.ttf"));
@@ -78,11 +81,13 @@ public class AdminTool {
     }
 
     static void renderText(){
+        batch.setProjectionMatrix(world.camera.combined);
         batch.setProjectionMatrix(world.camera.projection);
         font.getData().setScale(batch.getProjectionMatrix().getScaleY() * world.camera.viewportHeight / 7);
 
         batch.begin();
         font.setColor(Color.WHITE);
+        font.draw(batch, materials[materialMode].shortName, world.camera.position.x, world.camera.position.y);
 //        font.draw(batch, materials[materialMode].shortName,1842 , 819.5f);
 //        font.draw(batch, materials[materialMode].shortName, world.camera.position.x + 65, world.camera.position.y + 35);
         font.draw(batch, materials[materialMode].shortName, 66, 25);
@@ -140,7 +145,7 @@ public class AdminTool {
             }
 
             renderer.setColor(materials[materialMode].color);
-            renderText();
+            // renderText();
             for (float r = 2.5f; r < 3.5f; r += 0.1f){
                 renderer.circle(3, -10.6f, r);
             }
@@ -240,6 +245,7 @@ public class AdminTool {
 
     public static void keyPressed(int key) {
         switch (key) {
+            case Input.Keys.F -> world.setFrozen(!world.isFrozen());
             case Input.Keys.R -> mode = Mode.values()[(mode.ordinal() + 1) % Mode.values().length];
             case Input.Keys.M -> materialMode = (materialMode + 1) % materials.length;
             case Input.Keys.NUM_1 -> mode = Mode.GRAB;
