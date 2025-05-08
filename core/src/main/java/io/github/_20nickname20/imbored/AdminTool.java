@@ -37,8 +37,6 @@ public class AdminTool {
     private static final List<Item> items = new ArrayList<>();
     private static final Material[] materials = {Material.WOOD, Material.CLOTH, Material.ROCK, Material.METAL, Material.GROUND, Material.FLESH};
     private static int materialMode = 0;
-    private static PenRenderer batch = new PenRenderer();
-    private static BitmapFont font;
     private static FitViewport viewport;
 
     private static final SpriteBatch batch = new SpriteBatch();
