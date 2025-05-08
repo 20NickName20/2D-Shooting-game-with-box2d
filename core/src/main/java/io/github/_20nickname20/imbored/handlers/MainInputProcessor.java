@@ -134,20 +134,24 @@ public class MainInputProcessor extends InputAdapter {
 
     @Override
     public boolean keyDown(int keycode) {
+
+        if (keycode == Input.Keys.TAB){
+            AdminTool.isEnabled = !AdminTool.isEnabled;  //Switch boolean for GameScreen to render
+        }
         if (keycode == Input.Keys.ESCAPE) {
             gameScreen.game.setScreen(new MainMenuScreen(gameScreen.game));
         }
-        if (keycode == Input.Keys.INSERT) {
-            if (keyboardPlayer != null) {
-                keyboardPlayer.remove();
-                keyboardPlayer = null;
-                isAdminEnabled = true;
-                return false;
-            }
-            isAdminEnabled = false;
-            keyboardPlayer = new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, 100, new PlayerKeyboardAndMouseController());
-            gameScreen.world.spawn(keyboardPlayer);
-        }
+//        if (keycode == Input.Keys.INSERT) {
+//            if (keyboardPlayer != null) {
+//                keyboardPlayer.remove();
+//                keyboardPlayer = null;
+//                isAdminEnabled = true;
+//                return false;
+//            }
+//            isAdminEnabled = false;
+//            keyboardPlayer = new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, 100, new PlayerKeyboardAndMouseController());
+//            gameScreen.world.spawn(keyboardPlayer);
+//        }
         if (!isAdminEnabled) return false;
         if (keycode == Input.Keys.B) {
             LootGenerator gunLoot = new GunSupplyLoot();
@@ -163,9 +167,6 @@ public class MainInputProcessor extends InputAdapter {
             };
             entity.getInventory().addAll(lootGenerator.generate(1));
             gameScreen.world.spawn(entity);
-        }
-        if (keycode == Input.Keys.TAB){
-            AdminTool.isEnabled = !AdminTool.isEnabled;  //Switch boolean for GameScreen to render
         }
         return false;
     }
