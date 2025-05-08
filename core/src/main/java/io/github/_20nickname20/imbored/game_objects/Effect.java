@@ -7,7 +7,7 @@ public abstract class Effect implements Removable {
     protected final float initTime;
     protected final float amplifier;
     protected Entity appliedEntity;
-    //  add smth like attribute modifiers from MC
+    // TODO: add smth like attribute modifiers from MC
 
     public Effect(float time, float amplifier) {
         this.initTime = time;
