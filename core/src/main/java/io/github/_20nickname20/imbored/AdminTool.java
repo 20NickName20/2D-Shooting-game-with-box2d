@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
+import com.badlogic.gdx.utils.Sort;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github._20nickname20.imbored.game_objects.Entity;
@@ -38,7 +39,7 @@ public class AdminTool {
     private static PenRenderer batch = new PenRenderer();
     private static BitmapFont font;
     private static FitViewport viewport;
-    static OrthographicCamera camera;
+
 
 
 
@@ -53,14 +54,16 @@ public class AdminTool {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/PressStart2P-Regular.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
-        parameter.characters += "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
-        parameter.size = 13;
+        parameter.size = 32;
 
         font = generator.generateFont(parameter);
         generator.dispose();
+
+
+
     }
 
-
+    public static GameWorld world;
     public static boolean isEnabled = false;
     // Renders a slot
     static void renderSlot(ShapeRenderer renderer, boolean active, float time) {
@@ -75,14 +78,20 @@ public class AdminTool {
     }
 
     static void renderText(){
+        batch.setProjectionMatrix(world.camera.projection);
+        font.getData().setScale(batch.getProjectionMatrix().getScaleY() * world.camera.viewportHeight / 7);
+
         batch.begin();
         font.setColor(Color.WHITE);
-        font.draw(batch, materials[materialMode].shortName,1842 , 819.5f);
+//        font.draw(batch, materials[materialMode].shortName,1842 , 819.5f);
+//        font.draw(batch, materials[materialMode].shortName, world.camera.position.x + 65, world.camera.position.y + 35);
+        font.draw(batch, materials[materialMode].shortName, 66, 25);
         batch.end();
     }
 
     public static final float slotSize = 4.6f * 1.25f;
     public static int activeSlot = 0;
+
 
     public static void render(ShapeRenderer renderer, float dt) {
         if (!isEnabled) return;
@@ -133,7 +142,7 @@ public class AdminTool {
             renderer.setColor(materials[materialMode].color);
             renderText();
             for (float r = 2.5f; r < 3.5f; r += 0.1f){
-                renderer.circle(3, -10, r);
+                renderer.circle(3, -10.6f, r);
             }
 
         });
@@ -160,7 +169,7 @@ public class AdminTool {
 
     private static Vector2 jointPosA;
 
-    public static GameWorld world;
+
 
     private static Mode mode = Mode.GRAB;
 
