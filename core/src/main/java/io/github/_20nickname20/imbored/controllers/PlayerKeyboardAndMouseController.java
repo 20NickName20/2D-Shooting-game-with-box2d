@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.math.Vector2;
+import io.github._20nickname20.imbored.AdminTool;
 import io.github._20nickname20.imbored.PlayerController;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.screens.GameScreen;
@@ -27,6 +28,7 @@ public class PlayerKeyboardAndMouseController extends PlayerController implement
 
     @Override
     public void update(float dt) {
+        if (AdminTool.isEnabled) return;
         if (Gdx.input.isKeyPressed(Keys.UP)) {
             player.addCursorDirection(0, 0.1f);
         }
@@ -47,6 +49,7 @@ public class PlayerKeyboardAndMouseController extends PlayerController implement
 
     @Override
     public boolean keyDown(int i) {
+        if (AdminTool.isEnabled) return false;
         switch (i) {
             case Keys.SPACE -> player.jump();
             case Keys.A -> player.setXMovement(-1);
@@ -67,6 +70,7 @@ public class PlayerKeyboardAndMouseController extends PlayerController implement
 
     @Override
     public boolean keyUp(int i) {
+        if (AdminTool.isEnabled) return false;
         switch (i) {
             case Keys.D -> {
                 if (Gdx.input.isKeyPressed(Keys.A)) {
@@ -97,6 +101,7 @@ public class PlayerKeyboardAndMouseController extends PlayerController implement
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if (AdminTool.isEnabled) return false;
         if (button == Input.Buttons.LEFT) {
             this.startUseMode();
         }
@@ -108,6 +113,7 @@ public class PlayerKeyboardAndMouseController extends PlayerController implement
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if (AdminTool.isEnabled) return false;
         if (button == Input.Buttons.LEFT) {
             this.stopUseMode();
         }
@@ -121,6 +127,7 @@ public class PlayerKeyboardAndMouseController extends PlayerController implement
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int i2) {
+        if (AdminTool.isEnabled) return false;
         Vector2 point = GameScreen.getViewport().unproject(new Vector2(screenX, screenY));
         player.setCursorDirection(point.sub(player.b.getPosition()));
         return false;
@@ -128,6 +135,7 @@ public class PlayerKeyboardAndMouseController extends PlayerController implement
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+        if (AdminTool.isEnabled) return false;
         Vector2 point = GameScreen.getViewport().unproject(new Vector2(screenX, screenY));
         player.setCursorDirection(point.sub(player.b.getPosition()));
         return false;
@@ -135,6 +143,7 @@ public class PlayerKeyboardAndMouseController extends PlayerController implement
 
     @Override
     public boolean scrolled(float x, float y) {
+        if (AdminTool.isEnabled) return false;
         if (!Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
             player.scrollItem((int) y);
         } else {
