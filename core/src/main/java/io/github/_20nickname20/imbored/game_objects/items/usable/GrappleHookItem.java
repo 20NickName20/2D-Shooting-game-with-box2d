@@ -10,15 +10,23 @@ import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.game_objects.items.UsableItem;
-import io.github._20nickname20.imbored.render.JointDisplay;
 import io.github._20nickname20.imbored.util.ClosestRaycast;
 
 public class GrappleHookItem extends UsableItem {
 
-    private final float range = 90f;
+    private final static float RANGE = 90f;
 
-    public GrappleHookItem(Entity holder) {
-        super(holder, 3);
+    public GrappleHookItem() {
+        super();
+    }
+
+    public GrappleHookItem(ItemData data) {
+        super(data);
+    }
+
+    @Override
+    public float getSize() {
+        return 3;
     }
 
     private DistanceJoint joint = null;
@@ -26,7 +34,7 @@ public class GrappleHookItem extends UsableItem {
 
     public void shootRay(PlayerEntity player) {
         Body playerBody = player.b;
-        Vector2 endPosition = playerBody.getPosition().cpy().add(player.getCursorDirection().scl(range));
+        Vector2 endPosition = playerBody.getPosition().cpy().add(player.getCursorDirection().scl(RANGE));
         ClosestRaycast.RaycastResult result = ClosestRaycast.cast(player.world, playerBody, playerBody.getPosition(), endPosition);
         if (result == null) return;
         if (!(result.body.getUserData() instanceof Entity entity)) return;
@@ -40,9 +48,8 @@ public class GrappleHookItem extends UsableItem {
         defJoint.frequencyHz = 0.7f;
         defJoint.dampingRatio = 0.7f;
         defJoint.initialize(player.b, entity.b, player.b.getPosition(), point);
-        defJoint.length = 4;
         joint = (DistanceJoint) player.world.createJoint(defJoint);
-        joint.setUserData(new JointDisplay(Color.WHITE));
+        joint.setUserData(Color.WHITE);
     }
 
 
@@ -53,6 +60,24 @@ public class GrappleHookItem extends UsableItem {
             joint = null;
         }
         shootRay(player);
+    }
+
+    @Override
+    public void update(float dt) {
+        if (joint != null) {
+            if (grabbedEntity.isRemoved()) {
+                joint = null;
+                return;
+            }
+            float length = joint.getLength();
+            float realLength = joint.getAnchorA().dst(joint.getAnchorB());
+            if (length > realLength) {
+                length = realLength - dt * 20;
+            }
+            if (length > 3) {
+                joint.setLength(length - dt * 25);
+            }
+        }
     }
 
     @Override

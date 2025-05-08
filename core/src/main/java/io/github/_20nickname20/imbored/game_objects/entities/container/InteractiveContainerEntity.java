@@ -12,8 +12,12 @@ import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.util.With;
 
 public abstract class InteractiveContainerEntity extends ContainerEntity {
-    public InteractiveContainerEntity(GameWorld world, float x, float y, Shape shape, Material material, float maxHealth, float inventorySize) {
-        super(world, x, y, shape, material, maxHealth, inventorySize);
+    public InteractiveContainerEntity(GameWorld world, float x, float y, Shape shape, float inventorySize) {
+        super(world, x, y, shape, inventorySize);
+    }
+
+    public InteractiveContainerEntity(GameWorld world, EntityData data) {
+        super(world, data);
     }
 
     public ItemEntity takeOutSelected(Vector2 impulse) {

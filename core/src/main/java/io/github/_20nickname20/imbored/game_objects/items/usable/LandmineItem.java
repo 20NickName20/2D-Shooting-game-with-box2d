@@ -9,8 +9,19 @@ import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor
 import io.github._20nickname20.imbored.game_objects.items.UsableItem;
 
 public class LandmineItem extends UsableItem {
-    public LandmineItem(Entity holder) {
-        super(holder, 5);
+    private static final float SIZE = 5f;
+
+    public LandmineItem() {
+        super();
+    }
+
+    public LandmineItem(ItemData data) {
+        super(data);
+    }
+
+    @Override
+    public float getSize() {
+        return SIZE;
     }
 
     @Override
@@ -37,6 +48,6 @@ public class LandmineItem extends UsableItem {
     @Override
     public void render(ShapeRenderer renderer, CursorEntity handHolder) {
         renderer.setColor(0, 0.5f, 0.1f, 1);
-        renderer.rect(-1.5f, 0.5f, 3, 1);
+        renderer.rect(-1.5f, -0.5f, 3, 1);
     }
 }

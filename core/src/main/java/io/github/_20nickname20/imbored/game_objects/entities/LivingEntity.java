@@ -10,19 +10,20 @@ public abstract class LivingEntity extends DamagableEntity implements Moving {
     protected Vector2 movement = new Vector2();
     private float lastXMovement = 0;
     private float lastYMovement = 0;
-    public final float defaultMaxWalkSpeed;
     private float maxWalkSpeed;
     protected float speedModifier = 1;
 
-    public LivingEntity(GameWorld world, float x, float y, Shape shape, float maxHealth, float defaultMaxWalkSpeed) {
-        super(world, x, y, shape, Material.FLESH, maxHealth);
-        this.defaultMaxWalkSpeed = defaultMaxWalkSpeed;
-        this.maxWalkSpeed = defaultMaxWalkSpeed;
+    public LivingEntity(GameWorld world, float x, float y, Shape shape) {
+        super(world, x, y, shape);
+        this.maxWalkSpeed = getDefaultMaxWalkSpeed();
     }
 
-    public float getDefaultMaxWalkSpeed() {
-        return defaultMaxWalkSpeed;
+    public LivingEntity(GameWorld world, EntityData data) {
+        super(world, data);
+        this.maxWalkSpeed = getDefaultMaxWalkSpeed();
     }
+
+    public abstract float getDefaultMaxWalkSpeed();
 
     public float getMaxWalkSpeed() {
         return maxWalkSpeed;

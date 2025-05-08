@@ -16,7 +16,7 @@ public class SpeedEffect extends Effect {
         super.onApply(appliedEntity);
         if (appliedEntity instanceof LivingEntity living) {
             living.setSpeedModifier(2f * this.amplifier);
-            living.setMaxWalkSpeed(living.defaultMaxWalkSpeed * 2 * this.amplifier);
+            living.setMaxWalkSpeed(living.getDefaultMaxWalkSpeed() * 2 * this.amplifier);
         }
     }
 
@@ -27,7 +27,7 @@ public class SpeedEffect extends Effect {
         super.remove();
         if (this.appliedEntity instanceof LivingEntity living) {
             living.setSpeedModifier(1);
-            living.setMaxWalkSpeed(living.defaultMaxWalkSpeed);
+            living.setMaxWalkSpeed(living.getDefaultMaxWalkSpeed());
         }
     }
 }

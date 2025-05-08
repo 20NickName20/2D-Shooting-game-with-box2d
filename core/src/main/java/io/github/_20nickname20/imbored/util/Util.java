@@ -2,6 +2,7 @@ package io.github._20nickname20.imbored.util;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -52,16 +53,16 @@ public class Util {
         return body;
     }
 
-    private static void shootRay(GameWorld world, Body ignored, List<Ray> rays, Vector2 position, float angle, float range, float power, float damage) {
-        Vector2 impulse = Vector2.X.cpy().rotateRad(angle);
+    private static void shootRay(GameWorld world, Body ignored, Vector2 position, float angleRad, float range, float power, float damage, float rayLength, float raySpeed, Color rayColor) {
+        Vector2 impulse = Vector2.X.cpy().rotateRad(angleRad);
         Vector2 endPosition = position.cpy().add(impulse.cpy().scl(range));
         ClosestRaycast.RaycastResult result = ClosestRaycast.cast(world.world, ignored, position, endPosition);
         if (result == null) {
-            rays.add(new Ray(1, angle, Util.time()));
+            world.addRay(new Ray(position, endPosition, Util.time(), rayLength, raySpeed, rayColor));
             return;
         }
 
-        rays.add(new Ray(result.fraction, angle, Util.time()));
+        world.addRay(new Ray(position, result.point, Util.time(), rayLength, raySpeed, rayColor));
         impulse.scl(power);
         result.body.applyLinearImpulse(impulse, result.point, true);
         if (result.body.getUserData() instanceof DamagableEntity entity) {
@@ -69,10 +70,14 @@ public class Util {
         }
     }
 
-    public static void explode(GameWorld world, Body ignored, List<Ray> rays, Vector2 position, float stepAngle, float range, float power, float damage) {
+    public static void explode(GameWorld world, Body ignored, Vector2 position, float stepAngle, float range, float power, float damage, float maxOffset, float rayLength, float raySpeed, Color rayColor) {
         for (float angle = 0; angle < Math.PI * 2; angle += stepAngle) {
-            shootRay(world, ignored, rays, position, angle, range, power, damage);
+            shootRay(world, ignored, position.cpy(), angle + MathUtils.random(-maxOffset, maxOffset), range, power, damage, rayLength, raySpeed, rayColor);
         }
+    }
+
+    public static void explode(GameWorld world, Body ignored, Vector2 position, float stepAngle, float range, float power, float damage, float rayLength, float raySpeed, Color rayColor) {
+        explode(world, ignored, position, stepAngle, range, power, damage, 0, rayLength, raySpeed, rayColor);
     }
 
     public static Color fromHSV(final float hue, final float saturation, final float value) {
@@ -100,5 +105,31 @@ public class Util {
     }
     public static float mix(final float x, final float y, final float a) {
         return x*(1f-a)+y*a;
+    }
+
+    public static float calculatePolygonArea(PolygonShape polygon) {
+        int vertexCount = polygon.getVertexCount();
+        Vector2[] vertices = new Vector2[vertexCount];
+
+        for (int i = 0; i < vertexCount; i++) {
+            vertices[i] = new Vector2();
+            polygon.getVertex(i, vertices[i]);
+        }
+
+        float area = 0;
+        for (int i = 0; i < vertexCount; i++) {
+            Vector2 v1 = vertices[i];
+            Vector2 v2 = vertices[(i + 1) % vertexCount]; // Wrap around to the first vertex
+            area += v1.x * v2.y - v2.x * v1.y;
+        }
+        return Math.abs(area) / 2.0f;
+    }
+
+    public static float getArea(Shape shape) {
+        if (shape instanceof PolygonShape polygonShape) {
+            return calculatePolygonArea(polygonShape);
+        } else {
+            return (float) (shape.getRadius() * 2 * Math.PI);
+        }
     }
 }

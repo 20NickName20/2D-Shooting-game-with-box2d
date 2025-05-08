@@ -12,13 +12,13 @@ import io.github._20nickname20.imbored.*;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.Inventory;
 import io.github._20nickname20.imbored.game_objects.Item;
+import io.github._20nickname20.imbored.game_objects.Material;
 import io.github._20nickname20.imbored.game_objects.entities.*;
 import io.github._20nickname20.imbored.game_objects.entities.container.InteractiveContainerEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
+import io.github._20nickname20.imbored.game_objects.items.BodyEquipableItem;
 import io.github._20nickname20.imbored.game_objects.items.UsableItem;
-import io.github._20nickname20.imbored.game_objects.loot.TestRandomLoot;
 import io.github._20nickname20.imbored.render.BarDisplay;
-import io.github._20nickname20.imbored.render.JointDisplay;
 import io.github._20nickname20.imbored.util.FindBody;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.util.With;
@@ -28,25 +28,30 @@ import java.util.List;
 import static io.github._20nickname20.imbored.util.With.translation;
 
 public class PlayerEntity extends CursorEntity implements InventoryHolder {
+    private static final float MAX_HEALTH = 100f;
+    private static final float MAX_FOOD = 100f;
+    private static final float MAX_HYDRATION = 100f;
+    private static final float DEFAULT_MAX_WALK_SPEED = 20f;
+
     private float food = 100;
-    private final float maxFood = 100;
     private BarDisplay foodBar = new BarDisplay(new Color(0.6f, 0.2f, 0, 1), new Color(0.9f, 0.8f, 0, 1), 1, 1);
 
-    private float thirst = 100;
-    private final float maxThirst = 100;
+    private float hydration = 100;
 
     private float infection;
 
     PlayerController controller;
     private float lastJumpTime = 0;
 
-    private final float maxGrabForce = 200;
-    private final float grabRadius = 6;
-    private final float throwPower = 55;
+    private static final float MAX_GRAB_FORCE = 200;
+    private static final float THROW_POWER = 55;
+    private static final float GRAB_RADIUS = 6;
+    private static final float ITEM_DROP_POWER = 15;
+    private static final float HAND_CURSOR_DISTANCE = 8;
+    public static final float DEFAULT_INVENTORY_SIZE = 20;
 
-    private final float itemDropPower = 15;
+    private BodyEquipableItem bodyEquipped = null;
 
-    private final float handCursorDistance = 8;
 
     private Entity grabbedEntity;
     private InteractiveContainerEntity currentContainer;
@@ -55,16 +60,35 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
 
     private Item equippedItem = null;
 
-    public boolean popBob = false;
-
-    private final Inventory inventory = new Inventory(this, 20);
+    private final Inventory inventory = new Inventory(DEFAULT_INVENTORY_SIZE);
 
     public float customColor = MathUtils.random();
 
     public PlayerEntity(GameWorld world, float x, float y, PlayerController controller) {
-        super(world, x, y, 100, 20);
+        super(world, x, y);
         this.setCursorDistance(getHandCursorDistance());
         this.controller = controller;
+        this.inventory.setHolder(this);
+    }
+
+    public PlayerEntity(GameWorld world, EntityData data) {
+        super(world, data);
+        remove();
+    }
+
+    @Override
+    public float getDefaultMaxWalkSpeed() {
+        return DEFAULT_MAX_WALK_SPEED;
+    }
+
+    @Override
+    public float getMaxHealth() {
+        return MAX_HEALTH;
+    }
+
+    @Override
+    public Material getMaterial() {
+        return Material.FLESH;
     }
 
     @Override
@@ -95,18 +119,41 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         Item removed = equippedItem;
         equippedItem = null;
         removed.onUnequip(this);
-        this.setCursorDistance(handCursorDistance);
+        this.setCursorDistance(HAND_CURSOR_DISTANCE);
+    }
+
+    public void unequipBodyItem() {
+        if (bodyEquipped == null) return;
+        BodyEquipableItem removed = bodyEquipped;
+        bodyEquipped = null;
+        removed.onBodyUnequip(this);
+        if (!inventory.add(bodyEquipped)) {
+            dropItem(bodyEquipped);
+        }
+    }
+
+    public BodyEquipableItem getBodyEquipped() {
+        return bodyEquipped;
+    }
+
+    public void equipSelectedItemOnBody() {
+        Item item = inventory.getSelectedItem();
+        if (!(item instanceof BodyEquipableItem bodyEquipable)) return;
+        unequipBodyItem();
+        bodyEquipable.onBodyEquip(this);
+        bodyEquipped = bodyEquipable;
+        inventory.removeItem(bodyEquipable);
     }
 
     @Override
     public float getHandCursorDistance() {
-        return handCursorDistance;
+        return HAND_CURSOR_DISTANCE;
     }
 
     @Override
     public void onDestroy() {
         if (this.isRemoved()) return;
-        PlayerEntity newPlayer = new PlayerEntity(gameWorld, gameWorld.camera.position.x, -20, controller);
+        PlayerEntity newPlayer = new PlayerEntity(gameWorld, gameWorld.camera.position.x, 100, controller);
         newPlayer.customColor = this.customColor + 0.1f;
         gameWorld.spawn(newPlayer);
         super.onDestroy();
@@ -135,7 +182,6 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         inventory.scroll(amount);
     }
 
-    private float lastPopBobTime = 0;
     @Override
     public void update(float dt) {
         super.update(dt);
@@ -143,17 +189,14 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         if (equippedItem != null && equippedItem.isRemoved()) {
             unequipItem();
         }
+        if (bodyEquipped != null) {
+            bodyEquipped.update(dt);
+        }
         controller.update(dt);
 
         foodBar.update(dt);
 
         Vector2 cursorPosition = getCursorPosition();
-        float time = Util.time();
-
-        if (popBob && time - lastPopBobTime > 0.01f) {
-            lastPopBobTime = time;
-            gameWorld.dropItem(cursorPosition, this.getCursorDirection().scl(itemDropPower * 5).rotateDeg(MathUtils.random(-20f, 20f)), new TestRandomLoot().generate(1).get(0));
-        }
 
         if (grabbedEntity != null) {
             Vector2 toGrabbed = grabbedEntity.b.getPosition().sub(this.b.getPosition());
@@ -164,7 +207,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
             }
             Vector2 impulse = cursorPosition.cpy().sub(grabbedEntity.b.getPosition());
             float len = impulse.len();
-            if (len > grabRadius * 2) {
+            if (len > GRAB_RADIUS * 2) {
                 put();
                 return;
             }
@@ -197,7 +240,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
             Entity entity = Entity.getEntity(body);
             if (entity == null) return false;
             if (!(entity instanceof Grabbable)) return false;
-            if (body.getPosition().dst(cursorPosition) > grabRadius) return false;
+            if (body.getPosition().dst(cursorPosition) > GRAB_RADIUS) return false;
             return true;
         });
         if (grabbed == null) return false;
@@ -211,16 +254,16 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         distJointDef.collideConnected = true;
         distJointDef.length = getCursorDistance();
         grabDistanceJoint = (DistanceJoint) this.world.createJoint(distJointDef);
-        grabDistanceJoint.setUserData(new JointDisplay(false));
+        grabDistanceJoint.setUserData(false);
 
         MouseJointDef mouseJointDef = new MouseJointDef();
         mouseJointDef.collideConnected = true;
         mouseJointDef.target.set(grabPoint);
         mouseJointDef.bodyA = this.b;
         mouseJointDef.bodyB = grabbed;
-        mouseJointDef.maxForce = maxGrabForce;
+        mouseJointDef.maxForce = MAX_GRAB_FORCE;
         grabMouseJoint = (MouseJoint) this.world.createJoint(mouseJointDef);
-        grabMouseJoint.setUserData(new JointDisplay(new Color(1, 1, 1, 1)));
+        grabMouseJoint.setUserData(Color.WHITE);
 
         MassData massData = grabbed.getMassData();
         massData.mass /= 500;
@@ -229,7 +272,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         grabbedEntity = (Entity) grabbed.getUserData();
         ((Grabbable) grabbedEntity).onGrabbed(this);
         return true;
-    } // TODO: If not able to grab, then try to equip selected item
+    }
 
     public void put() {
         if (grabDistanceJoint == null) return;
@@ -253,8 +296,8 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     public void throwGrabbed() {
         if (grabDistanceJoint == null) return;
         grabbedEntity.b.resetMassData();
-        grabbedEntity.b.applyLinearImpulse(this.getCursorDirection().scl(throwPower), grabDistanceJoint.getAnchorB(), true);
-        this.b.applyLinearImpulse(this.getCursorDirection().scl(-throwPower / 4), this.b.getPosition(), true);
+        grabbedEntity.b.applyLinearImpulse(this.getCursorDirection().scl(THROW_POWER), grabDistanceJoint.getAnchorB(), true);
+        this.b.applyLinearImpulse(this.getCursorDirection().scl(-THROW_POWER / 4), this.b.getPosition(), true);
         put();
     }
 
@@ -304,14 +347,17 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         return removed;
     }
 
+    public void dropItem(Item item) {
+        gameWorld.dropItem(this.getCursorPosition(), this.getCursorDirection().scl(ITEM_DROP_POWER).add(this.b.getLinearVelocity()), item);
+    }
+
     public void dropEquippedItem() {
-        Vector2 cursorPosition = this.getCursorPosition();
         if (equippedItem == null) {
             equipSelectedItem();
         }
         Item item = removeEquippedItem();
         if (item == null) return;
-        gameWorld.dropItem(cursorPosition, this.getCursorDirection().scl(itemDropPower).add(this.b.getLinearVelocity()), item);
+        dropItem(item);
     }
 
     public boolean pickupItem(ItemEntity entity) {
@@ -345,7 +391,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
 
     public void takeOutOfContainer() {
         if (currentContainer == null) return;
-        currentContainer.takeOutSelected(this.b.getPosition().cpy().sub(currentContainer.b.getPosition()).nor().scl(itemDropPower * 2));
+        currentContainer.takeOutSelected(this.b.getPosition().cpy().sub(currentContainer.b.getPosition()).nor().scl(ITEM_DROP_POWER * 2));
     }
 
     public void storeEquippedToContainer() {
@@ -357,19 +403,23 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
         Item item = removeEquippedItem();
         if (item == null) return;
         if (currentContainer.putItem(item)) return;
-        gameWorld.dropItem(getCursorPosition(), this.getCursorDirection().scl(itemDropPower), item);
+        gameWorld.dropItem(getCursorPosition(), this.getCursorDirection().scl(ITEM_DROP_POWER), item);
     }
 
     @Override
     public void remove() {
         put();
         super.remove();
+        if (controller == null) return;
         controller.unregister();
     }
 
     @Override
     public boolean render(ShapeRenderer renderer) {
         super.render(renderer);
+        if (bodyEquipped != null) {
+            bodyEquipped.renderOnPlayer(renderer, this);
+        }
         float cursorDistance = getCursorDistance();
         renderer.setColor(1, 1, 1, 0.5f);
 
@@ -409,5 +459,31 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder {
     @Override
     public Entity getEntity() {
         return this;
+    }
+
+    @Override
+    public EntityData createPersistentData() {
+        PlayerEntityData playerEntityData;
+        if (this.persistentData == null) {
+            playerEntityData = new PlayerEntityData();
+        } else {
+            playerEntityData = (PlayerEntityData) this.persistentData;
+        }
+        playerEntityData.inventoryData = inventory.createPersistentData();
+        if (bodyEquipped != null) {
+            playerEntityData.bodyEquippedItem = bodyEquipped.createPersistentData();
+        } else {
+            playerEntityData.bodyEquippedItem = null;
+        }
+        playerEntityData.food = this.food;
+        playerEntityData.hydration = this.hydration;
+        this.persistentData = playerEntityData;
+        return super.createPersistentData();
+    }
+
+    public static class PlayerEntityData extends DamagableEntityData {
+        float food, hydration;
+        Inventory.InventoryData inventoryData;
+        Item.ItemData bodyEquippedItem;
     }
 }

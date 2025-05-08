@@ -7,9 +7,13 @@ import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.game_objects.Material;
 
-public class StaticEntity extends Entity {
-    public StaticEntity(GameWorld world, float x, float y, Shape shape, Material material) {
-        super(world, x, y, shape, material);
+public abstract class StaticEntity extends Entity {
+    public StaticEntity(GameWorld world, float x, float y, Shape shape) {
+        super(world, x, y, shape);
+    }
+
+    public StaticEntity(GameWorld world, EntityData data) {
+        super(world, data);
     }
 
     @Override

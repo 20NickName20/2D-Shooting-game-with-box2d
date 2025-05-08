@@ -7,8 +7,19 @@ import io.github._20nickname20.imbored.game_objects.entities.living.human.Cursor
 import io.github._20nickname20.imbored.game_objects.items.ScrapItem;
 
 public class PlankItem extends ScrapItem {
-    public PlankItem(Entity holder) {
-        super(holder, 0.4f);
+    private static final float SIZE = 0.5f;
+
+    public PlankItem() {
+        super();
+    }
+
+    public PlankItem(ItemData data) {
+        super(data);
+    }
+
+    @Override
+    public float getSize() {
+        return SIZE;
     }
 
     @Override

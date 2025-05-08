@@ -83,7 +83,7 @@ public class GamePenRenderer extends Box2DDebugRenderer {
         Color color;
         Vector2 position = body.getPosition();
         if (body.getUserData() instanceof Entity entity) {
-            color = entity.material.color;
+            color = entity.getMaterial().color;
             renderer.translate(position.x, position.y, 0);
             if (entity.render(renderer)) {
                 renderer.translate(-position.x, -position.y, 0);
@@ -192,13 +192,8 @@ public class GamePenRenderer extends Box2DDebugRenderer {
         Vector2 p1 = joint.getAnchorA();
         Vector2 p2 = joint.getAnchorB();
 
-        Color color;
-        if (joint.getUserData() instanceof JointDisplay display) {
-            if (!display.doRender) return;
-            color = display.color;
-        } else {
-            color = JOINT_COLOR;
-        }
+        Color color = JOINT_COLOR;
+
         if (joint.getType() == JointDef.JointType.DistanceJoint) {
             drawSegment(p1, p2, color);
         } else if (joint.getType() == JointDef.JointType.PulleyJoint) {

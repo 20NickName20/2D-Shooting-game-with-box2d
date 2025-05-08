@@ -5,8 +5,12 @@ import io.github._20nickname20.imbored.game_objects.Item;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 
 public abstract class UsableItem extends Item {
-    public UsableItem(Entity holder, float size) {
-        super(holder, size);
+    public UsableItem() {
+        super();
+    }
+
+    public UsableItem(ItemData data) {
+        super(data);
     }
 
     public abstract void onStartUse(PlayerEntity player);

@@ -9,8 +9,25 @@ import io.github._20nickname20.imbored.game_objects.entities.living.human.Cursor
 import io.github._20nickname20.imbored.game_objects.items.usable.TimedUsableItem;
 
 public class ShieldPotionItem extends TimedUsableItem {
-    public ShieldPotionItem(Entity holder) {
-        super(holder, 1, 4);
+    private static final float SIZE = 2f;
+    private static final float REQUIRED_USE_TIME = 4f;
+
+    public ShieldPotionItem() {
+        super();
+    }
+
+    public ShieldPotionItem(ItemData data) {
+        super(data);
+    }
+
+    @Override
+    public float getSize() {
+        return SIZE;
+    }
+
+    @Override
+    public float getRequiredUseTime() {
+        return REQUIRED_USE_TIME;
     }
 
     @Override

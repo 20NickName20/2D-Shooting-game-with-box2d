@@ -10,11 +10,22 @@ import io.github._20nickname20.imbored.game_objects.Material;
 import java.util.List;
 
 public abstract class ContainerEntity extends BlockEntity implements InventoryHolder {
-    Inventory inventory;
+    private final Inventory inventory;
 
-    public ContainerEntity(GameWorld world, float x, float y, Shape shape, Material material, float maxHealth, float inventorySize) {
-        super(world, x, y, shape, material, maxHealth);
-        this.inventory = new Inventory(this, inventorySize);
+    public ContainerEntity(GameWorld world, float x, float y, Shape shape, float inventorySize) {
+        super(world, x, y, shape);
+        this.inventory = new Inventory(inventorySize);
+        this.inventory.setHolder(this);
+    }
+
+    public ContainerEntity(GameWorld world, EntityData data) {
+        super(world, data);
+        if (data instanceof ContainerEntityData containerEntityData) {
+            inventory = new Inventory(containerEntityData.inventoryData);
+        } else {
+            inventory = new Inventory(0);
+        }
+        inventory.setHolder(this);
     }
 
     @Override
@@ -47,5 +58,22 @@ public abstract class ContainerEntity extends BlockEntity implements InventoryHo
         List<Item> items = super.getDroppedItems();
         items.addAll(inventory.getItems());
         return items;
+    }
+
+    @Override
+    public EntityData createPersistentData() {
+        ContainerEntityData containerEntityData;
+        if (this.persistentData == null) {
+            containerEntityData = new ContainerEntityData();
+        } else {
+            containerEntityData = (ContainerEntityData) this.persistentData;
+        }
+        containerEntityData.inventoryData = inventory.createPersistentData();
+        this.persistentData = containerEntityData;
+        return super.createPersistentData();
+    }
+
+    public static class ContainerEntityData extends DamagableEntityData {
+        public Inventory.InventoryData inventoryData;
     }
 }

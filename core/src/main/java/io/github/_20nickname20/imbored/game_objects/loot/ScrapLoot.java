@@ -21,7 +21,6 @@ public class ScrapLoot implements LootGenerator {
     public List<Item> generate(float amountMultiplier) {
         amountMultiplier *= this.multiplier;
         List<Item> loot = new ArrayList<>();
-        System.out.println(amountMultiplier);
         float amount = (float) Math.floor(amountMultiplier);
         float rest = amountMultiplier - amount;
         if (MathUtils.random() < rest) {

@@ -6,16 +6,20 @@ import io.github._20nickname20.imbored.game_objects.entities.InventoryHolder;
 import io.github._20nickname20.imbored.game_objects.items.usable.TimedUsableItem;
 
 public abstract class HealItem extends TimedUsableItem {
-    private final float healAmount;
-    public HealItem(Entity holder, float size, float useTime, float healAmount) {
-        super(holder, size, useTime);
-        this.healAmount = healAmount;
+    public HealItem() {
+        super();
     }
+
+    public HealItem(ItemData data) {
+        super(data);
+    }
+
+    public abstract float getHealAmount();
 
     @Override
     protected void onUseFinish(Entity holder) {
         if (holder instanceof DamagableEntity damagable) {
-            damagable.heal(healAmount);
+            damagable.heal(getHealAmount());
         }
         super.onUseFinish(holder);
     }

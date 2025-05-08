@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.JointEdge;
 import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.physics.box2d.World;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.game_objects.Item;
@@ -19,16 +20,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class DamagableEntity extends Entity {
-    protected float health, maxHealth;
+    protected float health;
     private float damageScale = 1.0f;
     protected float lastHealthChange = 0;
     private final BarDisplay healthBar = new BarDisplay(new Color(0.6f, 0.2f, 0, 1), new Color(0.5f, 1, 0, 1), 1, 1);
 
-    public DamagableEntity(GameWorld world, float x, float y, Shape shape, Material material, float maxHealth) {
-        super(world, x, y, shape, material);
-        this.maxHealth = maxHealth;
-        this.health = maxHealth;
+    public DamagableEntity(GameWorld world, float x, float y, Shape shape) {
+        super(world, x, y, shape);
     }
+
+    public DamagableEntity(GameWorld world, EntityData data) {
+        super(world, data);
+        if (data instanceof DamagableEntityData damagableEntityData) {
+            this.health = damagableEntityData.health;
+        }
+    }
+
+    @Override
+    public void onSpawn(World world) {
+        super.onSpawn(world);
+        this.health = getMaxHealth();
+    }
+
+    public abstract float getMaxHealth();
 
     public float getDamageScale() {
         return damageScale;
@@ -54,10 +68,10 @@ public abstract class DamagableEntity extends Entity {
         if (isRemoved()) return;
         this.health += amount;
         lastHealthChange = Util.time();
-        if (this.health > this.maxHealth) {
-            this.health = maxHealth;
+        if (this.health > getMaxHealth()) {
+            this.health = getMaxHealth();
         }
-        healthBar.setTargetValue(health / maxHealth);
+        healthBar.setTargetValue(health / getMaxHealth());
     }
 
     public void damage(float amount) {
@@ -68,7 +82,7 @@ public abstract class DamagableEntity extends Entity {
         if (this.health <= 0) {
             onDestroy();
         }
-        healthBar.setTargetValue(health / maxHealth);
+        healthBar.setTargetValue(health / getMaxHealth());
     }
 
     public void kill() {
@@ -80,14 +94,14 @@ public abstract class DamagableEntity extends Entity {
         List<Item> droppedItems = getDroppedItems();
         Vector2 position = this.b.getPosition();
         for (Item item : droppedItems) {
-            gameWorld.dropItem(position, new Vector2(MathUtils.random(-1, 1), MathUtils.random(-1, 1)).scl(20), item);
+            gameWorld.dropItem(position, new Vector2(MathUtils.random(-1, 1), MathUtils.random(-1, 1)).scl(27f), item);
         }
     }
 
     public List<Item> getDroppedItems() {
         List<Item> droppedItems = new ArrayList<>();
-        if (material.loot != null) {
-            droppedItems.addAll(material.loot.generate(this.b.getMass()));
+        if (getMaterial().loot != null) {
+            droppedItems.addAll(getMaterial().loot.generate(this.area));
         }
         return droppedItems;
     }
@@ -118,5 +132,9 @@ public abstract class DamagableEntity extends Entity {
             healthBar.render(renderer);
         });
         return false;
+    }
+
+    public static class DamagableEntityData extends EntityData {
+        float health;
     }
 }
