@@ -37,8 +37,8 @@ public class AdminTool {
     private static final List<Item> items = new ArrayList<>();
     private static final Material[] materials = {Material.WOOD, Material.CLOTH, Material.ROCK, Material.METAL, Material.GROUND, Material.FLESH};
     private static int materialMode = 0;
-    private static PenRenderer batch = new PenRenderer();
-    private static BitmapFont font;
+//    private static PenRenderer batch = new PenRenderer();
+//    private static BitmapFont font;
     private static FitViewport viewport;
 
     private static final SpriteBatch batch = new SpriteBatch();
@@ -81,13 +81,11 @@ public class AdminTool {
     }
 
     static void renderText(){
-        batch.setProjectionMatrix(world.camera.combined);
         batch.setProjectionMatrix(world.camera.projection);
         font.getData().setScale(batch.getProjectionMatrix().getScaleY() * world.camera.viewportHeight / 7);
 
         batch.begin();
         font.setColor(Color.WHITE);
-        font.draw(batch, materials[materialMode].shortName, world.camera.position.x, world.camera.position.y);
 //        font.draw(batch, materials[materialMode].shortName,1842 , 819.5f);
 //        font.draw(batch, materials[materialMode].shortName, world.camera.position.x + 65, world.camera.position.y + 35);
         font.draw(batch, materials[materialMode].shortName, 66, 25);
@@ -145,7 +143,7 @@ public class AdminTool {
             }
 
             renderer.setColor(materials[materialMode].color);
-            // renderText();
+             renderText();
             for (float r = 2.5f; r < 3.5f; r += 0.1f){
                 renderer.circle(3, -10.6f, r);
             }
