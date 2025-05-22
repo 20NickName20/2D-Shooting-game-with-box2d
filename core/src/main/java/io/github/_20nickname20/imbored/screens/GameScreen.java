@@ -50,7 +50,14 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void render(float dt) {
-        world.update(dt);
+        try {
+            world.update(dt);
+        } catch (Exception e) {
+            e.printStackTrace();
+            world.dispose();
+            Gdx.app.exit();
+            return;
+        }
 
         shader.bind();
         shader.setUniformf("u_Time", Util.time());
