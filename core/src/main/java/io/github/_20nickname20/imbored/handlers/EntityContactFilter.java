@@ -7,6 +7,8 @@ import io.github._20nickname20.imbored.game_objects.Entity;
 public class EntityContactFilter implements ContactFilter {
     @Override
     public boolean shouldCollide(Fixture fixtureA, Fixture fixtureB) {
+        if (fixtureA.isSensor()) return true;
+        if (fixtureB.isSensor()) return true;
         Entity entityA = Entity.getEntity(fixtureA.getBody());
         if (entityA == null) return true;
         Entity entityB = Entity.getEntity(fixtureB.getBody());

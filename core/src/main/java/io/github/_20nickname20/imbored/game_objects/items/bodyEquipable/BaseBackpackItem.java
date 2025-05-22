@@ -17,12 +17,12 @@ public abstract class BaseBackpackItem extends BodyEquipableItem {
 
     @Override
     public void onBodyEquip(PlayerEntity player) {
-        player.getInventory().setSizeLimit(player.DEFAULT_INVENTORY_SIZE + getAdditionalSize());
+        player.getInventory().setSizeLimit(player.INVENTORY_SIZE + getAdditionalSize());
     }
 
     @Override
     public void onBodyUnequip(PlayerEntity player) {
-        for (Item item : player.getInventory().setSizeLimit(player.DEFAULT_INVENTORY_SIZE)) {
+        for (Item item : player.getInventory().setSizeLimit(player.INVENTORY_SIZE)) {
             player.dropItem(item);
         }
     }

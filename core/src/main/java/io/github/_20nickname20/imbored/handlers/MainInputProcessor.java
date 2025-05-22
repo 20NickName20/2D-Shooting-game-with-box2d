@@ -38,11 +38,6 @@ public class MainInputProcessor extends InputAdapter {
         this.gameScreen = gameScreen;
         this.camera = GameScreen.getViewport().getCamera();
 
-        if (Controllers.getControllers().isEmpty()) {
-            keyboardPlayer = new PlayerEntity(gameScreen.world, gameScreen.getCamera().position.x, 120, new PlayerKeyboardAndMouseController());
-            gameScreen.world.spawn(keyboardPlayer);
-        }
-
         AdminTool.world = gameScreen.world;
     }
 
@@ -82,12 +77,10 @@ public class MainInputProcessor extends InputAdapter {
         return false;
     }
 
-    PlayerEntity keyboardPlayer;
-
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.TAB || (AdminTool.isEnabled && keycode == Input.Keys.ESCAPE)){
-            AdminTool.isEnabled = !AdminTool.isEnabled;  // Switch boolean for GameScreen to render
+            AdminTool.isEnabled = !AdminTool.isEnabled;
             return false;
         }
         if (keycode == Input.Keys.ESCAPE) {

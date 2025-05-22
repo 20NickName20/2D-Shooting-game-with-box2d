@@ -1,13 +1,10 @@
 package io.github._20nickname20.imbored.game_objects.entities.block;
 
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import io.github._20nickname20.imbored.GameWorld;
-import io.github._20nickname20.imbored.game_objects.Material;
+import io.github._20nickname20.imbored.render.GameRenderer;
 import io.github._20nickname20.imbored.util.Shapes;
 import io.github._20nickname20.imbored.game_objects.entities.BlockEntity;
-import io.github._20nickname20.imbored.util.Util;
 
 import static io.github._20nickname20.imbored.util.With.rotation;
 
@@ -47,11 +44,11 @@ public abstract class BoxEntity extends BlockEntity {
 
     private final static float innerPadding = 0.2f;
     @Override
-    public boolean render(ShapeRenderer renderer) {
+    public boolean render(GameRenderer renderer) {
         super.render(renderer);
         float angle = this.b.getAngle() * MathUtils.radiansToDegrees;
         renderer.setColor(getMaterial().color);
-        rotation(renderer, angle, () -> {
+        renderer.withRotation(angle, () -> {
             renderer.rect(-sizeX + innerPadding, -sizeY + innerPadding, (sizeX - innerPadding) * 2, (sizeY - innerPadding) * 2);
             renderer.line(-sizeX + 0.5f + innerPadding, -sizeY + innerPadding, sizeX - innerPadding, sizeY - 0.5f - innerPadding);
             renderer.line(-sizeX + innerPadding, -sizeY + 0.5f + innerPadding, sizeX - 0.5f - innerPadding, sizeY - innerPadding);

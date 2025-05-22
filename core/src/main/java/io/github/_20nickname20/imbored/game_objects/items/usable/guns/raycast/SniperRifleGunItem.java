@@ -1,15 +1,13 @@
 package io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.game_objects.items.AmmoCartridgeItem;
-import io.github._20nickname20.imbored.game_objects.items.ammo.PistolCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.ammo.SniperRifleCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.RaycastGunItem;
+import io.github._20nickname20.imbored.render.GameRenderer;
 
 public class SniperRifleGunItem extends RaycastGunItem {
     private static final float SIZE = 3.3f;
@@ -25,6 +23,7 @@ public class SniperRifleGunItem extends RaycastGunItem {
     private static final float RAY_LENGTH = 120f;
     private static final float RAY_SPEED = 130;
     private static final Color RAY_COLOR = new Color(0.7f, 0.5f, 0.5f, 1);
+    private static final float PENETRATE_AMOUNT = 2f;
 
     public SniperRifleGunItem(int ammo) {
         super(ammo);
@@ -90,15 +89,21 @@ public class SniperRifleGunItem extends RaycastGunItem {
     public Color getRayColor() {
         return RAY_COLOR;
     }
+    @Override
+    public float getPenetrateAmount() {
+        return PENETRATE_AMOUNT;
+    }
 
     @Override
-    public void render(ShapeRenderer renderer, CursorEntity handHolder) {
+    public void render(GameRenderer renderer, CursorEntity handHolder) {
         super.render(renderer, handHolder);
         renderer.setColor(0.3f, 0.5f, 0.2f, 1);
 
-        renderer.rectLine(-0.75f, -0.75f, 0.1f, 0.1f, 0.6f);
-        renderer.rectLine(0, 0, 4f, 0, 0.55f);
-        renderer.rectLine(3.0f, 0.5f, 0.3f, 0.5f, 0.34f);
+        renderer.withRotation(30f, () -> {
+            renderer.rect(-0.7f, -0.3f, 0.7f, 0.6f);
+        });
+        renderer.rect(0, -0.25f, 4f, 0.55f);
+        renderer.rect(0.3f, 0.3f, 3f, 0.3f);
     }
 
     @Override

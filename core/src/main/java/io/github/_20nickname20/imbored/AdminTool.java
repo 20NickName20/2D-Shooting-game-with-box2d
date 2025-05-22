@@ -3,18 +3,15 @@ package io.github._20nickname20.imbored;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
-import com.badlogic.gdx.utils.Sort;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github._20nickname20.imbored.game_objects.Entity;
@@ -23,10 +20,9 @@ import io.github._20nickname20.imbored.game_objects.JointEntity;
 import io.github._20nickname20.imbored.game_objects.Material;
 import io.github._20nickname20.imbored.game_objects.entities.block.SimpleBlockEntity;
 import io.github._20nickname20.imbored.game_objects.entities.statics.GroundEntity;
-import io.github._20nickname20.imbored.render.PenRenderer;
+import io.github._20nickname20.imbored.render.GameRenderer;
 import io.github._20nickname20.imbored.util.FindBody;
 import io.github._20nickname20.imbored.util.Util;
-import io.github._20nickname20.imbored.util.With;
 import org.reflections.Reflections;
 
 import java.util.ArrayList;
@@ -42,14 +38,12 @@ public class AdminTool {
     private static final SpriteBatch batch = new SpriteBatch();
     private static final BitmapFont font;
 
-
-
     static {
         Reflections reflections = new Reflections("io.github._20nickname20.imbored");
         for (Class<? extends Item> type : reflections.getSubTypesOf(Item.class)) {
             if (ClassReflection.isAbstract(type)) continue;
             items.add(Item.createFromType(type, null));
-             System.out.println(type.getSimpleName());
+            // System.out.println(type.getSimpleName());
         }
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/PressStart2P-Regular.ttf"));
@@ -67,18 +61,21 @@ public class AdminTool {
     public static GameWorld world;
     public static boolean isEnabled = false;
     // Renders a slot
-    static void renderSlot(ShapeRenderer renderer, boolean active, float time) {
-        With.rotation(renderer, -time * 2, () -> renderer.rect(-1.9f, -1.9f, 3.8f, 3.8f));
-        With.rotation(renderer, time * 10, () -> {
+    static void renderSlot(GameRenderer renderer, boolean active, float time) {
+        renderer.withRotation(-time * 2, () -> renderer.rect(-1.9f, -1.9f, 3.8f, 3.8f));
+        renderer.withRotation(time * 10, () -> {
             renderer.rect(-2, -2, 4, 4);
 
             if (active) {
-                renderer.rect(-2.2f, -2.2f, 4.4f, 4.4f);
+                for (float i = 0; i < 0.4f; i += 0.1f) {
+                    renderer.rect(-2.5f + i, -2.5f + i, 5f - i * 2, 5f - i * 2);
+                }
             }
         });
     }
 
     static void renderText(){
+        batch.setProjectionMatrix(world.camera.combined);
         batch.setProjectionMatrix(world.camera.projection);
         font.getData().setScale(batch.getProjectionMatrix().getScaleY() * world.camera.viewportHeight / 7);
 
@@ -92,9 +89,13 @@ public class AdminTool {
     public static int activeSlot = 0;
 
 
-    public static void render(ShapeRenderer renderer, float dt) {
+    public static void render(GameRenderer renderer, float dt) {
         if (!isEnabled) return;
-        With.translation(renderer, world.camera.position.x - 65, world.camera.position.y + 35, () -> renderItems(renderer));
+
+        renderer.withTranslation(world.camera.position.x - 67f, world.camera.position.y + 37f, () -> {
+            renderItems(renderer);
+        });
+
         renderer.setColor(Color.OLIVE);
         for (Vector2 vertex : polygonVertices) {
             renderer.circle(vertex.x, vertex.y, 0.5f);
@@ -107,7 +108,7 @@ public class AdminTool {
             renderer.circle(jointPosA.x, jointPosA.y, 1.55f);
         }
 
-        With.translation(renderer, world.camera.position.x + 65, world.camera.position.y + 35, () -> {
+        renderer.withTranslation(world.camera.position.x + 65, world.camera.position.y + 35, () -> {
             switch (mode) {
                 case GRAB -> renderer.polygon(new float[] {
                     -2f, 4f,
@@ -128,18 +129,18 @@ public class AdminTool {
                 });
                 case JOINT -> {
                     renderer.circle(-3f, -3f, 1.3f);
-                    renderer.rectLine(-3f, -3f, 3f, 3f, 0.1f);
+                    renderer.line(-3f, -3f, 3f, 3f);
                     renderer.circle(3f, 3f, 1.3f);
                 }
                 case DELETE -> {
                     renderer.setColor(Color.RED);
-                    renderer.rectLine(-3.5f, -3.5f, 3.5f, 3.5f, 1.2f);
-                    renderer.rectLine(-3.5f, 3.5f, 3.5f, -3.5f, 1.2f);
+                    renderer.line(-3.5f, -3.5f, 3.5f, 3.5f);
+                    renderer.line(-3.5f, 3.5f, 3.5f, -3.5f);
                 }
             }
 
             renderer.setColor(materials[materialMode].color);
-             renderText();
+            renderText();
             for (float r = 2.5f; r < 3.5f; r += 0.1f){
                 renderer.circle(3, -10.6f, r);
             }
@@ -147,16 +148,16 @@ public class AdminTool {
         });
     }
 
-    public static void renderItems(ShapeRenderer renderer) {
+    public static void renderItems(GameRenderer renderer) {
         Random random = new Random(5_030_000);
 
         float time = Util.time();
         for (int i = 0; i < items.size(); i++) {
             int finalI = i;
-            With.translation(renderer, i * slotSize, 0, () -> {
+            renderer.withTranslation((i % LINE_WIDTH) * slotSize, - (i / LINE_WIDTH) * slotSize, () -> {
                 renderer.setColor(1f, 1f, 1f, 1f);
                 renderSlot(renderer, finalI == activeSlot, time + random.nextFloat(360f));
-                With.rotation(renderer, -time * 30 + random.nextFloat(360f), () -> {
+                renderer.withRotation(-time * 30 + random.nextFloat(360f), () -> {
                     items.get(finalI).render(renderer, null);
                 });
             });
@@ -174,18 +175,21 @@ public class AdminTool {
 
     private static final List<Vector2> polygonVertices = new ArrayList<>();
 
+    private static final int LINE_WIDTH = 20;
+
+    private static Vector2 worldMousePosition = new Vector2();
+
     public static void onClickPressed(Vector2 worldPoint, Vector2 screenPoint, int button) {
         if (button == Input.Buttons.LEFT) {
-            if (screenPoint.y > 40) return;
-            if (screenPoint.y < 30) return;
-            int index = (int) ((screenPoint.x + 65f) / slotSize + 0.5f);
+            int index = (int) ((screenPoint.x + 67f) / slotSize + 0.5f);
+            index += LINE_WIDTH * (int) (13f - (screenPoint.y + 37f) / slotSize + 0.5f);
             if (index < 0) return;
             if (index >= items.size()) return;
             activeSlot = index;
             world.dropItem(new Vector2(world.camera.position.x, world.camera.position.y), new Vector2(), Item.createFromType(items.get(index).getClass(), null));
         }
         if (button == Input.Buttons.RIGHT) {
-            switch (mode){
+            switch (mode) {
                 case GRAB -> {
                     if (mouseJoint != null) return;
                     Body body = FindBody.atPoint(world.world, worldPoint);
@@ -225,7 +229,7 @@ public class AdminTool {
     public static void onClickReleased(Vector2 worldPoint, Vector2 screenPoint, int button) {
         if (button == Input.Buttons.RIGHT) {
             if (mouseJoint == null) return;
-            if (!grabbedEntity.isRemoved()) world.remove(mouseJoint);
+            if (!grabbedEntity.isRemoved()) world.world.destroyJoint(mouseJoint);
             mouseJoint = null;
             grabbedEntity = null;
         }
@@ -235,6 +239,7 @@ public class AdminTool {
         if (mouseJoint != null) {
             mouseJoint.setTarget(worldPoint);
         }
+        worldMousePosition.set(worldPoint);
     }
 
     public static void keyPressed(int key) {
@@ -242,11 +247,25 @@ public class AdminTool {
             case Input.Keys.F -> world.setFrozen(!world.isFrozen());
             case Input.Keys.R -> mode = Mode.values()[(mode.ordinal() + 1) % Mode.values().length];
             case Input.Keys.M -> materialMode = (materialMode + 1) % materials.length;
+            case Input.Keys.LEFT -> {
+                activeSlot--;
+                if (activeSlot < 0) {
+                    activeSlot = items.size() - 1 - activeSlot;
+                }
+            }
+            case Input.Keys.RIGHT -> {
+                activeSlot++;
+                activeSlot = activeSlot % items.size();
+            }
             case Input.Keys.NUM_1 -> mode = Mode.GRAB;
             case Input.Keys.NUM_2 -> mode = Mode.POLYGON;
             case Input.Keys.NUM_3 -> mode = Mode.JOINT;
             case Input.Keys.NUM_4 -> mode = Mode.DELETE;
             case Input.Keys.ENTER -> {
+                if (mode == Mode.GRAB) {
+                    world.dropItem(worldMousePosition, new Vector2(), Item.createFromType(items.get(activeSlot).getClass(), null));
+                }
+
                 if (mode == Mode.POLYGON) {
                     if (polygonVertices.size() >= 3) {
                         float[] vertices = new float[polygonVertices.size() * 2];
@@ -264,11 +283,12 @@ public class AdminTool {
 
                         PolygonShape shape = new PolygonShape();
                         shape.set(vertices);
-
-                        if (materials[materialMode] == Material.GROUND) {
-                            world.spawn(new GroundEntity(world, center.x, center.y, shape));
-                        } else {
-                            world.spawn(new SimpleBlockEntity(world, center.x, center.y, shape, materials[materialMode]));
+                        if (Util.getArea(shape) > 0.1f) {
+                            if (materials[materialMode] == Material.GROUND) {
+                                world.spawn(new GroundEntity(world, center.x, center.y, shape));
+                            } else {
+                                world.spawn(new SimpleBlockEntity(world, center.x, center.y, shape, materials[materialMode]));
+                            }
                         }
                     }
                     polygonVertices.clear();

@@ -10,6 +10,11 @@ public abstract class HumanEntity extends LivingEntity {
         super(world, x, y, Shapes.boxShape(1.75f, 3.5f));
     }
 
+    @Override
+    public float getImpenetrability() {
+        return 0.5f;
+    }
+
     public HumanEntity(GameWorld world, EntityData data) {
         super(world, data);
     }

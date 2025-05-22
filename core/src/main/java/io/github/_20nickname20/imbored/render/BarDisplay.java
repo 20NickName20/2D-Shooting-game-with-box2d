@@ -37,25 +37,25 @@ public class BarDisplay {
         return targetValue > displayValue + 0.001f;
     }
 
-    public void render(ShapeRenderer renderer) {
+    public void render(GameRenderer renderer) {
         if (Util.time() - lastUpdateTime > displayTime) return;
         this.forceRender(renderer);
     }
 
-    public void forceRender(ShapeRenderer renderer) {
+    public void forceRender(GameRenderer renderer) {
         renderer.setColor(outerColor);
-        renderer.rectLine(-3, 0, 3, 0, 1);
+        renderer.rect(-3, -0.5f, 6, 1);
         renderer.setColor(innerColor);
-        renderer.rectLine(-2.9f, 0, -2.9f + 5.8f * displayValue, 0, 0.8f);
-        renderer.rectLine(-2.9f, 0, -2.9f + 5.8f * displayValue, 0, 0.6f);
+        renderer.rect(-2.9f, -0.4f, 5.8f * displayValue, 0.8f);
+        renderer.rect(-2.9f, -0.3f, 5.8f * displayValue, 0.6f);
     }
 
-    public static void render(ShapeRenderer renderer, Color outter, Color inner, float value) {
+    public static void render(GameRenderer renderer, Color outter, Color inner, float value) {
         renderer.setColor(outter);
-        renderer.rectLine(-3, 0, 3, 0, 1);
+        renderer.rect(-3, -0.5f, 6, 1);
         renderer.setColor(inner);
-        renderer.rectLine(-2.9f, 0, -2.9f + 5.8f * value, 0, 0.8f);
-        renderer.rectLine(-2.9f, 0, -2.9f + 5.8f * value, 0, 0.6f);
+        renderer.rect(-2.9f, -0.4f, 5.8f * value, 0.8f);
+        renderer.rect(-2.9f, -0.3f, 5.8f * value, 0.6f);
     }
 
     public static void render(ShapeRenderer renderer, Color outter, Color inner, float value, float width) {

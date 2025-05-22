@@ -1,9 +1,9 @@
 package io.github._20nickname20.imbored.game_objects;
 
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import io.github._20nickname20.imbored.GameWorld;
+import io.github._20nickname20.imbored.render.GameRenderer;
 import io.github._20nickname20.imbored.util.Util;
 
 import java.util.*;
@@ -28,7 +28,7 @@ public abstract class Entity implements Removable {
     public int chunkPos = 0;
 
     public final UUID uuid;
-    private final float spawnX, spawnY;
+    public final float spawnX, spawnY;
     private Runnable onSpawn = null;
     public float spawnTime;
     private final Set<Effect> effects = new HashSet<>();
@@ -50,6 +50,10 @@ public abstract class Entity implements Removable {
         this.persistentData = data;
 
         this.uuid = UUID.fromString(data.uuid);
+        if (entitiesByUuid.containsKey(this.uuid)) {
+            Util.printStackTrace("err");
+            new RuntimeException("Tried to create instance of entity with existing UUID").printStackTrace();
+        }
         entitiesByUuid.put(this.uuid, this);
         this.spawnX = data.posX;
         this.spawnY = data.posY;
@@ -67,6 +71,9 @@ public abstract class Entity implements Removable {
     }
 
     public abstract Material getMaterial();
+    public float getImpenetrability() {
+        return 1f;
+    }
 
     public final void spawn() {
         gameWorld.spawn(this);
@@ -113,10 +120,10 @@ public abstract class Entity implements Removable {
         effects.add(effect);
     }
 
-    public boolean render(ShapeRenderer renderer) {
-        for (Effect effect : effects) {
-            effect.render(renderer, this);
-        }
+    public boolean render(GameRenderer renderer) {
+        //for (Effect effect : effects) {
+        //    effect.render(renderer, this);
+        //}
         return false;
     }
 
@@ -146,6 +153,7 @@ public abstract class Entity implements Removable {
 
     public void remove() {
         isRemoved = true;
+        entitiesByUuid.remove(this.uuid);
     }
 
     public final boolean isRemoved() {
@@ -156,6 +164,13 @@ public abstract class Entity implements Removable {
         return lastContactedBody;
     }
 
+    public boolean onInteract(Interact interact) {
+        return false;
+    }
+
+    /**
+     * DON'T FUCKING FORGET TO TYPE "this.persistentData = customData"
+     */
     public EntityData createPersistentData() {
         Shape shape = this.b.getFixtureList().get(0).getShape();
 

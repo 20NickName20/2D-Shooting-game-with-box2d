@@ -1,14 +1,12 @@
 package io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.automatic;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.items.AmmoCartridgeItem;
-import io.github._20nickname20.imbored.game_objects.items.ammo.AutomaticRifleCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.ammo.PistolCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.AutomaticRaycastGunItem;
+import io.github._20nickname20.imbored.render.GameRenderer;
 
 public class AutomaticRifleItem extends AutomaticRaycastGunItem {
     private static final float SIZE = 2f;
@@ -22,8 +20,9 @@ public class AutomaticRifleItem extends AutomaticRaycastGunItem {
     private static final float COOLDOWN = 0.075f;
     private static final Class<? extends AmmoCartridgeItem> AMMO_TYPE = PistolCartridgeItem.class;
     private static final float RAY_LENGTH = 43f;
-    private static final float RAY_SPEED = 110;
+    private static final float RAY_SPEED = 110f;
     private static final Color RAY_COLOR = Color.GRAY;
+    private static final float PENETRATE_AMOUNT = 1f;
 
     public AutomaticRifleItem(int ammo) {
         super(ammo);
@@ -91,10 +90,17 @@ public class AutomaticRifleItem extends AutomaticRaycastGunItem {
     }
 
     @Override
-    public void render(ShapeRenderer renderer, CursorEntity handHolder) {
+    public float getPenetrateAmount() {
+        return PENETRATE_AMOUNT;
+    }
+
+    @Override
+    public void render(GameRenderer renderer, CursorEntity handHolder) {
         super.render(renderer, handHolder);
         renderer.setColor(0.5f, 0.5f, 0.5f, 1);
-        renderer.rectLine(-0.9f, -0.9f, 0.1f, 0.1f, 1.1f);
-        renderer.rectLine(0, 0, 3.5f, 0, 1.1f);
+        renderer.withRotation(20f, () -> {
+            renderer.rect(-1f, -0.1f, 1.3f, 0.5f);
+        });
+        renderer.rect(0, 0, 3.2f, 1.11111f);
     }
 }

@@ -1,12 +1,14 @@
 package io.github._20nickname20.imbored.game_objects.entities.block;
 
 import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Json;
 import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.game_objects.Material;
 import io.github._20nickname20.imbored.game_objects.entities.BlockEntity;
 
-public class SimpleBlockEntity extends BlockEntity {
-    private final Material material;
+public final class SimpleBlockEntity extends BlockEntity {
+    private Material material = Material.GROUND;
 
     public SimpleBlockEntity(GameWorld world, float x, float y, Shape shape, Material material) {
         super(world, x, y, shape);
@@ -33,17 +35,14 @@ public class SimpleBlockEntity extends BlockEntity {
         if (this.persistentData == null) {
             materialData = new MaterialData();
         } else {
-            try {
-                materialData = (MaterialData) this.persistentData;
-            } catch (ClassCastException e) {
-                materialData = new MaterialData();
-            }
+            materialData = (MaterialData) this.persistentData;
         }
         materialData.material = material.id;
+        this.persistentData = materialData;
         return super.createPersistentData();
     }
 
-    public static class MaterialData extends EntityData {
+    public final static class MaterialData extends DamagableEntityData {
         String material;
     }
 }

@@ -1,7 +1,6 @@
 package io.github._20nickname20.imbored.game_objects.entities;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -11,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.game_objects.Item;
-import io.github._20nickname20.imbored.game_objects.Material;
+import io.github._20nickname20.imbored.render.GameRenderer;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.render.BarDisplay;
 import io.github._20nickname20.imbored.util.With;
@@ -31,15 +30,16 @@ public abstract class DamagableEntity extends Entity {
 
     public DamagableEntity(GameWorld world, EntityData data) {
         super(world, data);
-        if (data instanceof DamagableEntityData damagableEntityData) {
-            this.health = damagableEntityData.health;
-        }
     }
 
     @Override
     public void onSpawn(World world) {
         super.onSpawn(world);
-        this.health = getMaxHealth();
+        if (this.persistentData instanceof DamagableEntityData damagableEntityData) {
+            this.health = damagableEntityData.health;
+        } else {
+            this.health = getMaxHealth();
+        }
     }
 
     public abstract float getMaxHealth();
@@ -126,15 +126,28 @@ public abstract class DamagableEntity extends Entity {
     }
 
     @Override
-    public boolean render(ShapeRenderer renderer) {
+    public boolean render(GameRenderer renderer) {
         super.render(renderer);
-        With.translation(renderer, 0, 5, () -> {
+        renderer.withTranslation(0, 5, () -> {
             healthBar.render(renderer);
         });
         return false;
     }
 
+    @Override
+    public EntityData createPersistentData() {
+        DamagableEntityData damagableEntityData;
+        if (this.persistentData == null) {
+            damagableEntityData = new DamagableEntityData();
+        } else {
+            damagableEntityData = (DamagableEntityData) this.persistentData;
+        }
+        damagableEntityData.health = this.health;
+        this.persistentData = damagableEntityData;
+        return super.createPersistentData();
+    }
+
     public static class DamagableEntityData extends EntityData {
-        float health;
+        public float health;
     }
 }

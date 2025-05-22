@@ -1,14 +1,13 @@
 package io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.game_objects.items.AmmoCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.ammo.PistolCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.RaycastGunItem;
+import io.github._20nickname20.imbored.render.GameRenderer;
 
 public class PistolItem extends RaycastGunItem {
     private static final float SIZE = 1.5f;
@@ -24,6 +23,7 @@ public class PistolItem extends RaycastGunItem {
     private static final float RAY_LENGTH = 51.5f;
     private static final float RAY_SPEED = 100;
     private static final Color RAY_COLOR = Color.GRAY;
+    private static final float PENETRATE_AMOUNT = 1.1f;
 
     public PistolItem(int ammo) {
         super(ammo);
@@ -41,6 +41,7 @@ public class PistolItem extends RaycastGunItem {
     public float getSize() {
         return SIZE;
     }
+
     @Override
     public float getRange() {
         return RANGE;
@@ -89,12 +90,16 @@ public class PistolItem extends RaycastGunItem {
     public Color getRayColor() {
         return RAY_COLOR;
     }
+    @Override
+    public float getPenetrateAmount() {
+        return PENETRATE_AMOUNT;
+    }
 
     @Override
-    public void render(ShapeRenderer renderer, CursorEntity handHolder) {
+    public void render(GameRenderer renderer, CursorEntity handHolder) {
         super.render(renderer, handHolder);
         renderer.setColor(0.5f, 0.5f, 0.5f, 1);
-        renderer.rectLine(-0.9f, -0.9f, 0.1f, 0.1f, 1.1f);
+        renderer.rect(-0.7f, -0.25f, 0.8f, 0.5f);
         renderer.polygon(new float[]{
             0f, 0.5f,
             2f, 0.9f,

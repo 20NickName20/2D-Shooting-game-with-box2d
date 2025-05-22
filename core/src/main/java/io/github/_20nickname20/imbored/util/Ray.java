@@ -3,6 +3,7 @@ package io.github._20nickname20.imbored.util;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import io.github._20nickname20.imbored.render.GameRenderer;
 
 public class Ray {
     public Ray(Vector2 p1, Vector2 p2, float spawnTime, float length, float speed, Color color) {
@@ -21,13 +22,13 @@ public class Ray {
     public final float spawnTime, length, maxLength, angle, speed;
     public final Color color;
 
-    public boolean render(ShapeRenderer renderer, float time) {
+    public boolean render(GameRenderer renderer, float time) {
         renderer.setColor(color);
         float timeSinceSpawn = time - spawnTime;
 
         float pos = timeSinceSpawn * speed - length / 2;
-        With.translation(renderer, p1.x, p1.y, () -> {
-            With.rotation(renderer, angle, () -> {
+        renderer.withTranslation(p1.x, p1.y, () -> {
+            renderer.withRotation(angle, () -> {
                 renderer.line(Math.min(Math.max(pos, 0f), maxLength), 0, Math.min(pos + length, maxLength), 0);
             });
         });

@@ -1,12 +1,12 @@
 package io.github._20nickname20.imbored.game_objects.items.usable;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.game_objects.items.UsableItem;
 import io.github._20nickname20.imbored.render.BarDisplay;
+import io.github._20nickname20.imbored.render.GameRenderer;
 
 public abstract class TimedUsableItem extends UsableItem {
 
@@ -25,7 +25,7 @@ public abstract class TimedUsableItem extends UsableItem {
     private boolean isUsing = false;
 
     @Override
-    public void render(ShapeRenderer renderer, CursorEntity handHolder) {
+    public void render(GameRenderer renderer, CursorEntity handHolder) {
         if (handHolder == null) return;
 
         if (progressBar.getDisplayValue() < 0.001f) return;

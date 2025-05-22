@@ -37,6 +37,15 @@ public class Material {
         .setHealthPerUnit(7.5f)
         .setLoot(new ScrapLoot(MetalScrapItem.class, 0.075f))
         .setShortName("METL");
+
+    public static final Material LIGHT_METAL = new Material("light_metal", new Color(0.65f, 0.65f, 0.7f, 1))
+        .setDensity(0.1f)
+        .setFriction(0.6f)
+        .setRestitution(0.12f)
+        .setHealthPerUnit(1f)
+        .setLoot(new ScrapLoot(MetalScrapItem.class, 0.015f))
+        .setShortName("LMTL");
+
     public static final Material ITEM = new Material("item", Color.WHITE)
         .setDensity(0.3f)
         .setFriction(0.7f)

@@ -4,7 +4,9 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.ControllerMapping;
 import com.badlogic.gdx.math.Vector2;
+import io.github._20nickname20.imbored.Controllable;
 import io.github._20nickname20.imbored.PlayerController;
+import io.github._20nickname20.imbored.game_objects.Interact;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 
 public class PlayerGamepadController extends PlayerController implements ControllerListener {
@@ -21,8 +23,8 @@ public class PlayerGamepadController extends PlayerController implements Control
     }
 
     @Override
-    public void register(PlayerEntity player) {
-        super.register(player);
+    public void register(Controllable controllable) {
+        super.register(controllable);
         controller.addListener(this);
     }
 
@@ -35,10 +37,28 @@ public class PlayerGamepadController extends PlayerController implements Control
 
     @Override
     public void update(float dt) {
-        player.addCursorDirection(targetCursorDirection.cpy().scl(dt * 70));
 
-        if (controller.getButton(mapping.buttonStart)) {
-            player.customColor += dt / 4;
+    }
+
+    public void processInteract(int buttonCode, boolean isPressed) {
+        if (buttonCode == mapping.buttonDpadLeft) {
+            controllable.interact(Interact.LEFT, isPressed);
+            return;
+        }
+        if (buttonCode == mapping.buttonDpadRight) {
+            controllable.interact(Interact.RIGHT, isPressed);
+            return;
+        }
+        if (buttonCode == mapping.buttonDpadUp) {
+            controllable.interact(Interact.UP, isPressed);
+            return;
+        }
+        if (buttonCode == mapping.buttonDpadDown) {
+            controllable.interact(Interact.DOWN, isPressed);
+            return;
+        }
+        if (buttonCode == mapping.buttonA) {
+            controllable.interact(Interact.USE, isPressed);
         }
     }
 
@@ -54,57 +74,45 @@ public class PlayerGamepadController extends PlayerController implements Control
         }
 
         if (buttonCode == mapping.buttonB) {
-            player.jump();
+            controllable.jump();
             return false;
         }
         if (buttonCode == mapping.buttonL1) {
-            player.scrollItem(-1);
+            controllable.scrollInventory(-1);
             return false;
         }
         if (buttonCode == mapping.buttonR1) {
-            player.scrollItem(1);
+            controllable.scrollInventory(1);
             return false;
         }
         if (buttonCode == mapping.buttonX) {
-            this.pushSmth();
-            return false;
-        }
-        if (buttonCode == mapping.buttonDpadLeft) {
-            player.scrollContainer(-1);
-            return false;
-        }
-        if (buttonCode == mapping.buttonDpadRight) {
-            player.scrollContainer(1);
-            return false;
-        }
-        if (buttonCode == mapping.buttonDpadUp) {
-            this.pushSmth();
-            return false;
-        }
-        if (buttonCode == mapping.buttonDpadDown) {
-            player.takeOutOfContainer();
+            controllable.dropOrThrow();
             return false;
         }
         if (buttonCode == mapping.buttonY) {
-            player.startApplyingSelectedToEquipped();
+            controllable.startApplying();
             return false;
         }
+
+        processInteract(buttonCode, true);
         return false;
     }
 
     @Override
     public boolean buttonUp(Controller controller, int buttonCode) {
         if (buttonCode == mapping.buttonY) {
-            player.stopApplyingSelectedToEquipped();
+            controllable.stopApplying();
             return false;
         }
+
+        processInteract(buttonCode, false);
         return false;
     }
 
     @Override
     public boolean axisMoved(Controller controller, int axisCode, float value) {
         if (axisCode == mapping.axisLeftX) {
-            player.setXMovement(value);
+            controllable.move(value);
         }
         Vector2 newDirection = targetCursorDirection.cpy();
         boolean moveX = axisCode == mapping.axisRightX || (sticks == 1 && axisCode == mapping.axisLeftX);
@@ -116,28 +124,23 @@ public class PlayerGamepadController extends PlayerController implements Control
             newDirection.y = -value;
         }
         if (newDirection.len() > 0.4) {
-            if (moveX) {
-                targetCursorDirection.x = value;
+            if (moveX || moveY) {
+                targetCursorDirection.set(newDirection);
                 targetCursorDirection.nor();
-                return false;
-            }
-            if (moveY) {
-                targetCursorDirection.y = -value;
-                targetCursorDirection.nor();
-                return false;
+                controllable.setCursorAngle(targetCursorDirection.angleRad());
             }
         }
         if (axisCode == ZL_AXIS) {
             if (value == 1) {
-                this.startUseMode();
+                controllable.grabOrUse();
             } else {
-                this.stopUseMode();
+                controllable.putOrStopUse();
             }
             return false;
         }
         if (axisCode == ZR_AXIS) {
             if (value == 1) {
-                this.switchMode();
+                controllable.toggleItem();
             }
         }
         return false;

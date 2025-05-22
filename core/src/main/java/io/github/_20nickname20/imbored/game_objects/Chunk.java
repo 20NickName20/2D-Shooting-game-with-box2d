@@ -3,7 +3,6 @@ package io.github._20nickname20.imbored.game_objects;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import io.github._20nickname20.imbored.GameWorld;
-import io.github._20nickname20.imbored.data.ChunkData;
 import io.github._20nickname20.imbored.game_objects.entities.BlockEntity;
 import io.github._20nickname20.imbored.game_objects.entities.StaticEntity;
 import io.github._20nickname20.imbored.game_objects.entities.block.box.MetalBoxEntity;
@@ -17,7 +16,10 @@ import io.github._20nickname20.imbored.game_objects.loot.supply.GunSupplyLoot;
 import io.github._20nickname20.imbored.game_objects.loot.supply.HealSupplyLoot;
 import io.github._20nickname20.imbored.game_objects.loot.supply.StuffSupplyLoot;
 
+import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static io.github._20nickname20.imbored.GameWorld.CHUNK_WIDTH;
 
@@ -30,6 +32,23 @@ public class Chunk {
     public Chunk left = null, right = null;
 
     private boolean isGenerated = false;
+    private boolean isLoaded = true;
+
+    public void setActive(boolean state) {
+        if (!isLoaded) return;
+        for (Entity entity : world.getEntitiesInChunk(position)) {
+            entity.b.setActive(state);
+        }
+    }
+
+    public void onLoad() {
+        this.isLoaded = true;
+    }
+
+    public void onUnload() {
+        this.isLoaded = false;
+    }
+
 
     public Chunk(GameWorld world, int position) {
         this.world = world;
@@ -43,7 +62,8 @@ public class Chunk {
         this.rightLevel = data.rightLevel;
         this.isGenerated = true;
         for (Entity.EntityData entityData : data.entityData) {
-            world.spawn(Entity.createFromData(world, entityData));
+            Entity entity = Entity.createFromData(world, entityData);
+            world.spawn(entity);
         }
         for (JointEntity.JointData jointData : data.jointData) {
             world.spawn(new JointEntity(world, jointData));
@@ -168,10 +188,16 @@ public class Chunk {
         chunkData.rightLevel = this.rightLevel;
 
         Set<Entity> entities = world.getEntitiesInChunk(position);
-        Entity.EntityData[] entityData = new Entity.EntityData[entities.size()];
+        Set<UUID> uniqueUuids = new HashSet<>();
+        entities.forEach(entity -> {
+            if (Entity.getByUuid(entity.uuid) != null) {
+                uniqueUuids.add(entity.uuid);
+            }
+        });
+        Entity.EntityData[] entityData = new Entity.EntityData[uniqueUuids.size()];
         int i = 0;
-        for (Entity entity : entities) {
-            entityData[i] = entity.createPersistentData();
+        for (UUID uuid : uniqueUuids) {
+            entityData[i] = Entity.getByUuid(uuid).createPersistentData();
             i++;
         }
         chunkData.entityData = entityData;

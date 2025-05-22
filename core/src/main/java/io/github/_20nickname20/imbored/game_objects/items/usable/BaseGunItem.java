@@ -1,12 +1,11 @@
 package io.github._20nickname20.imbored.game_objects.items.usable;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.Item;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.items.AmmoCartridgeItem;
 import io.github._20nickname20.imbored.render.BarDisplay;
+import io.github._20nickname20.imbored.render.GameRenderer;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.game_objects.items.UsableItem;
@@ -111,7 +110,7 @@ public abstract class BaseGunItem extends UsableItem {
     }
 
     @Override
-    public void render(ShapeRenderer renderer, CursorEntity handHolder) {
+    public void render(GameRenderer renderer, CursorEntity handHolder) {
         this.renderBar(renderer, handHolder, -5f, ammoBar);
         this.renderBar(renderer, handHolder, -7f, reloadBar);
     }

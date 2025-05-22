@@ -1,9 +1,9 @@
 package io.github._20nickname20.imbored.game_objects.items.scrap;
 
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import io.github._20nickname20.imbored.game_objects.Material;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.items.ScrapItem;
+import io.github._20nickname20.imbored.render.GameRenderer;
 
 public class StoneItem extends ScrapItem {
     private static final float SIZE = 1.2f;
@@ -22,7 +22,7 @@ public class StoneItem extends ScrapItem {
     }
 
     @Override
-    public void render(ShapeRenderer renderer, CursorEntity handHolder) {
+    public void render(GameRenderer renderer, CursorEntity handHolder) {
         renderer.setColor(Material.ROCK.color);
         renderer.polygon(new float[]{
             -0.55f, -0.6f,

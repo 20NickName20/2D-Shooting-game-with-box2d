@@ -2,7 +2,6 @@ package io.github._20nickname20.imbored.util;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
-import io.github._20nickname20.imbored.render.PenRenderer;
 
 public class With {
     public static void translation(ShapeRenderer renderer, float x, float y, Runnable runnable) {

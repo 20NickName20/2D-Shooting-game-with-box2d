@@ -1,11 +1,11 @@
 package io.github._20nickname20.imbored.game_objects.items.usable.timed.modirfiers;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.effects.SpeedEffect;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.items.usable.TimedUsableItem;
+import io.github._20nickname20.imbored.render.GameRenderer;
 
 public class EnergyDrinkItem extends TimedUsableItem {
     private static final float SIZE = 2f;
@@ -36,11 +36,9 @@ public class EnergyDrinkItem extends TimedUsableItem {
     }
 
     @Override
-    public void render(ShapeRenderer renderer, CursorEntity handHolder) {
+    public void render(GameRenderer renderer, CursorEntity handHolder) {
         super.render(renderer, handHolder);
         renderer.setColor(0.5f, 0.5f, 1, 1);
         renderer.rect(-0.5f, -1, 1, 2.2f);
-        renderer.setColor(Color.YELLOW);
-        renderer.rectLine(-0.5f, 0, 0.5f, 0, 0.4f);
     }
 }

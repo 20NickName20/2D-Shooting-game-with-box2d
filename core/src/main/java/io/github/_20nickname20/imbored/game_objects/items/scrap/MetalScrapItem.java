@@ -1,9 +1,9 @@
 package io.github._20nickname20.imbored.game_objects.items.scrap;
 
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import io.github._20nickname20.imbored.game_objects.Material;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.items.ScrapItem;
+import io.github._20nickname20.imbored.render.GameRenderer;
 
 public class MetalScrapItem extends ScrapItem {
     private static final float SIZE = 0.9f;
@@ -22,10 +22,10 @@ public class MetalScrapItem extends ScrapItem {
     }
 
     @Override
-    public void render(ShapeRenderer renderer, CursorEntity handHolder) {
+    public void render(GameRenderer renderer, CursorEntity handHolder) {
         renderer.setColor(Material.METAL.color);
         for (float i = -1f; i <= 1f; i += 2f) {
-            renderer.rectLine(-1f + i / 2, -1f + i / 4, 1f + i / 2, 1f + i / 4, 0.75f);
+            renderer.rect(-0.75f + i / 2, -0.5f + i / 4, 2f, 0.9f);
         }
     }
 }

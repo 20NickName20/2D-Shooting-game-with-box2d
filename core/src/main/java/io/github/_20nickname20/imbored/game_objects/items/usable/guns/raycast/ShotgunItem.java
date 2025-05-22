@@ -1,16 +1,14 @@
 package io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.Material;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.game_objects.items.AmmoCartridgeItem;
-import io.github._20nickname20.imbored.game_objects.items.ammo.PistolCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.ammo.ShotgunCartridgeItem;
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.RaycastGunItem;
+import io.github._20nickname20.imbored.render.GameRenderer;
 
 public class ShotgunItem extends RaycastGunItem {
     private static final float SIZE = 2f;
@@ -26,6 +24,7 @@ public class ShotgunItem extends RaycastGunItem {
     private static final float RAY_LENGTH = 74f;
     private static final float RAY_SPEED = 70;
     private static final Color RAY_COLOR = new Color(0.6f, 0.6f, 0.5f, 1);
+    private static final float PENETRATE_AMOUNT = 0.8f;
 
     public ShotgunItem(int ammo) {
         super(ammo);
@@ -91,6 +90,10 @@ public class ShotgunItem extends RaycastGunItem {
     public Color getRayColor() {
         return RAY_COLOR;
     }
+    @Override
+    public float getPenetrateAmount() {
+        return PENETRATE_AMOUNT;
+    }
 
     @Override
     protected void onShoot(PlayerEntity player) {
@@ -111,11 +114,11 @@ public class ShotgunItem extends RaycastGunItem {
     }
 
     @Override
-    public void render(ShapeRenderer renderer, CursorEntity handHolder) {
+    public void render(GameRenderer renderer, CursorEntity handHolder) {
         super.render(renderer, handHolder);
 
         renderer.setColor(Material.WOOD.color);
-        renderer.rectLine(-0.9f, -0.9f, 0.1f, 0.1f, 1.1f);
-        renderer.rectLine(0, 0, 3, 0, 1.1f);
+        renderer.rect(-1.8f, -0.55f, 1.4f, 0.6f);
+        renderer.rect(-1.2f, -0.2f, 3.5f, 1.1f);
     }
 }

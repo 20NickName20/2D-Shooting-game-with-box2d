@@ -13,4 +13,7 @@ dependencies {
 
   implementation "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
   implementation 'org.reflections:reflections:0.10.2'
+  implementation("com.esotericsoftware:kryonet:2.22.0-RC1")
+  implementation("org.slf4j:slf4j-api:2.0.17")
+  implementation("org.slf4j:slf4j-simple:2.0.17")
 }

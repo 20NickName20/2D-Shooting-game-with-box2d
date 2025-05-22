@@ -19,4 +19,9 @@ public class WoodenBoxEntity extends BoxEntity {
     public Material getMaterial() {
         return Material.WOOD;
     }
+
+    @Override
+    public float getImpenetrability() {
+        return 0.6f;
+    }
 }

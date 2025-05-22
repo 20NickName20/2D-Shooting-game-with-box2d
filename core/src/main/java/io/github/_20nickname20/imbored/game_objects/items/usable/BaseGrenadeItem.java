@@ -57,7 +57,7 @@ public abstract class BaseGrenadeItem extends UsableItem {
 
     private void explode() {
         Entity holder = this.getHolder();
-        Util.explode(holder.gameWorld, holder.b, holder.b.getPosition(), (float) (Math.PI / 25f), getRange(), getPower(), getDamage(), 20 * MathUtils.degRad, 50, 40, Color.ORANGE);
+        holder.gameWorld.explode(holder.b, holder.b.getPosition(), (float) (Math.PI / 25f), getRange(), getPower(), getDamage(), 20 * MathUtils.degRad, 50, 40, Color.ORANGE, 0.5f);
 
         this.remove();
         if (this.getHolder() instanceof DamagableEntity damagable) {

@@ -4,12 +4,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
-import io.github._20nickname20.imbored.game_objects.items.usable.LandmineItem;
 import io.github._20nickname20.imbored.render.BarDisplay;
+import io.github._20nickname20.imbored.render.GameRenderer;
 import io.github._20nickname20.imbored.util.With;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class Item implements Removable {
     private Entity holder;
@@ -38,17 +35,17 @@ public abstract class Item implements Removable {
         return holder;
     }
 
-    public abstract void render(ShapeRenderer renderer, CursorEntity handHolder);
+    public abstract void render(GameRenderer renderer, CursorEntity handHolder);
 
-    protected final void withNoRotation(ShapeRenderer renderer, CursorEntity handHolder, Runnable runnable) {
+    protected final void withNoRotation(GameRenderer renderer, CursorEntity handHolder, Runnable runnable) {
         if (handHolder == null) return;
-        With.rotation(renderer, -handHolder.getCursorDirection().angleDeg(), runnable);
+        renderer.withRotation(-handHolder.getCursorDirection().angleDeg(), runnable);
     }
 
-    protected void renderBar(ShapeRenderer renderer, CursorEntity handHolder, float yTranslation, BarDisplay barDisplay) {
+    protected void renderBar(GameRenderer renderer, CursorEntity handHolder, float yTranslation, BarDisplay barDisplay) {
         if (handHolder == null) return;
-        With.rotation(renderer, -handHolder.getCursorDirection().angleDeg(), () -> {
-            With.translation(renderer, 0, yTranslation, () -> {
+        renderer.withRotation(-handHolder.getCursorDirection().angleDeg(), () -> {
+            renderer.withTranslation(0, yTranslation, () -> {
                 barDisplay.render(renderer);
             });
         });

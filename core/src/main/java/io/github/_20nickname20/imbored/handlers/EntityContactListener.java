@@ -30,7 +30,7 @@ public class EntityContactListener implements ContactListener {
 
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {
-        oldManifold.getPoints()[0].normalImpulse = 0;
+
     }
 
     @Override

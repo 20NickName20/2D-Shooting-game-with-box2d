@@ -1,43 +1,46 @@
 package io.github._20nickname20.imbored;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
 import io.github._20nickname20.imbored.game_objects.Chunk;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.Item;
 import io.github._20nickname20.imbored.game_objects.JointEntity;
+import io.github._20nickname20.imbored.game_objects.entities.DamagableEntity;
 import io.github._20nickname20.imbored.game_objects.entities.ItemEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.handlers.EntityContactFilter;
 import io.github._20nickname20.imbored.handlers.EntityContactListener;
+import io.github._20nickname20.imbored.render.GameRenderer;
 import io.github._20nickname20.imbored.screens.GameScreen;
 import io.github._20nickname20.imbored.util.Constants;
 import io.github._20nickname20.imbored.util.Ray;
+import io.github._20nickname20.imbored.util.Raycast;
 import io.github._20nickname20.imbored.util.Util;
+import io.github._20nickname20.imbored.world.ServerWorld;
 
 import java.util.*;
 
-public class GameWorld {
+public abstract class GameWorld {
     public final World world;
 
-    private static final String SAVE_PATH = "korobo4ki/save/";
+    protected final Map<Integer, Chunk> loadedChunks = new HashMap<>();
+    protected final Map<Integer, Set<Entity>> entitiesByChunk = new HashMap<>();
 
-    private final Json json = new Json();
-
-    private final Map<Integer, Chunk> loadedChunks = new HashMap<>();
-    private final Map<Integer, Set<Entity>> entitiesByChunk = new HashMap<>();
+    public HashMap<String, ServerWorld.PlayerData> playersByUsername = new HashMap<>();
 
     public static final float CHUNK_WIDTH = 300f;
     public static final int SIMULATION_DISTANCE = 3;
 
-    private final List<Ray> rays = new ArrayList<>();
+    protected final List<Ray> rays = new ArrayList<>();
     private boolean isFrozen;
+
+    protected Set<UUID> localPlayers = new HashSet<>();
 
     public void setFrozen(boolean frozen) {
         isFrozen = frozen;
@@ -72,11 +75,11 @@ public class GameWorld {
         return atChunk;
     }
 
-    public void addRay(Ray ray) {
+    protected void addRay(Ray ray) {
         rays.add(ray);
     }
 
-    public void renderRays(ShapeRenderer renderer) {
+    public void renderRays(GameRenderer renderer) {
         Set<Ray> toRemove = new HashSet<>();
         float time = Util.time();
         for (Ray ray : rays) {
@@ -95,71 +98,45 @@ public class GameWorld {
         return loadedChunks.containsKey(x);
     }
 
-    public void loadChunk(int x) {
-        if (loadedChunks.containsKey(x)) return;
-        Gdx.app.log("Chunk Loading", "Loading chunk at " + x);
+    public abstract Chunk loadChunk(int x);
 
-        loadedChunks.put(x, null);
+    public abstract void unloadChunk(int x);
 
-        FileHandle handle = Gdx.files.external(SAVE_PATH + "chunk" + x + ".json");
-        if (handle.exists()) {
-            Gdx.app.log("Chunk Loading", "Found save file");
-
-            Chunk.ChunkData data = json.fromJson(Chunk.ChunkData.class, handle.readString());
-            Chunk chunk = new Chunk(this, x, data);
-            Chunk left = getLoadedChunk(x - 1);
-            if (left != null) {
-                left.right = chunk;
-                chunk.left = left;
-            }
-            Chunk right = getLoadedChunk(x + 1);
-            if (right != null) {
-                right.left = chunk;
-                chunk.right = right;
-            }
-            loadedChunks.put(x, chunk);
-            entitiesByChunk.put(x, new HashSet<>());
+    public void shootRay(Body ignored, Vector2 position, float angleRad, float range, float power, float damage, float rayLength, float raySpeed, Color rayColor, float penetrateAmount) {
+        Vector2 impulse = Vector2.X.cpy().rotateRad(angleRad);
+        Vector2 endPosition = position.cpy().add(impulse.cpy().scl(range));
+        List<Raycast.Result> results = Raycast.castAll(this.world, ignored, position, endPosition);
+        if (results.isEmpty()) {
+            this.addRay(new Ray(position, endPosition, Util.time(), rayLength, raySpeed, rayColor));
             return;
         }
 
-        Gdx.app.log("Chunk Loading", "No save file found, generating...");
-
-        Chunk chunk = new Chunk(this, x);
-        Chunk left = getLoadedChunk(x - 1);
-        if (left != null) {
-            left.right = chunk;
-            chunk.left = left;
+        impulse.scl(power);
+        for (Raycast.Result result : results) {
+            if (penetrateAmount <= 0) {
+                break;
+            }
+            endPosition = result.point;
+            result.body.applyLinearImpulse(impulse, result.point, true);
+            if (result.body.getUserData() instanceof Entity entity) {
+                penetrateAmount -= entity.getImpenetrability();
+                if (entity instanceof DamagableEntity damagable) {
+                    damagable.damage(damage);
+                }
+                damage /= 2;
+            }
         }
-        Chunk right = getLoadedChunk(x + 1);
-        if (right != null) {
-            right.left = chunk;
-            chunk.right = right;
-        }
-        chunk.generate(left, right);
-        loadedChunks.put(x, chunk);
-        entitiesByChunk.put(x, new HashSet<>());
+        this.addRay(new Ray(position, endPosition, Util.time(), rayLength, raySpeed, rayColor));
     }
 
-    public void unloadChunk(int x) {
-        if (!isChunkLoaded(x)) return;
-
-        Chunk chunk = getLoadedChunk(x);
-        Chunk.ChunkData data = chunk.createPersistentData();
-
-        for (JointEntity joint : getJointsInChunk(x)) {
-            joint.remove();
+    public void explode(Body ignored, Vector2 position, float stepAngle, float range, float power, float damage, float maxOffset, float rayLength, float raySpeed, Color rayColor, float penetrateAmount) {
+        for (float angle = 0; angle < Math.PI * 2; angle += stepAngle) {
+            shootRay(ignored, position.cpy(), angle + MathUtils.random(-maxOffset, maxOffset), range, power, damage, rayLength, raySpeed, rayColor, penetrateAmount);
         }
+    }
 
-        for (Entity entity : getEntitiesInChunk(x)) {
-            entity.remove();
-        }
-
-        if (data.entityData.length != 0) {
-            json.toJson(data, Gdx.files.external(SAVE_PATH + "chunk" + x + ".json"));
-        }
-
-        entitiesByChunk.remove(x);
-        loadedChunks.remove(x);
+    public void explode(Body ignored, Vector2 position, float stepAngle, float range, float power, float damage, float rayLength, float raySpeed, Color rayColor, float penetrateAmount) {
+        explode(ignored, position, stepAngle, range, power, damage, 0, rayLength, raySpeed, rayColor, penetrateAmount);
     }
 
     public final OrthographicCamera camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());;
@@ -185,6 +162,7 @@ public class GameWorld {
         if (entity == null) {
             throw new RuntimeException("ENTITY IS FUCKING NULL");
         }
+        if (entity.b != null) return;
         if (entity.isRemoved()) return;
         if (entity instanceof PlayerEntity player) {
             players.add(player);
@@ -227,7 +205,7 @@ public class GameWorld {
     public Vector2 playerCenter = new Vector2();
 
     private void doPhysicsStep(float dt) {
-        int chunkPos = getChunkPosition(camera.position.x);
+        int cameraChunkPos = getChunkPosition(camera.position.x);
 
         float frameTime = Math.min(dt, 0.25f);
         accumulator += frameTime;
@@ -256,9 +234,8 @@ public class GameWorld {
                     body.applyLinearImpulse(new Vector2(0, -100), body.getPosition(), true);
                 }
 
-                if (entity instanceof PlayerEntity player) {
+                if (localPlayers.contains(entity.uuid)) {
                     playerCenter.add(entity.b.getPosition());
-                    registeredPlayers.add(player);
                     playerCount += 1;
                 }
 
@@ -267,11 +244,20 @@ public class GameWorld {
                 entitiesInChunk.add(entity);
 
 
-                entity.update(Constants.TIME_STEP * Constants.UPDATES_LATENCY);
+                if (!isFrozen) {
+                    entity.update(Constants.TIME_STEP * Constants.UPDATES_LATENCY);
+                }
                 for (Joint joint : jointsToRemove) {
                     world.destroyJoint(joint);
                 }
                 jointsToRemove.clear();
+
+                if (entity instanceof PlayerEntity player) {
+                    ServerWorld.PlayerData playerData = playersByUsername.get(player.username);
+                    if (playerData != null) {
+                        playerData.chunk = entity.chunkPos;
+                    }
+                }
 
                 if (entity.isRemoved()) {
                     processRemoval(entity);
@@ -280,13 +266,11 @@ public class GameWorld {
             playerCenter.scl(1f / playerCount);
         }
 
-        for (int i = chunkPos - SIMULATION_DISTANCE; i <= chunkPos + SIMULATION_DISTANCE; i++) {
-            if (!isChunkLoaded(i)) {
-                loadChunk(i);
-            }
+        for (int i = cameraChunkPos - SIMULATION_DISTANCE; i <= cameraChunkPos + SIMULATION_DISTANCE; i++) {
+            loadChunk(i);
         }
         for (int i : new HashSet<>(loadedChunks.keySet())) {
-            if (Math.abs(i - chunkPos) > SIMULATION_DISTANCE) {
+            if (Math.abs(i - cameraChunkPos) - 3 > SIMULATION_DISTANCE) {
                 unloadChunk(i);
             }
         }
@@ -295,10 +279,8 @@ public class GameWorld {
     public boolean cameraFollowsPlayers = true;
     public Vector2 cameraOffset = new Vector2();
 
-    private final Set<PlayerEntity> registeredPlayers = new HashSet<>();
-
+    private boolean prevCameraState = false;
     public void update(float dt) {
-        registeredPlayers.clear();
         doPhysicsStep(dt * Constants.SIMULATION_SPEED);
 
         for (Entity entity : entitiesToSpawn) {
@@ -311,18 +293,31 @@ public class GameWorld {
         }
         jointsToSpawn.clear();
 
-        if (!cameraFollowsPlayers) return;
+        if (!cameraFollowsPlayers || localPlayers.isEmpty()) return;
         Vector2 target = playerCenter.cpy().add(0, 10).add(cameraOffset);
+
         if (!Float.isNaN(target.x) && !Float.isNaN(target.y)) {
-            Vector2 move = target.sub(camera.position.x, camera.position.y).scl(dt * 1.5f);
-            camera.position.add(move.x, move.y, 0);
+            if (cameraFollowsPlayers != prevCameraState) {
+                camera.position.set(target, 0f);
+            } else {
+                Vector2 move = target.sub(camera.position.x, camera.position.y).scl(dt * 3.2f);
+                camera.position.add(move.x, move.y, 0);
+            }
+
+            prevCameraState = cameraFollowsPlayers;
         }
+
         float maxOffset = 0;
-        for (PlayerEntity player : registeredPlayers) {
+        for (UUID playerUuid : localPlayers) {
+            Entity player = Entity.getByUuid(playerUuid);
+            if (player == null) continue;
             maxOffset = Math.max(maxOffset, player.b.getPosition().dst(playerCenter));
         }
-        if (maxOffset < 0.1f) return;
-        camera.zoom = Math.max(1 / GameScreen.zoom + 1f + (float) Math.pow(maxOffset, 0.6) / 2, 9f);
+
+        float zoom = Math.max(1 / GameScreen.zoom + 1f + (float) Math.pow(maxOffset, 0.6) / 2, 9f);
+        if (!Float.isNaN(zoom)) {
+            camera.zoom = zoom;
+        }
     }
 
     public ItemEntity dropItem(Vector2 location, Vector2 impulse, Item item) {

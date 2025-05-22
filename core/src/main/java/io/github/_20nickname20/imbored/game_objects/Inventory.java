@@ -2,6 +2,7 @@ package io.github._20nickname20.imbored.game_objects;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import io.github._20nickname20.imbored.game_objects.entities.InventoryHolder;
+import io.github._20nickname20.imbored.render.GameRenderer;
 
 import java.util.*;
 
@@ -155,7 +156,7 @@ public class Inventory {
         itemsToRemove.clear();
     }
 
-    void renderSlot(ShapeRenderer renderer, boolean active, float x, float y) {
+    void renderSlot(GameRenderer renderer, boolean active, float x, float y) {
         renderer.rect(x - 2, y - 2, 4, 4);
         if (active) {
             renderer.rect(x - 2.2f, y - 2.2f, 4.4f, 4.4f);
@@ -164,7 +165,7 @@ public class Inventory {
 
     public static final float slotSize = 4.6f;
 
-    public void renderPart(ShapeRenderer renderer, int slotAmount, Item special) {
+    public void renderPart(GameRenderer renderer, int slotAmount, Item special) {
         int range = slotAmount / 2;
         for (int i = -range; i <= range; i++) {
             Item item = this.get(i + this.getSelectedSlot());
@@ -175,14 +176,14 @@ public class Inventory {
             }
             renderSlot(renderer, i == 0, i * slotSize, 0);
             if (item != null) {
-                translation(renderer, i * slotSize, 0, () -> {
+                renderer.withTranslation(i * slotSize, 0, () -> {
                     item.render(renderer, null);
                 });
             }
         }
     }
 
-    public void renderPart(ShapeRenderer renderer, int slotAmount) {
+    public void renderPart(GameRenderer renderer, int slotAmount) {
         renderPart(renderer, slotAmount, null);
     }
 
@@ -200,7 +201,7 @@ public class Inventory {
     }
 
     public static class InventoryData {
-        float sizeLimit;
-        Item.ItemData[] items;
+        public float sizeLimit;
+        public Item.ItemData[] items;
     }
 }

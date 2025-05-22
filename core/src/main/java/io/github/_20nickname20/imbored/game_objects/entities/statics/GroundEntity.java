@@ -18,4 +18,9 @@ public class GroundEntity extends StaticEntity {
     public Material getMaterial() {
         return Material.GROUND;
     }
+
+    @Override
+    public float getImpenetrability() {
+        return 1000f;
+    }
 }

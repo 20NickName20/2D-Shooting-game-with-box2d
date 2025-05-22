@@ -1,17 +1,15 @@
 package io.github._20nickname20.imbored.game_objects.entities;
 
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.physics.box2d.World;
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.game_objects.Item;
 import io.github._20nickname20.imbored.game_objects.Material;
-import io.github._20nickname20.imbored.game_objects.entities.container.InteractiveContainerEntity;
+import io.github._20nickname20.imbored.game_objects.entities.container.InteractableContainerEntity;
 import io.github._20nickname20.imbored.game_objects.items.scrap.MetalScrapItem;
+import io.github._20nickname20.imbored.render.GameRenderer;
 import io.github._20nickname20.imbored.util.Shapes;
 import io.github._20nickname20.imbored.util.Util;
-import io.github._20nickname20.imbored.util.With;
 
 public class ItemEntity extends BlockEntity {
     public final Item item;
@@ -35,6 +33,11 @@ public class ItemEntity extends BlockEntity {
     }
 
     @Override
+    public float getImpenetrability() {
+        return 0f;
+    }
+
+    @Override
     public Material getMaterial() {
         return Material.ITEM;
     }
@@ -53,7 +56,7 @@ public class ItemEntity extends BlockEntity {
 
     @Override
     public boolean shouldCollide(Entity other) {
-        if (Util.time() - this.spawnTime < PICKUP_DELAY && other instanceof InteractiveContainerEntity) {
+        if (Util.time() - this.spawnTime < PICKUP_DELAY && other instanceof InteractableContainerEntity) {
             return false;
         }
         if (other instanceof ItemEntity) {
@@ -66,6 +69,10 @@ public class ItemEntity extends BlockEntity {
     public void update(float dt) {
         super.update(dt);
         item.update(dt);
+        if (item.isRemoved()) {
+            this.remove();
+            return;
+        }
         timeBeforeDespawn -= dt;
         if (timeBeforeDespawn <= 0) {
             this.remove();
@@ -74,20 +81,25 @@ public class ItemEntity extends BlockEntity {
 
     @Override
     public EntityData createPersistentData() {
-        ItemEntityData data = new ItemEntityData();
+        ItemEntityData data;
+        if (this.persistentData == null) {
+            data = new ItemEntityData();
+        } else {
+            data = (ItemEntityData) this.persistentData;
+        }
         data.itemData = item.createPersistentData();
         this.persistentData = data;
         return super.createPersistentData();
     }
 
     @Override
-    public boolean render(ShapeRenderer renderer) {
+    public boolean render(GameRenderer renderer) {
         if (timeBeforeDespawn < 20f) {
             if (Math.sin((20 - timeBeforeDespawn) * (20 - timeBeforeDespawn)) < 0) {
                 return true;
             }
         }
-        With.rotation(renderer, this.b.getAngle() * MathUtils.radiansToDegrees, () -> {
+        renderer.withRotation(this.b.getAngle() * MathUtils.radiansToDegrees, () -> {
             item.render(renderer, null);
         });
         return true;

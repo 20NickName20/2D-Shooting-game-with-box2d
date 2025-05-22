@@ -53,33 +53,6 @@ public class Util {
         return body;
     }
 
-    private static void shootRay(GameWorld world, Body ignored, Vector2 position, float angleRad, float range, float power, float damage, float rayLength, float raySpeed, Color rayColor) {
-        Vector2 impulse = Vector2.X.cpy().rotateRad(angleRad);
-        Vector2 endPosition = position.cpy().add(impulse.cpy().scl(range));
-        ClosestRaycast.RaycastResult result = ClosestRaycast.cast(world.world, ignored, position, endPosition);
-        if (result == null) {
-            world.addRay(new Ray(position, endPosition, Util.time(), rayLength, raySpeed, rayColor));
-            return;
-        }
-
-        world.addRay(new Ray(position, result.point, Util.time(), rayLength, raySpeed, rayColor));
-        impulse.scl(power);
-        result.body.applyLinearImpulse(impulse, result.point, true);
-        if (result.body.getUserData() instanceof DamagableEntity entity) {
-            entity.damage(damage);
-        }
-    }
-
-    public static void explode(GameWorld world, Body ignored, Vector2 position, float stepAngle, float range, float power, float damage, float maxOffset, float rayLength, float raySpeed, Color rayColor) {
-        for (float angle = 0; angle < Math.PI * 2; angle += stepAngle) {
-            shootRay(world, ignored, position.cpy(), angle + MathUtils.random(-maxOffset, maxOffset), range, power, damage, rayLength, raySpeed, rayColor);
-        }
-    }
-
-    public static void explode(GameWorld world, Body ignored, Vector2 position, float stepAngle, float range, float power, float damage, float rayLength, float raySpeed, Color rayColor) {
-        explode(world, ignored, position, stepAngle, range, power, damage, 0, rayLength, raySpeed, rayColor);
-    }
-
     public static Color fromHSV(final float hue, final float saturation, final float value) {
         //vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
         final float
@@ -130,6 +103,22 @@ public class Util {
             return calculatePolygonArea(polygonShape);
         } else {
             return (float) (shape.getRadius() * 2 * Math.PI);
+        }
+    }
+
+    public static void printStackTrace(String text) {
+        System.out.println(text);
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        for (int i = 2; i < stackTrace.length; i++) {
+            System.out.println((i - 1) + ".\t" + stackTrace[i].toString());
+        }
+    }
+
+    public static void printStackTrace(String text, int maxLength) {
+        System.out.println(text);
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        for (int i = 2; i < Math.min(stackTrace.length, maxLength); i++) {
+            System.out.println((i - 1) + ".\t" + stackTrace[i].toString());
         }
     }
 }

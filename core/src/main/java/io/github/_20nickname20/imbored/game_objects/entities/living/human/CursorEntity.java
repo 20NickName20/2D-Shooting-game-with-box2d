@@ -8,6 +8,7 @@ public abstract class CursorEntity extends HumanEntity {
 
     protected float cursorDistance = 0;
     private final Vector2 cursorDirection = new Vector2(0, 1);
+    private final Vector2 targetDirection = new Vector2(0, 1);
 
     public CursorEntity(GameWorld world, float x, float y) {
         super(world, x, y);
@@ -15,6 +16,18 @@ public abstract class CursorEntity extends HumanEntity {
 
     public CursorEntity(GameWorld world, EntityData data) {
         super(world, data);
+    }
+
+    @Override
+    public void update(float dt) {
+        super.update(dt);
+
+        this.addCursorDirection(targetDirection.cpy().scl(dt * 20f));
+    }
+
+    public void setTarget(Vector2 vector2) {
+        targetDirection.set(vector2);
+        targetDirection.nor();
     }
 
     public float getCursorDistance() {
