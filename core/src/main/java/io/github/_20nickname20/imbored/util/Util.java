@@ -2,12 +2,9 @@ package io.github._20nickname20.imbored.util;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.TimeUtils;
-import io.github._20nickname20.imbored.GameWorld;
-import io.github._20nickname20.imbored.game_objects.entities.DamagableEntity;
 
 import java.util.List;
 

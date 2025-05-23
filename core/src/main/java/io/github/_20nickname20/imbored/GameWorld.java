@@ -154,8 +154,6 @@ public abstract class GameWorld {
         world.setContactFilter(new EntityContactFilter());
     }
 
-    private final Set<PlayerEntity> players = new HashSet<>();
-
     public Body anyStaticBody;
 
     public void spawn(Entity entity) {
@@ -164,9 +162,6 @@ public abstract class GameWorld {
         }
         if (entity.b != null) return;
         if (entity.isRemoved()) return;
-        if (entity instanceof PlayerEntity player) {
-            players.add(player);
-        }
         entitiesToSpawn.add(entity);
     }
 

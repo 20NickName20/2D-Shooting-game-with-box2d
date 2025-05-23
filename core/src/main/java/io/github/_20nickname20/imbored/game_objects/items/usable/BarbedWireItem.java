@@ -7,7 +7,6 @@ import io.github._20nickname20.imbored.game_objects.entities.living.human.Cursor
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.game_objects.items.UsableItem;
 import io.github._20nickname20.imbored.render.GameRenderer;
-import io.github._20nickname20.imbored.util.With;
 
 public class BarbedWireItem extends UsableItem {
 

@@ -13,7 +13,6 @@ import io.github._20nickname20.imbored.game_objects.Item;
 import io.github._20nickname20.imbored.render.GameRenderer;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.render.BarDisplay;
-import io.github._20nickname20.imbored.util.With;
 
 import java.util.ArrayList;
 import java.util.List;

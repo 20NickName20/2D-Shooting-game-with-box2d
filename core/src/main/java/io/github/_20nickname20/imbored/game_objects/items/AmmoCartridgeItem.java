@@ -5,7 +5,6 @@ import io.github._20nickname20.imbored.game_objects.Item;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.render.BarDisplay;
 import io.github._20nickname20.imbored.render.GameRenderer;
-import io.github._20nickname20.imbored.util.With;
 
 public abstract class AmmoCartridgeItem extends Item {
     public int ammo;

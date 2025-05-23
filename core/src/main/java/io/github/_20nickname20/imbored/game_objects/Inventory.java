@@ -1,12 +1,12 @@
 package io.github._20nickname20.imbored.game_objects;
 
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import io.github._20nickname20.imbored.game_objects.entities.InventoryHolder;
 import io.github._20nickname20.imbored.render.GameRenderer;
 
-import java.util.*;
-
-import static io.github._20nickname20.imbored.util.With.translation;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class Inventory {
     private float sizeLimit;

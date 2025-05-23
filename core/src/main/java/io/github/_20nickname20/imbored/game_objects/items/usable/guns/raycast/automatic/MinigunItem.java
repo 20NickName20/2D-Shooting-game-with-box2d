@@ -9,7 +9,6 @@ import io.github._20nickname20.imbored.game_objects.items.ammo.AutomaticRifleCar
 import io.github._20nickname20.imbored.game_objects.items.usable.guns.raycast.AutomaticRaycastGunItem;
 import io.github._20nickname20.imbored.render.BarDisplay;
 import io.github._20nickname20.imbored.render.GameRenderer;
-import io.github._20nickname20.imbored.util.With;
 
 public class MinigunItem extends AutomaticRaycastGunItem {
     private static final float SIZE = 3.5f;

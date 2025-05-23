@@ -6,8 +6,6 @@ import io.github._20nickname20.imbored.render.GameRenderer;
 import io.github._20nickname20.imbored.util.Shapes;
 import io.github._20nickname20.imbored.game_objects.entities.BlockEntity;
 
-import static io.github._20nickname20.imbored.util.With.rotation;
-
 public abstract class BoxEntity extends BlockEntity {
     private final float sizeX, sizeY;
 

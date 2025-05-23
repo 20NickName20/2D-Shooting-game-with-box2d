@@ -1,7 +1,6 @@
 package io.github._20nickname20.imbored.util;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import io.github._20nickname20.imbored.render.GameRenderer;
 

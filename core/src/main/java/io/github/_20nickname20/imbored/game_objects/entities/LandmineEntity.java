@@ -9,7 +9,6 @@ import io.github._20nickname20.imbored.game_objects.Material;
 import io.github._20nickname20.imbored.render.GameRenderer;
 import io.github._20nickname20.imbored.util.Shapes;
 import io.github._20nickname20.imbored.util.Util;
-import io.github._20nickname20.imbored.util.With;
 
 import java.util.HashMap;
 

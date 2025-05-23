@@ -18,7 +18,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github._20nickname20.imbored.ControlsProfile;
 import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.Main;
-import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.world.ClientWorld;
 import io.github._20nickname20.imbored.world.ServerWorld;
@@ -89,6 +88,7 @@ public class MainMenuScreen extends ScreenAdapter {
                         this.text = originalText + ".".repeat(i % 4);
                         this.addColor(0, 0, -0.06f);
                         try {
+                            //noinspection BusyWait
                             Thread.sleep(200);
                         } catch (InterruptedException ignored) {
 

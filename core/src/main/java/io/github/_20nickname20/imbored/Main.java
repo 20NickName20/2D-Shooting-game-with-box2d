@@ -6,9 +6,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.utils.TimeUtils;
 import io.github._20nickname20.imbored.screens.MainMenuScreen;
 
-import static io.github._20nickname20.imbored.util.Util.fixBleeding;
-import static io.github._20nickname20.imbored.util.Util.printStackTrace;
-
 public class Main extends Game {
     public static long startTime;
     public static final String SAVE_ROOT = "korobo4ki/";
