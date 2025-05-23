@@ -121,4 +121,12 @@ public class Util {
             System.out.println((i - 1) + ".\t" + stackTrace[i].toString());
         }
     }
+
+    public static <T> T listGetOrDefault(List<? extends T> list, int index, T defaultValue) {
+        try {
+            return list.get(index);
+        } catch (IndexOutOfBoundsException e) {
+            return defaultValue;
+        }
+    }
 }

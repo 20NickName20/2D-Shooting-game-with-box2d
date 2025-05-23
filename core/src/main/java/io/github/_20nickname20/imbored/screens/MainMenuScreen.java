@@ -19,6 +19,7 @@ import io.github._20nickname20.imbored.ControlsProfile;
 import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.Main;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.world.ClientWorld;
 import io.github._20nickname20.imbored.world.ServerWorld;
 
@@ -126,14 +127,6 @@ public class MainMenuScreen extends ScreenAdapter {
         }
     }
 
-    <T> T listGetOrDefault(List<? extends T> list, int index, T defaultValue) {
-        try {
-            return list.get(index);
-        } catch (IndexOutOfBoundsException e) {
-            return defaultValue;
-        }
-    }
-
     void refreshProfiles() {
         selectedProfile = 0;
 
@@ -144,12 +137,12 @@ public class MainMenuScreen extends ScreenAdapter {
             profileNames.addAll(Arrays.asList(names));
         }
 
-        profiles.add(new ControlsProfile.Keyboard(listGetOrDefault(profileNames, 0, "Игрок0")));
+        profiles.add(new ControlsProfile.Keyboard(Util.listGetOrDefault(profileNames, 0, "Игрок0")));
         int i = 0;
         for (Controller controller : Controllers.getControllers()) {
             if (controller.getName().contains("Joy-Con")) continue;
             i++;
-            profiles.add(new ControlsProfile.Gamepad(listGetOrDefault(profileNames, i, "Игрок" + i), controller));
+            profiles.add(new ControlsProfile.Gamepad(Util.listGetOrDefault(profileNames, i, "Игрок" + i), controller));
         }
     }
 
@@ -310,7 +303,7 @@ public class MainMenuScreen extends ScreenAdapter {
             font.draw(batch, profiles.get(i).getText(), 9.5f, 5f - i * 0.8f);
         }
         font.setColor(Color.BLACK);
-        if (selectedProfile > -1) {
+        if (!profiles.isEmpty()) {
             font.draw(batch, "Ник:", 9.2f, 5.32f - selectedProfile * 0.8f);
         } else {
             font.setColor(0.3f, 0.05f, 0.3f, 1f);
