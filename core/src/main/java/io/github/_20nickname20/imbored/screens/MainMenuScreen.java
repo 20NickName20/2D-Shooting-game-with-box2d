@@ -21,6 +21,8 @@ import io.github._20nickname20.imbored.Main;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.world.ClientWorld;
 import io.github._20nickname20.imbored.world.ServerWorld;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -95,6 +97,11 @@ public class MainMenuScreen extends ScreenAdapter {
                         }
                     }
                 }).start();
+//                inputMultiplexer.clear();
+//                Controllers.clearListeners();
+//
+//                game.setScreen(new ConnectionScreen(game, profiles));
+
             }
         },
         new Button("Создать", Color.FOREST) {
