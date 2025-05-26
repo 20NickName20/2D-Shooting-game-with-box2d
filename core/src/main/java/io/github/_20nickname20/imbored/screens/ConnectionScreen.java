@@ -14,7 +14,10 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github._20nickname20.imbored.ControlsProfile;
 import io.github._20nickname20.imbored.Main;
+import io.github._20nickname20.imbored.net.Network;
+import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.world.ClientWorld;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -33,7 +36,7 @@ public class ConnectionScreen extends ScreenAdapter {
     private int selectedButton;
 
     String ip = "";
-    boolean isConnecting;
+    boolean invalidIp;
 
     List<ControlsProfile> profiles;
 
@@ -147,7 +150,7 @@ public class ConnectionScreen extends ScreenAdapter {
                 if (keycode == Input.Keys.ENTER) {
                     if (ip.isEmpty()) {
                         new Thread(() -> {
-                            isConnecting = true;
+                            invalidIp = true;
                             ClientWorld attemptClientWorld = new ClientWorld(profiles);
 
                             if (!attemptClientWorld.hostNotFound) {
@@ -155,22 +158,25 @@ public class ConnectionScreen extends ScreenAdapter {
                             }
                         }).start();
 
-                    } else {
+                    } else if (Network.isValidIPv4(ip)) {
                         new Thread(() -> {
                             try {
-                                byte[] ipBytes = InetAddress.getByName(ip).getAddress();
-                                ClientWorld attemptClientWorld = new ClientWorld(profiles, ipBytes);
+                                InetAddress ipAddress = InetAddress.getByName(ip);
+                                ClientWorld attemptClientWorld = new ClientWorld(profiles, ipAddress);
                                 if (!attemptClientWorld.hostNotFound) {
                                     clientWorld = attemptClientWorld;
                                 }
                             } catch (UnknownHostException e) {
+                                ip = "";
                                 batch.begin();
                                 font.setColor(Color.BLACK);
-                                font.draw(batch, "Error", 7, 4);
+                                font.draw(batch, "Something went wrong", 7, 4);
                                 batch.end();
                             }
                         }).start();
-
+                    } else {
+                        invalidIp = true;
+                        invalidIpTime = Util.time();
                     }
                 }
 
@@ -179,7 +185,7 @@ public class ConnectionScreen extends ScreenAdapter {
                     ip = ip.substring(0, ip.length() - 1);
                 }
 
-                if (keycode == Input.Keys.ESCAPE){
+                if (keycode == Input.Keys.ESCAPE) {
                     game.setScreen(new MainMenuScreen(game));
                 }
 
@@ -222,7 +228,7 @@ public class ConnectionScreen extends ScreenAdapter {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/PressStart2P-Regular.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.characters += "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
-        parameter.size = 32;
+        parameter.size = 27;
         font = generator.generateFont(parameter);
         generator.dispose();
 
@@ -245,6 +251,8 @@ public class ConnectionScreen extends ScreenAdapter {
         Controllers.addListener(listener);
     }
 
+    private float invalidIpTime;
+
     @Override
     public void render(float dt) {
         ScreenUtils.clear(new Color(1f, 1f, 1f, 1));
@@ -255,6 +263,8 @@ public class ConnectionScreen extends ScreenAdapter {
         font.setColor(Color.BLACK);
         font.draw(batch, "Введите ip: ", 7, 8);
         font.draw(batch, ip, 7, 7);
+        font.draw(batch, "Чтобы присоединиться к локальному хосту то оставьте поле пустым", 0.25f, 3);
+        font.draw(batch, "Нажмите Enter чтобы присоединиться", 4, 2);
 
         for (int i = 0; i < buttons.size(); i++) {
             String text = buttons.get(i).text;
@@ -265,9 +275,18 @@ public class ConnectionScreen extends ScreenAdapter {
             }
             font.draw(batch, text, 0.5f + i * 1.5f, 5f);
         }
+
+        if (Util.time() - invalidIpTime < 5 && invalidIp) {
+            font.setColor(Color.RED);
+            font.draw(batch, "Wrong ip", 7, 4);
+        } else {
+            invalidIp = false;
+        }
+
+
         batch.end();
 
-        if (clientWorld != null){
+        if (clientWorld != null) {
             game.setScreen(new GameScreen(game, clientWorld));
         }
     }
@@ -287,4 +306,6 @@ public class ConnectionScreen extends ScreenAdapter {
         batch.dispose();
         font.dispose();
     }
+
+
 }

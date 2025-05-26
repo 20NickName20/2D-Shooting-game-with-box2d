@@ -31,13 +31,11 @@ public class ClientWorld extends GameWorld {
     HashMap<UUID, NetworkPlayerController> networkControllers = new HashMap<>();
     HashMap<String, ControlsProfile> controlsProfiles = new HashMap<>();
 
-    public ClientWorld(List<ControlsProfile> profiles, byte[] ip) {
+    public ClientWorld(List<ControlsProfile> profiles, InetAddress ipAddress) {
         try {
             client = new Client(8192, 8192 * 2);
             client.start();
             Network.register(client);
-
-            InetAddress publicAddress = InetAddress.getByAddress(ip);
 
             client.addListener(new Listener() {
                 @Override
@@ -66,7 +64,12 @@ public class ClientWorld extends GameWorld {
                 }
             });
 
-            client.connect(5000, publicAddress, Network.tcpPort, Network.udpPort);
+            if (ipAddress == null) {
+                hostNotFound = true;
+                return;
+            }
+
+            client.connect(5000, ipAddress, Network.tcpPort, Network.udpPort);
 
             for (ControlsProfile profile : profiles) {
                 controlsProfiles.put(profile.username, profile);
@@ -87,7 +90,7 @@ public class ClientWorld extends GameWorld {
             client.start();
             Network.register(client);
 
-            InetAddress localAddress = client.discoverHost(Network.udpPort, 5000);
+            InetAddress ipAddress = client.discoverHost(Network.udpPort, 5000);
 
             client.addListener(new Listener() {
                 @Override
@@ -116,11 +119,11 @@ public class ClientWorld extends GameWorld {
                 }
             });
 
-            if (localAddress == null) {
+            if (ipAddress == null) {
                 hostNotFound = true;
                 return;
             }
-            client.connect(5000, localAddress, Network.tcpPort, Network.udpPort);
+            client.connect(5000, ipAddress, Network.tcpPort, Network.udpPort);
 
             for (ControlsProfile profile : profiles) {
                 controlsProfiles.put(profile.username, profile);

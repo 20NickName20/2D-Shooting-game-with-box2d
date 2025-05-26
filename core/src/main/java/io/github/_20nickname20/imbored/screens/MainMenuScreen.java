@@ -48,6 +48,19 @@ public class MainMenuScreen extends ScreenAdapter {
         new Button("Присоедениться", Color.GREEN) {
             @Override
             public void onUse() {
+                if (profiles.isEmpty()) {
+                    this.text = "Нет игроков! Нажмите DELETE";
+                    this.setColor(Color.RED);
+                    return;
+                }
+                for (ControlsProfile profile : profiles) {
+                    if (profile.username.length() < 4) {
+                        this.text = "Слишком короткий ник!";
+                        this.setColor(Color.RED);
+                        return;
+                    }
+                }
+
                 inputMultiplexer.clear();
                 Controllers.clearListeners();
 

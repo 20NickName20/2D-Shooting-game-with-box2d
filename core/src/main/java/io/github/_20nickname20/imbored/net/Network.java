@@ -95,4 +95,22 @@ public class Network {
     public static class RequestChunk {
         public int position;
     }
+
+    public static boolean isValidIPv4(String ip) {
+        String[] parts = ip.split("\\.");
+        if (parts.length != 4) {
+            return false;
+        }
+        try {
+            for (String part : parts) {
+                int num = Integer.parseInt(part);
+                if (num < 0 || num > 255 || (part.startsWith("0") && part.length() > 1)) {
+                    return false;
+                }
+            }
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
 }
