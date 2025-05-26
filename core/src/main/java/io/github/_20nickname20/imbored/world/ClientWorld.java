@@ -31,12 +31,13 @@ public class ClientWorld extends GameWorld {
     HashMap<UUID, NetworkPlayerController> networkControllers = new HashMap<>();
     HashMap<String, ControlsProfile> controlsProfiles = new HashMap<>();
 
-    public ClientWorld(List<ControlsProfile> profiles) {
+    public ClientWorld(List<ControlsProfile> profiles, byte[] ip) {
         try {
             client = new Client(8192, 8192 * 2);
             client.start();
             Network.register(client);
-            InetAddress address = client.discoverHost(Network.udpPort, 5000);
+
+            InetAddress publicAddress = InetAddress.getByAddress(ip);
 
             client.addListener(new Listener() {
                 @Override
@@ -65,11 +66,7 @@ public class ClientWorld extends GameWorld {
                 }
             });
 
-            if (address == null) {
-                hostNotFound = true;
-                return;
-            }
-            client.connect(5000, address, Network.tcpPort, Network.udpPort);
+            client.connect(5000, publicAddress, Network.tcpPort, Network.udpPort);
 
             for (ControlsProfile profile : profiles) {
                 controlsProfiles.put(profile.username, profile);
@@ -83,6 +80,63 @@ public class ClientWorld extends GameWorld {
             e.printStackTrace();
         }
     }
+
+    public ClientWorld(List<ControlsProfile> profiles) {
+        try {
+            client = new Client(8192, 8192 * 2);
+            client.start();
+            Network.register(client);
+
+            InetAddress localAddress = client.discoverHost(Network.udpPort, 5000);
+
+            client.addListener(new Listener() {
+                @Override
+                public void received(Connection connection, Object object) {
+                    if (object instanceof Network.LoadChunk loadChunk) {
+                        synchronizedReceive.addLast(loadChunk);
+                    }
+
+                    if (object instanceof Network.LoginResponse loginResponse) {
+                        synchronizedReceive.addLast(loginResponse);
+                    }
+
+                    if (object instanceof Network.ControlsPacket controlsPacket) {
+                        UUID uuid = UUID.fromString(controlsPacket.uuid);
+                        if (!networkControllers.containsKey(uuid)) {
+                            if (!(Entity.getByUuid(uuid) instanceof PlayerEntity player)) {
+                                throw new RuntimeException("control packet uuid is not player!");
+                            }
+                            NetworkPlayerController newController = new NetworkPlayerController();
+                            newController.register(player);
+                            networkControllers.put(player.uuid, newController);
+                        }
+                        NetworkPlayerController controller = networkControllers.get(uuid);
+                        controller.receive(controlsPacket);
+                    }
+                }
+            });
+
+            if (localAddress == null) {
+                hostNotFound = true;
+                return;
+            }
+            client.connect(5000, localAddress, Network.tcpPort, Network.udpPort);
+
+            for (ControlsProfile profile : profiles) {
+                controlsProfiles.put(profile.username, profile);
+
+                Network.Login login = new Network.Login();
+                login.username = profile.username;
+
+                client.sendTCP(login);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
     @Override
     public void shootRay(Body ignored, Vector2 position, float angleRad, float range, float power, float damage, float rayLength, float raySpeed, Color rayColor, float penetrateAmount) {

@@ -21,9 +21,6 @@ import io.github._20nickname20.imbored.Main;
 import io.github._20nickname20.imbored.util.Util;
 import io.github._20nickname20.imbored.world.ClientWorld;
 import io.github._20nickname20.imbored.world.ServerWorld;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.*;
 
 import static io.github._20nickname20.imbored.Main.inputMultiplexer;
@@ -51,56 +48,10 @@ public class MainMenuScreen extends ScreenAdapter {
         new Button("Присоедениться", Color.GREEN) {
             @Override
             public void onUse() {
-                if (profiles.isEmpty()) {
-                    this.text = "Нет игроков! Нажмите DELETE";
-                    this.setColor(Color.RED);
-                    return;
-                }
-                for (ControlsProfile profile : profiles) {
-                    if (profile.username.length() < 4) {
-                        this.text = "Слишком короткий ник!";
-                        this.setColor(Color.RED);
-                        return;
-                    }
-                }
-                if (isConnecting) {
-                    return;
-                }
-                this.text = "Подключение";
-                this.setColor(Color.BLUE);
+                inputMultiplexer.clear();
+                Controllers.clearListeners();
 
-                new Thread(() -> {
-                    isConnecting = true;
-                    ClientWorld attemptClientWorld = new ClientWorld(profiles);
-
-                    if (!attemptClientWorld.hostNotFound) {
-                        clientWorld = attemptClientWorld;
-                    } else {
-                        this.text = "Не удалось подключиться";
-                        this.setColor(Color.RED);
-                        isConnecting = false;
-                    }
-                }).start();
-
-                String originalText = this.text;
-                new Thread(() -> {
-                    int i = 0;
-                    while (isConnecting) {
-                        i++;
-                        this.text = originalText + ".".repeat(i % 4);
-                        this.addColor(0, 0, -0.06f);
-                        try {
-                            //noinspection BusyWait
-                            Thread.sleep(200);
-                        } catch (InterruptedException ignored) {
-
-                        }
-                    }
-                }).start();
-//                inputMultiplexer.clear();
-//                Controllers.clearListeners();
-//
-//                game.setScreen(new ConnectionScreen(game, profiles));
+                game.setScreen(new ConnectionScreen(game, profiles));
 
             }
         },

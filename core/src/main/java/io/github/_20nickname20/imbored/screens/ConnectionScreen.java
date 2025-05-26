@@ -14,7 +14,9 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github._20nickname20.imbored.ControlsProfile;
 import io.github._20nickname20.imbored.Main;
-
+import io.github._20nickname20.imbored.world.ClientWorld;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Set;
 
@@ -30,9 +32,12 @@ public class ConnectionScreen extends ScreenAdapter {
 
     private int selectedButton;
 
-    String ip = "127.0.0.1";
+    String ip = "";
+    boolean isConnecting;
 
     List<ControlsProfile> profiles;
+
+    ClientWorld clientWorld = null;
 
     List<Button> buttons = List.of(
         new Button("1", Color.GREEN) {
@@ -128,7 +133,7 @@ public class ConnectionScreen extends ScreenAdapter {
                 return false;
             }
 
-            private final Set<Integer> continueKeys = Set.of(Input.Keys.SPACE, Input.Keys.ENTER);
+            private final Set<Integer> continueKeys = Set.of(Input.Keys.SPACE);
 
             @Override
             public boolean keyDown(int keycode) {
@@ -139,9 +144,43 @@ public class ConnectionScreen extends ScreenAdapter {
                     return false;
                 }
 
+                if (keycode == Input.Keys.ENTER) {
+                    if (ip.isEmpty()) {
+                        new Thread(() -> {
+                            isConnecting = true;
+                            ClientWorld attemptClientWorld = new ClientWorld(profiles);
+
+                            if (!attemptClientWorld.hostNotFound) {
+                                clientWorld = attemptClientWorld;
+                            }
+                        }).start();
+
+                    } else {
+                        new Thread(() -> {
+                            try {
+                                byte[] ipBytes = InetAddress.getByName(ip).getAddress();
+                                ClientWorld attemptClientWorld = new ClientWorld(profiles, ipBytes);
+                                if (!attemptClientWorld.hostNotFound) {
+                                    clientWorld = attemptClientWorld;
+                                }
+                            } catch (UnknownHostException e) {
+                                batch.begin();
+                                font.setColor(Color.BLACK);
+                                font.draw(batch, "Error", 7, 4);
+                                batch.end();
+                            }
+                        }).start();
+
+                    }
+                }
+
                 if (keycode == Input.Keys.BACKSPACE) {
                     if (ip.isEmpty()) return false;
                     ip = ip.substring(0, ip.length() - 1);
+                }
+
+                if (keycode == Input.Keys.ESCAPE){
+                    game.setScreen(new MainMenuScreen(game));
                 }
 
                 if (keycode == Input.Keys.DOWN) {
@@ -214,7 +253,7 @@ public class ConnectionScreen extends ScreenAdapter {
 
         batch.begin();
         font.setColor(Color.BLACK);
-        font.draw(batch, "LSAdasda", 7, 8);
+        font.draw(batch, "Введите ip: ", 7, 8);
         font.draw(batch, ip, 7, 7);
 
         for (int i = 0; i < buttons.size(); i++) {
@@ -227,12 +266,17 @@ public class ConnectionScreen extends ScreenAdapter {
             font.draw(batch, text, 0.5f + i * 1.5f, 5f);
         }
         batch.end();
+
+        if (clientWorld != null){
+            game.setScreen(new GameScreen(game, clientWorld));
+        }
     }
 
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
     }
+
     @Override
     public void hide() {
         dispose();
@@ -242,12 +286,5 @@ public class ConnectionScreen extends ScreenAdapter {
     public void dispose() {
         batch.dispose();
         font.dispose();
-
-        String[] names = new String[profiles.size()];
-        int i = 0;
-        for (ControlsProfile profile : profiles) {
-            names[i] = profile.username;
-            i++;
-        }
     }
 }
