@@ -2,20 +2,21 @@ package io.github._20nickname20.imbored.game_objects.entities.container;
 
 import com.badlogic.gdx.math.MathUtils;
 import io.github._20nickname20.imbored.GameWorld;
+import io.github._20nickname20.imbored.game_objects.entities.ContainerEntity;
 import io.github._20nickname20.imbored.render.GameRenderer;
 import io.github._20nickname20.imbored.util.Shapes;
 
-public abstract class CrateEntity extends InteractableContainerEntity {
-    private final float sizeX, sizeY;
-    public CrateEntity(GameWorld world, float x, float y, float sizeX, float sizeY, float inventorySize) {
+public abstract class LockedCrateEntity extends ContainerEntity {
+    protected final float sizeX, sizeY;
+    public LockedCrateEntity(GameWorld world, float x, float y, float sizeX, float sizeY, float inventorySize) {
         super(world, x, y, Shapes.boxShape(sizeX, sizeY), inventorySize);
         this.sizeX = sizeX;
         this.sizeY = sizeY;
     }
 
-    public CrateEntity(GameWorld world, EntityData data) {
+    public LockedCrateEntity(GameWorld world, EntityData data) {
         super(world, data);
-        if (data instanceof CrateEntityData crateEntityData) {
+        if (data instanceof CrateEntity.CrateEntityData crateEntityData) {
             sizeX = crateEntityData.sizeX;
             sizeY = crateEntityData.sizeY;
         } else {
@@ -40,19 +41,15 @@ public abstract class CrateEntity extends InteractableContainerEntity {
 
     @Override
     public EntityData createPersistentData() {
-        CrateEntityData crateEntityData;
+        CrateEntity.CrateEntityData crateEntityData;
         if (this.persistentData == null) {
-            crateEntityData = new CrateEntityData();
+            crateEntityData = new CrateEntity.CrateEntityData();
         } else {
-            crateEntityData = (CrateEntityData) this.persistentData;
+            crateEntityData = (CrateEntity.CrateEntityData) this.persistentData;
         }
         crateEntityData.sizeX = sizeX;
         crateEntityData.sizeY = sizeY;
         this.persistentData = crateEntityData;
         return super.createPersistentData();
-    }
-
-    public static class CrateEntityData extends ContainerEntityData {
-        float sizeX, sizeY;
     }
 }

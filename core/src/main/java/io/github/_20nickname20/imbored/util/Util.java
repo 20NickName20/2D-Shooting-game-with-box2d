@@ -7,6 +7,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static io.github._20nickname20.imbored.Main.startTime;
@@ -14,6 +16,10 @@ import static io.github._20nickname20.imbored.Main.startTime;
 public class Util {
     public static float time() {
         return (float) TimeUtils.timeSinceMillis(startTime) / 1000f;
+    }
+
+    public static float timeSince(float time) {
+        return time() - time;
     }
 
     public static void fixBleeding(TextureRegion[][] regions) {
@@ -126,4 +132,21 @@ public class Util {
             return defaultValue;
         }
     }
+
+    public static <E> E getWeightedRandom(Map<E, Double> weights, Random random) {
+        E result = null;
+        double bestValue = Double.MAX_VALUE;
+
+        for (E element : weights.keySet()) {
+            double value = -Math.log(random.nextDouble()) / weights.get(element);
+
+            if (value < bestValue) {
+                bestValue = value;
+                result = element;
+            }
+        }
+
+        return result;
+    }
+
 }

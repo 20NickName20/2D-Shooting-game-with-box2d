@@ -24,6 +24,7 @@ import io.github._20nickname20.imbored.net.wrappers.ServerPlayerWrapper;
 
 import java.io.Console;
 import java.io.IOException;
+import java.nio.channels.ClosedSelectorException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -100,6 +101,13 @@ public class ServerWorld extends GameWorld {
             });
 
             server.bind(Network.tcpPort, Network.udpPort);
+            server.getUpdateThread().setUncaughtExceptionHandler((thread, e) -> {
+                if (e instanceof ClosedSelectorException) {
+                    System.out.println("server thread closed");
+                } else {
+                    e.printStackTrace();
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }

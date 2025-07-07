@@ -280,10 +280,9 @@ public class MainMenuScreen extends ScreenAdapter {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.ENTER) || Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            holdTime += 10 * dt;
-        } else {
-            holdTime -= dt * 7.5f;
+            holdTime = 10;
         }
+        holdTime -= dt * 7.5f;
         holdTime = MathUtils.clamp(holdTime, 0f, 1f);
 
         for (int i = profiles.size() - 1; i >= 0; i--) {

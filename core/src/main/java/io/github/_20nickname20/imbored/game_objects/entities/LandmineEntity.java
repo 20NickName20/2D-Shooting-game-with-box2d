@@ -11,6 +11,9 @@ import io.github._20nickname20.imbored.util.Shapes;
 import io.github._20nickname20.imbored.util.Util;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class LandmineEntity extends DamagableEntity {
     private final static float POWER = 15;
@@ -34,17 +37,29 @@ public class LandmineEntity extends DamagableEntity {
         return 30f;
     }
 
-    private final HashMap<Entity, Float> touchTimes = new HashMap<>();
+    private final Map<Entity, Float> touchTimes = new HashMap<>();
+    private final Set<Body> contactingOnTop = new HashSet<>();
+
+    @Override
+    public void beginContact(Body other) {
+        super.beginContact(other);
+
+        if (other.getPosition().y > this.b.getPosition().y) {
+            contactingOnTop.add(other);
+        }
+    }
 
     @Override
     public void endContact(Body other) {
         super.endContact(other);
 
+        contactingOnTop.remove(other);
+
         if (!(other.getUserData() instanceof Entity otherEntity)) return;
         float timePassed = Util.time() - touchTimes.getOrDefault(otherEntity, Util.time());
         touchTimes.put(otherEntity, timePassed);
         if (other.getPosition().y > this.b.getPosition().y) {
-            if (timePassed > 0.06f) {
+            if (timePassed > 0.06f && contactingOnTop.isEmpty()) {
                 gameWorld.explode(this.b, this.b.getPosition(), (float) (Math.PI / 12), RANGE, POWER, DAMAGE, 50, 25, Color.ORANGE, 1);
                 this.remove();
             }
@@ -54,7 +69,7 @@ public class LandmineEntity extends DamagableEntity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        gameWorld.explode(this.b, this.b.getPosition(), (float) (Math.PI / 12), RANGE, POWER, DAMAGE, 50, 25, Color.ORANGE, 1);
+        gameWorld.explode(this.b, this.b.getPosition(), (float) (Math.PI / 12), RANGE, POWER, DAMAGE / 2f, 50, 25, Color.ORANGE, 1);
     }
 
     @Override
