@@ -18,7 +18,6 @@ import io.github._20nickname20.imbored.handlers.EntityContactFilter;
 import io.github._20nickname20.imbored.handlers.EntityContactListener;
 import io.github._20nickname20.imbored.render.GameRenderer;
 import io.github._20nickname20.imbored.screens.GameScreen;
-import io.github._20nickname20.imbored.util.Constants;
 import io.github._20nickname20.imbored.util.Ray;
 import io.github._20nickname20.imbored.util.Raycast;
 import io.github._20nickname20.imbored.util.Util;
@@ -28,6 +27,13 @@ import java.util.*;
 
 public abstract class GameWorld {
     public final World world;
+
+    public static final float TIME_STEP = 1f / 100;
+    public static final int VELOCITY_ITERATIONS = 6;
+    public static final int POSITION_ITERATIONS = 2;
+    public static final float SIMULATION_SPEED = 1.65f;
+
+    public static final float ACCELERATION_OF_GRAVITY = 15f;
 
     protected final Map<Integer, Chunk> loadedChunks = new HashMap<>();
     protected final Map<Integer, Set<Entity>> entitiesByChunk = new HashMap<>();
@@ -149,7 +155,7 @@ public abstract class GameWorld {
     private final Set<Joint> jointsToRemove = new HashSet<>();
 
     public GameWorld() {
-        world = new World(new Vector2(0, -Constants.ACCELERATION_OF_GRAVITY), true);
+        world = new World(new Vector2(0, -ACCELERATION_OF_GRAVITY), true);
         world.setContactListener(new EntityContactListener());
         world.setContactFilter(new EntityContactFilter());
     }
@@ -180,9 +186,6 @@ public abstract class GameWorld {
         jointsToRemove.add(joint);
     }
 
-    private float accumulator = 0;
-    private int step = 0;
-
     private void processRemoval(Entity entity) {
         entity.b.setUserData(null);
         for (JointEdge jointEdge : entity.b.getJointList()) {
@@ -199,67 +202,60 @@ public abstract class GameWorld {
 
     public Vector2 playerCenter = new Vector2();
 
-    private void doPhysicsStep(float dt) {
+    protected void tick() {
         int cameraChunkPos = getChunkPosition(camera.position.x);
 
-        float frameTime = Math.min(dt, 0.25f);
-        accumulator += frameTime;
-        while (accumulator >= Constants.TIME_STEP) {
-            if (!isFrozen) {
-                world.step(Constants.TIME_STEP, Constants.VELOCITY_ITERATIONS, Constants.POSITION_ITERATIONS);
-            }
-            accumulator -= Constants.TIME_STEP;
-            step++;
-            if (step < Constants.UPDATES_LATENCY) continue;
-            step = 0;
-            world.getBodies(bodies);
-            playerCenter.setZero();
-            float playerCount = 0;
-            for (Set<Entity> set : entitiesByChunk.values()) {
-                set.clear();
-            }
-            for (Body body : bodies) {
-                if (!(body.getUserData() instanceof Entity entity)) continue;
-
-                if (body.getType() == BodyDef.BodyType.StaticBody) {
-                    anyStaticBody = body;
-                }
-
-                if (body.getPosition().y > 300) {
-                    body.applyLinearImpulse(new Vector2(0, -100), body.getPosition(), true);
-                }
-
-                if (localPlayers.contains(entity.uuid)) {
-                    playerCenter.add(entity.b.getPosition());
-                    playerCount += 1;
-                }
-
-                entity.chunkPos = Math.round(entity.b.getPosition().x / CHUNK_WIDTH);
-                Set<Entity> entitiesInChunk = entitiesByChunk.computeIfAbsent(entity.chunkPos, k -> new HashSet<>());
-                entitiesInChunk.add(entity);
-
-
-                if (!isFrozen) {
-                    entity.update(Constants.TIME_STEP * Constants.UPDATES_LATENCY);
-                }
-                for (Joint joint : jointsToRemove) {
-                    world.destroyJoint(joint);
-                }
-                jointsToRemove.clear();
-
-                if (entity instanceof PlayerEntity player) {
-                    ServerWorld.PlayerData playerData = playersByUsername.get(player.username);
-                    if (playerData != null) {
-                        playerData.chunk = entity.chunkPos;
-                    }
-                }
-
-                if (entity.isRemoved()) {
-                    processRemoval(entity);
-                }
-            }
-            playerCenter.scl(1f / playerCount);
+        if (!isFrozen) {
+            world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
         }
+        accumulator -= TIME_STEP;
+        world.getBodies(bodies);
+        playerCenter.setZero();
+        float playerCount = 0;
+        for (Set<Entity> set : entitiesByChunk.values()) {
+            set.clear();
+        }
+        for (Body body : bodies) {
+            if (!(body.getUserData() instanceof Entity entity)) continue;
+
+            if (body.getType() == BodyDef.BodyType.StaticBody) {
+                anyStaticBody = body;
+            }
+
+            if (body.getPosition().y > 300) {
+                body.applyLinearImpulse(new Vector2(0, -100), body.getPosition(), true);
+            }
+
+            if (localPlayers.contains(entity.uuid)) {
+                playerCenter.add(entity.b.getPosition());
+                playerCount += 1;
+            }
+
+            entity.chunkPos = Math.round(entity.b.getPosition().x / CHUNK_WIDTH);
+            Set<Entity> entitiesInChunk = entitiesByChunk.computeIfAbsent(entity.chunkPos, k -> new HashSet<>());
+            entitiesInChunk.add(entity);
+
+
+            if (!isFrozen) {
+                entity.update(TIME_STEP);
+            }
+            for (Joint joint : jointsToRemove) {
+                world.destroyJoint(joint);
+            }
+            jointsToRemove.clear();
+
+            if (entity instanceof PlayerEntity player) {
+                ServerWorld.PlayerData playerData = playersByUsername.get(player.username);
+                if (playerData != null) {
+                    playerData.chunk = entity.chunkPos;
+                }
+            }
+
+            if (entity.isRemoved()) {
+                processRemoval(entity);
+            }
+        }
+        playerCenter.scl(1f / playerCount);
 
         for (int i = cameraChunkPos - SIMULATION_DISTANCE; i <= cameraChunkPos + SIMULATION_DISTANCE; i++) {
             loadChunk(i);
@@ -271,12 +267,22 @@ public abstract class GameWorld {
         }
     }
 
+    private float accumulator = 0;
+
+    private final void processTicks(float dt) {
+        float frameTime = Math.min(dt, 0.25f);
+        accumulator += frameTime;
+        while (accumulator >= TIME_STEP) {
+            tick();
+        }
+    }
+
     public boolean cameraFollowsPlayers = true;
     public Vector2 cameraOffset = new Vector2();
 
     private boolean prevCameraState = false;
     public void update(float dt) {
-        doPhysicsStep(dt * Constants.SIMULATION_SPEED);
+        processTicks(dt * SIMULATION_SPEED);
 
         for (Entity entity : entitiesToSpawn) {
             entity.onSpawn(world);

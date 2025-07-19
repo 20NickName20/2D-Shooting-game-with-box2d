@@ -140,7 +140,7 @@ public class MainMenuScreen extends ScreenAdapter {
         profiles.add(new ControlsProfile.Keyboard(Util.listGetOrDefault(profileNames, 0, "Игрок0")));
         int i = 0;
         for (Controller controller : Controllers.getControllers()) {
-            if (controller.getName().contains("Joy-Con")) continue;
+            System.out.println(controller.getName() + " " + controller.getAxisCount());
             i++;
             profiles.add(new ControlsProfile.Gamepad(Util.listGetOrDefault(profileNames, i, "Игрок" + i), controller));
         }
@@ -280,10 +280,9 @@ public class MainMenuScreen extends ScreenAdapter {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.ENTER) || Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            holdTime += 10 * dt;
-        } else {
-            holdTime -= dt * 7.5f;
+            holdTime = 10;
         }
+        holdTime -= dt * 7.5f;
         holdTime = MathUtils.clamp(holdTime, 0f, 1f);
 
         for (int i = profiles.size() - 1; i >= 0; i--) {

@@ -14,12 +14,12 @@ import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import io.github._20nickname20.imbored.game_objects.Entity;
-import io.github._20nickname20.imbored.game_objects.Item;
-import io.github._20nickname20.imbored.game_objects.JointEntity;
-import io.github._20nickname20.imbored.game_objects.Material;
+import io.github._20nickname20.imbored.game_objects.*;
+import io.github._20nickname20.imbored.game_objects.entities.ContainerEntity;
 import io.github._20nickname20.imbored.game_objects.entities.block.SimpleBlockEntity;
+import io.github._20nickname20.imbored.game_objects.entities.container.locked_crate.parachute.AirdropCrate;
 import io.github._20nickname20.imbored.game_objects.entities.statics.GroundEntity;
+import io.github._20nickname20.imbored.game_objects.loot.TestRandomLoot;
 import io.github._20nickname20.imbored.render.GameRenderer;
 import io.github._20nickname20.imbored.util.FindBody;
 import io.github._20nickname20.imbored.util.Util;
@@ -34,6 +34,7 @@ public class AdminTool {
     private static final Material[] materials = {Material.WOOD, Material.CLOTH, Material.ROCK, Material.METAL, Material.GROUND, Material.FLESH};
     private static int materialMode = 0;
     private static FitViewport viewport;
+    public static Random random = new Random();
 
     private static final SpriteBatch batch = new SpriteBatch();
     private static final BitmapFont font;
@@ -242,8 +243,21 @@ public class AdminTool {
         worldMousePosition.set(worldPoint);
     }
 
+    public static LootGenerator testLootGenerator = new TestRandomLoot();
+
     public static void keyPressed(int key) {
         switch (key) {
+            case Input.Keys.A -> {
+                float halfSide = 4.5f;
+                ContainerEntity crate = new AirdropCrate(
+                    world, world.camera.position.x, world.camera.position.y + 30f,
+                    halfSide, halfSide,
+                    random.nextFloat(halfSide * 2f) - halfSide,
+                    random.nextFloat(halfSide * 2f) - halfSide
+                );
+                crate.getInventory().addAll(testLootGenerator.generate(10));
+                crate.spawn();
+            }
             case Input.Keys.F -> world.setFrozen(!world.isFrozen());
             case Input.Keys.R -> mode = Mode.values()[(mode.ordinal() + 1) % Mode.values().length];
             case Input.Keys.M -> materialMode = (materialMode + 1) % materials.length;

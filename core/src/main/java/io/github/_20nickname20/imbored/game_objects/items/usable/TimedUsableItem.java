@@ -20,6 +20,10 @@ public abstract class TimedUsableItem extends UsableItem {
 
     public abstract float getRequiredUseTime();
 
+    protected float getUseProgress() {
+        return useTime / getRequiredUseTime();
+    }
+
     private float useTime = 0;
     private final BarDisplay progressBar = new BarDisplay(new Color(0.2f, 0, 0.7f, 1), new Color(0.9f, 0.6f, 0f, 1), 0, 0.3f);
     private boolean isUsing = false;
@@ -41,11 +45,12 @@ public abstract class TimedUsableItem extends UsableItem {
         super.update(dt);
         if (isUsing) {
             useTime += dt;
-            progressBar.setTargetValue(useTime / getRequiredUseTime());
-        }
-        if (useTime >= getRequiredUseTime()) {
-            onUseFinish(this.getHolder());
-            isUsing = false;
+            progressBar.setTargetValue(getUseProgress());
+
+            if (useTime >= getRequiredUseTime()) {
+                onUseFinish(this.getHolder());
+                isUsing = false;
+            }
         }
         progressBar.update(dt);
     }

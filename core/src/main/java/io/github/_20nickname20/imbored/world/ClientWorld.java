@@ -33,7 +33,7 @@ public class ClientWorld extends GameWorld {
 
     public ClientWorld(List<ControlsProfile> profiles) {
         try {
-            client = new Client(8192, 8192 * 2);
+            client = new Client(8192, 16384);
             client.start();
             Network.register(client);
             InetAddress address = client.discoverHost(Network.udpPort, 5000);
@@ -41,27 +41,7 @@ public class ClientWorld extends GameWorld {
             client.addListener(new Listener() {
                 @Override
                 public void received(Connection connection, Object object) {
-                    if (object instanceof Network.LoadChunk loadChunk) {
-                        synchronizedReceive.addLast(loadChunk);
-                    }
-
-                    if (object instanceof Network.LoginResponse loginResponse) {
-                        synchronizedReceive.addLast(loginResponse);
-                    }
-
-                    if (object instanceof Network.ControlsPacket controlsPacket) {
-                        UUID uuid = UUID.fromString(controlsPacket.uuid);
-                        if (!networkControllers.containsKey(uuid)) {
-                            if (!(Entity.getByUuid(uuid) instanceof PlayerEntity player)) {
-                                throw new RuntimeException("control packet uuid is not player!");
-                            }
-                            NetworkPlayerController newController = new NetworkPlayerController();
-                            newController.register(player);
-                            networkControllers.put(player.uuid, newController);
-                        }
-                        NetworkPlayerController controller = networkControllers.get(uuid);
-                        controller.receive(controlsPacket);
-                    }
+                    synchronizedReceive.addLast(object);
                 }
             });
 
@@ -102,13 +82,19 @@ public class ClientWorld extends GameWorld {
     }
 
     @Override
-    public void update(float dt) {
+    protected void tick() {
+        processPackets();
+        super.tick();
+    }
+
+    private void processPackets() {
         while (!synchronizedReceive.isEmpty()) {
             Object received = synchronizedReceive.removeFirst();
 
             if (received instanceof Network.LoadChunk loadChunk) {
                 receiveChunk(loadChunk.position, loadChunk.chunkData);
             }
+
             if (received instanceof Network.LoginResponse loginResponse) {
                 ControlsProfile profile = controlsProfiles.get(loginResponse.username);
                 if (profile == null) throw new RuntimeException("Server sent the unknown username!");
@@ -123,9 +109,24 @@ public class ClientWorld extends GameWorld {
                 controller.register(wrapper);
                 localControllersByUuid.put(uuid, controller);
             }
-        }
 
-        super.update(dt);
+            if (received instanceof Network.ControlsPacket controlsPacket) {
+                UUID uuid = UUID.fromString(controlsPacket.uuid);
+                if (!networkControllers.containsKey(uuid)) {
+                    Entity entity = Entity.getByUuid(uuid);
+                    if (entity != null) {
+                        if (!(entity instanceof PlayerEntity player)) {
+                            throw new RuntimeException("control packet uuid is not player!");
+                        }
+                        NetworkPlayerController newController = new NetworkPlayerController();
+                        newController.register(player);
+                        networkControllers.put(player.uuid, newController);
+                        NetworkPlayerController controller = networkControllers.get(uuid);
+                        controller.receive(controlsPacket);
+                    }
+                }
+            }
+        }
     }
 
     @Override

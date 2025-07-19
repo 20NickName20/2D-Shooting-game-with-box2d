@@ -12,6 +12,14 @@ public class BarbedWireItem extends UsableItem {
 
     private static final float SIZE = 0.5f;
 
+    public BarbedWireItem() {
+        super();
+    }
+
+    public BarbedWireItem(ItemData data) {
+        super(data);
+    }
+
     @Override
     public float getSize() {
         return SIZE;

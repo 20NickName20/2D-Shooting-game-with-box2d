@@ -10,6 +10,7 @@ import io.github._20nickname20.imbored.game_objects.entities.block.box.WoodenBox
 import io.github._20nickname20.imbored.game_objects.entities.block.circle.RockCircleEntity;
 import io.github._20nickname20.imbored.game_objects.entities.container.CrateEntity;
 import io.github._20nickname20.imbored.game_objects.entities.container.crate.WoodenCrateEntity;
+import io.github._20nickname20.imbored.game_objects.entities.container.locked_crate.parachute.AirdropCrate;
 import io.github._20nickname20.imbored.game_objects.entities.statics.GroundEntity;
 import io.github._20nickname20.imbored.game_objects.loot.supply.AmmoSupplyLoot;
 import io.github._20nickname20.imbored.game_objects.loot.supply.GunSupplyLoot;
