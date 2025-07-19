@@ -75,3 +75,5 @@ subprojects {
 }
 
 eclipse.project.name = 'ImBored' + '-parent'
+
+println System.getProperty('java.home')

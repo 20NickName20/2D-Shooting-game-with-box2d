@@ -140,7 +140,7 @@ public class MainMenuScreen extends ScreenAdapter {
         profiles.add(new ControlsProfile.Keyboard(Util.listGetOrDefault(profileNames, 0, "Игрок0")));
         int i = 0;
         for (Controller controller : Controllers.getControllers()) {
-            if (controller.getName().contains("Joy-Con")) continue;
+            System.out.println(controller.getName() + " " + controller.getAxisCount());
             i++;
             profiles.add(new ControlsProfile.Gamepad(Util.listGetOrDefault(profileNames, i, "Игрок" + i), controller));
         }

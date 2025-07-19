@@ -40,7 +40,10 @@ public class GameScreen extends ScreenAdapter {
             Gdx.files.internal("shader/shader.vert").readString(),
             Gdx.files.internal("shader/shader.frag").readString()
         );
-        if (!shader.isCompiled()) throw new GdxRuntimeException("Couldn't compile shader: " + shader.getLog());
+        if (!shader.isCompiled()) {
+            new GdxRuntimeException("Couldn't compile shader: " + shader.getLog()).printStackTrace();
+            shader = null;
+        }
         ShaderProgram.pedantic = false;
         renderer = new GameLineRenderer(shader, world);
         world.camera.zoom /= zoom;
@@ -59,9 +62,11 @@ public class GameScreen extends ScreenAdapter {
             return;
         }
 
-        shader.bind();
-        shader.setUniformf("u_Time", Util.time());
-        shader.setUniformf("u_cameraPos", world.camera.position);
+        if (shader != null) {
+            shader.bind();
+            shader.setUniformf("u_Time", Util.time());
+            shader.setUniformf("u_cameraPos", world.camera.position);
+        }
 
         ScreenUtils.clear(0, 0, 0, 1);
 
@@ -85,7 +90,7 @@ public class GameScreen extends ScreenAdapter {
     public void dispose() {
         renderer.dispose();
         world.dispose();
-        shader.dispose();
+        if (shader != null) shader.dispose();
     }
 
     public Body getGround() {
