@@ -1,25 +1,28 @@
 package io.github._20nickname20.imbored.world;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+
 import io.github._20nickname20.imbored.ControlsProfile;
 import io.github._20nickname20.imbored.GameWorld;
 import io.github._20nickname20.imbored.PlayerController;
 import io.github._20nickname20.imbored.controllers.NetworkPlayerController;
-import io.github._20nickname20.imbored.game_objects.Chunk;
 import io.github._20nickname20.imbored.game_objects.Entity;
-import io.github._20nickname20.imbored.game_objects.JointEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
 import io.github._20nickname20.imbored.net.Network;
 import io.github._20nickname20.imbored.net.wrappers.ClientPlayerWrapper;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.*;
 
 public class ClientWorld extends GameWorld {
     Client client;
@@ -70,18 +73,6 @@ public class ClientWorld extends GameWorld {
     }
 
     @Override
-    public Chunk loadChunk(int x) {
-        return null;
-    }
-
-    void receiveChunk(int x, Chunk.ChunkData data) {
-        if (isChunkLoaded(x)) return;
-        Chunk chunk = new Chunk(this, x, data);
-        loadedChunks.put(x, chunk);
-        entitiesByChunk.put(x, new HashSet<>());
-    }
-
-    @Override
     protected void tick() {
         processPackets();
         super.tick();
@@ -91,17 +82,12 @@ public class ClientWorld extends GameWorld {
         while (!synchronizedReceive.isEmpty()) {
             Object received = synchronizedReceive.removeFirst();
 
-            if (received instanceof Network.LoadChunk loadChunk) {
-                receiveChunk(loadChunk.position, loadChunk.chunkData);
-            }
-
             if (received instanceof Network.LoginResponse loginResponse) {
                 ControlsProfile profile = controlsProfiles.get(loginResponse.username);
                 if (profile == null) throw new RuntimeException("Server sent the unknown username!");
                 PlayerController controller = ControlsProfile.getPlayerController(profile);
 
                 UUID uuid = UUID.fromString(loginResponse.uuid);
-                localPlayers.add(uuid);
                 if (!(Entity.getByUuid(uuid) instanceof PlayerEntity player)) {
                     throw new RuntimeException("login uuid is not player!");
                 }
@@ -127,22 +113,6 @@ public class ClientWorld extends GameWorld {
                 }
             }
         }
-    }
-
-    @Override
-    public void unloadChunk(int x) {
-        if (!isChunkLoaded(x)) return;
-
-        for (JointEntity joint : getJointsInChunk(x)) {
-            joint.remove();
-        }
-
-        for (Entity entity : getEntitiesInChunk(x)) {
-            entity.remove();
-        }
-
-        entitiesByChunk.remove(x);
-        loadedChunks.remove(x);
     }
 
     @Override

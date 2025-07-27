@@ -1,13 +1,23 @@
 package io.github._20nickname20.imbored;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Joint;
+import com.badlogic.gdx.physics.box2d.JointEdge;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import io.github._20nickname20.imbored.game_objects.Chunk;
+
 import io.github._20nickname20.imbored.game_objects.Entity;
 import io.github._20nickname20.imbored.game_objects.Item;
 import io.github._20nickname20.imbored.game_objects.JointEntity;
@@ -21,9 +31,6 @@ import io.github._20nickname20.imbored.screens.GameScreen;
 import io.github._20nickname20.imbored.util.Ray;
 import io.github._20nickname20.imbored.util.Raycast;
 import io.github._20nickname20.imbored.util.Util;
-import io.github._20nickname20.imbored.world.ServerWorld;
-
-import java.util.*;
 
 public abstract class GameWorld {
     public final World world;
@@ -35,18 +42,13 @@ public abstract class GameWorld {
 
     public static final float ACCELERATION_OF_GRAVITY = 15f;
 
-    protected final Map<Integer, Chunk> loadedChunks = new HashMap<>();
-    protected final Map<Integer, Set<Entity>> entitiesByChunk = new HashMap<>();
-
-    public HashMap<String, ServerWorld.PlayerData> playersByUsername = new HashMap<>();
-
     public static final float CHUNK_WIDTH = 300f;
     public static final int SIMULATION_DISTANCE = 3;
 
     protected final List<Ray> rays = new ArrayList<>();
     private boolean isFrozen;
 
-    protected Set<UUID> localPlayers = new HashSet<>();
+    public final HashMap<String, PlayerEntity> players = new HashMap<>();
 
     public void setFrozen(boolean frozen) {
         isFrozen = frozen;
@@ -54,31 +56,6 @@ public abstract class GameWorld {
 
     public boolean isFrozen() {
         return isFrozen;
-    }
-
-    public Set<Entity> getEntitiesInChunk(int x) {
-        return entitiesByChunk.get(x);
-    }
-
-    public int getChunkPosition(float x) {
-        return Math.round(x / CHUNK_WIDTH);
-    }
-
-    public int getChunkPosition(Vector2 pos) {
-        return Math.round(pos.x / CHUNK_WIDTH);
-    }
-
-    public Set<JointEntity> getJointsInChunk(int x) {
-        Array<Joint> joints = new Array<>();
-        world.getJoints(joints);
-        Set<JointEntity> atChunk = new HashSet<>();
-        for (Joint joint : joints) {
-            if (!(joint.getUserData() instanceof JointEntity jointEntity)) continue;
-            if (x == getChunkPosition(joint.getAnchorA()) || x == getChunkPosition(joint.getAnchorB())) {
-                atChunk.add(jointEntity);
-            }
-        }
-        return atChunk;
     }
 
     protected void addRay(Ray ray) {
@@ -95,18 +72,6 @@ public abstract class GameWorld {
         }
         rays.removeAll(toRemove);
     }
-
-    public Chunk getLoadedChunk(int x) {
-        return loadedChunks.get(x);
-    }
-
-    public boolean isChunkLoaded(int x) {
-        return loadedChunks.containsKey(x);
-    }
-
-    public abstract Chunk loadChunk(int x);
-
-    public abstract void unloadChunk(int x);
 
     public void shootRay(Body ignored, Vector2 position, float angleRad, float range, float power, float damage, float rayLength, float raySpeed, Color rayColor, float penetrateAmount) {
         Vector2 impulse = Vector2.X.cpy().rotateRad(angleRad);
@@ -203,8 +168,6 @@ public abstract class GameWorld {
     public Vector2 playerCenter = new Vector2();
 
     protected void tick() {
-        int cameraChunkPos = getChunkPosition(camera.position.x);
-
         if (!isFrozen) {
             world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
         }
@@ -212,9 +175,6 @@ public abstract class GameWorld {
         world.getBodies(bodies);
         playerCenter.setZero();
         float playerCount = 0;
-        for (Set<Entity> set : entitiesByChunk.values()) {
-            set.clear();
-        }
         for (Body body : bodies) {
             if (!(body.getUserData() instanceof Entity entity)) continue;
 
@@ -226,14 +186,12 @@ public abstract class GameWorld {
                 body.applyLinearImpulse(new Vector2(0, -100), body.getPosition(), true);
             }
 
-            if (localPlayers.contains(entity.uuid)) {
+            if (entity instanceof PlayerEntity) {
                 playerCenter.add(entity.b.getPosition());
                 playerCount += 1;
             }
 
             entity.chunkPos = Math.round(entity.b.getPosition().x / CHUNK_WIDTH);
-            Set<Entity> entitiesInChunk = entitiesByChunk.computeIfAbsent(entity.chunkPos, k -> new HashSet<>());
-            entitiesInChunk.add(entity);
 
 
             if (!isFrozen) {
@@ -244,27 +202,11 @@ public abstract class GameWorld {
             }
             jointsToRemove.clear();
 
-            if (entity instanceof PlayerEntity player) {
-                ServerWorld.PlayerData playerData = playersByUsername.get(player.username);
-                if (playerData != null) {
-                    playerData.chunk = entity.chunkPos;
-                }
-            }
-
             if (entity.isRemoved()) {
                 processRemoval(entity);
             }
         }
         playerCenter.scl(1f / playerCount);
-
-        for (int i = cameraChunkPos - SIMULATION_DISTANCE; i <= cameraChunkPos + SIMULATION_DISTANCE; i++) {
-            loadChunk(i);
-        }
-        for (int i : new HashSet<>(loadedChunks.keySet())) {
-            if (Math.abs(i - cameraChunkPos) - 3 > SIMULATION_DISTANCE) {
-                unloadChunk(i);
-            }
-        }
     }
 
     private float accumulator = 0;
@@ -294,7 +236,7 @@ public abstract class GameWorld {
         }
         jointsToSpawn.clear();
 
-        if (!cameraFollowsPlayers || localPlayers.isEmpty()) return;
+        if (!cameraFollowsPlayers) return;
         Vector2 target = playerCenter.cpy().add(0, 10).add(cameraOffset);
 
         if (!Float.isNaN(target.x) && !Float.isNaN(target.y)) {
@@ -309,9 +251,8 @@ public abstract class GameWorld {
         }
 
         float maxOffset = 0;
-        for (UUID playerUuid : localPlayers) {
-            Entity player = Entity.getByUuid(playerUuid);
-            if (player == null) continue;
+
+        for (PlayerEntity player : players.values()) {
             maxOffset = Math.max(maxOffset, player.b.getPosition().dst(playerCenter));
         }
 
@@ -331,9 +272,6 @@ public abstract class GameWorld {
     }
 
     public void dispose() {
-        for (int x : new HashSet<>(loadedChunks.keySet())) {
-            unloadChunk(x);
-        }
         world.dispose();
     }
 }

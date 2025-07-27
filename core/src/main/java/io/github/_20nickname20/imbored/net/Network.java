@@ -30,12 +30,10 @@ public class Network {
         kryo.register(LoginResponse.class);
 
         kryo.register(RequestChunk.class);
-        kryo.register(LoadChunk.class);
 
         kryo.register(ControlsPacket.class);
         kryo.register(Interact.class);
 
-        kryo.register(Chunk.ChunkData.class);
         kryo.register(Entity.EntityData.class);
         kryo.register(Entity.EntityData[].class);
         kryo.register(JointEntity.JointData.class);
@@ -86,11 +84,6 @@ public class Network {
     public static class GrabOrUse extends ControlsPacket {}
     public static class PutOrStopUse extends ControlsPacket {}
     public static class DropOrThrow extends ControlsPacket {}
-
-    public static class LoadChunk {
-        public int position;
-        public Chunk.ChunkData chunkData;
-    }
 
     public static class RequestChunk {
         public int position;

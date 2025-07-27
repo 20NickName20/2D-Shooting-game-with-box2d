@@ -1,35 +1,37 @@
 package io.github._20nickname20.imbored.game_objects.entities.living.human.cursor;
 
+import java.util.List;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.joints.*;
-import io.github._20nickname20.imbored.*;
-import io.github._20nickname20.imbored.game_objects.*;
-import io.github._20nickname20.imbored.game_objects.entities.*;
+import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
+import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
+
+import io.github._20nickname20.imbored.Controllable;
+import io.github._20nickname20.imbored.GameWorld;
+import io.github._20nickname20.imbored.PlayerController;
+import io.github._20nickname20.imbored.game_objects.Entity;
+import io.github._20nickname20.imbored.game_objects.Interact;
+import io.github._20nickname20.imbored.game_objects.Inventory;
+import io.github._20nickname20.imbored.game_objects.Item;
+import io.github._20nickname20.imbored.game_objects.Material;
+import io.github._20nickname20.imbored.game_objects.entities.Grabbable;
+import io.github._20nickname20.imbored.game_objects.entities.Interactable;
+import io.github._20nickname20.imbored.game_objects.entities.InventoryHolder;
+import io.github._20nickname20.imbored.game_objects.entities.ItemEntity;
 import io.github._20nickname20.imbored.game_objects.entities.container.InteractableContainerEntity;
 import io.github._20nickname20.imbored.game_objects.entities.living.human.CursorEntity;
 import io.github._20nickname20.imbored.game_objects.items.UsableItem;
-import io.github._20nickname20.imbored.render.BarDisplay;
 import io.github._20nickname20.imbored.render.GameRenderer;
 import io.github._20nickname20.imbored.util.FindBody;
 import io.github._20nickname20.imbored.util.Util;
 
-import java.util.HashMap;
-import java.util.List;
-
 public class PlayerEntity extends CursorEntity implements InventoryHolder, Controllable {
     private static final float MAX_HEALTH = 100f;
-    private static final float MAX_FOOD = 100f;
-    private static final float MAX_HYDRATION = 100f;
     private static final float DEFAULT_MAX_WALK_SPEED = 20f;
-
-    private float food = 100;
-    private final BarDisplay foodBar = new BarDisplay(new Color(0.6f, 0.2f, 0, 1), new Color(0.9f, 0.8f, 0, 1), 1, 1);
-
-    private float hydration = 100;
 
     public PlayerController controller;
     private float lastJumpTime = 0;
@@ -53,12 +55,6 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder, Contr
 
     public float customColor = MathUtils.random();
 
-    private static final HashMap<String, PlayerEntity> playersByUsername = new HashMap<>();
-
-    public static PlayerEntity getByUsername(String username) {
-        return playersByUsername.get(username);
-    }
-
     public PlayerEntity(GameWorld world, float x, float y, PlayerController controller, String username) {
         super(world, x, y);
         this.setCursorDistance(getHandCursorDistance());
@@ -70,7 +66,6 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder, Contr
             throw new RuntimeException("Username is null!");
         }
         this.username = username;
-        playersByUsername.put(this.username, this);
     }
 
     public PlayerEntity(GameWorld world, EntityData data) {
@@ -78,8 +73,6 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder, Contr
         this.setCursorDistance(getHandCursorDistance());
 
         if (data instanceof PlayerEntityData playerEntityData) {
-            this.food = playerEntityData.food;
-            this.hydration = playerEntityData.hydration;
             this.inventory = new Inventory(playerEntityData.inventoryData);
             this.inventory.setHolder(this);
             this.username = playerEntityData.username;
@@ -88,7 +81,6 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder, Contr
             this.inventory.setHolder(this);
             this.username = this.uuid.toString();
         }
-        playersByUsername.put(this.username, this);
     }
 
     @Override
@@ -145,30 +137,17 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder, Contr
     public void onDestroy() {
         if (this.isRemoved()) return;
 
-        // this.unequipItem();
+        this.unequipItem();
 
-        /*
         if (controller != null) {
-            PlayerEntityData playerEntityData = (PlayerEntityData) this.createPersistentData();
-            playerEntityData.health = MAX_HEALTH;
-            playerEntityData.food = MAX_FOOD;
-            playerEntityData.hydration = MAX_HYDRATION;
-            playerEntityData.posX = gameWorld.camera.position.x;
-            playerEntityData.posY = gameWorld.camera.position.y + 20f;
-            playerEntityData.inventoryData = new Inventory.InventoryData();
-            playerEntityData.inventoryData.sizeLimit = INVENTORY_SIZE;
-            playerEntityData.inventoryData.items = new Item.ItemData[0];
-
-            playerEntityData.velX *= -0.25f;
-            playerEntityData.velY *= -0.25f;
-            playerEntityData.uuid = this.uuid.toString();
-
-            PlayerEntity newPlayer = new PlayerEntity(gameWorld, playerEntityData);
+            this.controller.unregister();
+            PlayerEntity newPlayer = new PlayerEntity(gameWorld, 0f, 50f, this.controller, this.username);
+            this.controller.register(newPlayer);
             newPlayer.customColor = this.customColor + 0.1f;
-            gameWorld.spawn(newPlayer);
+            newPlayer.spawn();
+            gameWorld.players.put(newPlayer.uuid.toString(), newPlayer);
         }
-         */
-        // super.onDestroy();
+        super.onDestroy();
     }
 
     @Override
@@ -248,9 +227,7 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder, Contr
         if (controller != null) {
             controller.update(dt);
         }
-
-        foodBar.update(dt);
-
+        
         Vector2 cursorPosition = getCursorPosition();
 
         if (grabbedEntity != null) {
@@ -271,6 +248,11 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder, Contr
         }
 
         Vector2 position = this.b.getPosition();
+
+        if (position.y < -50) {
+            this.damage(100 * dt);
+        }
+
         Body closest = FindBody.closestFiltered(world, position, (body) -> {
             if (!(body.getUserData() instanceof InteractableContainerEntity filteredContainer)) return false;
             Vector2 pos = body.getPosition();
@@ -460,12 +442,6 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder, Contr
             inventory.renderPart(renderer, 3, equippedItem);
         });
 
-        if (food < 10 || foodBar.isRising()) {
-            renderer.withTranslation(0, -8.5f, () -> {
-                foodBar.render(renderer);
-            });
-        }
-
         renderer.setColor(Util.fromHSV(customColor, 1, 1));
         for (float i = 0; i < 2; i += 0.75f) {
             renderer.rect(-1.75f + i, -3.5f + i, 3.5f - i * 2, 7f - i * 2);
@@ -497,15 +473,12 @@ public class PlayerEntity extends CursorEntity implements InventoryHolder, Contr
             playerEntityData = (PlayerEntityData) this.persistentData;
         }
         playerEntityData.inventoryData = inventory.createPersistentData();
-        playerEntityData.food = this.food;
-        playerEntityData.hydration = this.hydration;
         playerEntityData.username = this.username;
         this.persistentData = playerEntityData;
         return super.createPersistentData();
     }
 
     public static class PlayerEntityData extends DamagableEntityData {
-        float food, hydration;
         Inventory.InventoryData inventoryData;
         String username;
     }

@@ -3,32 +3,13 @@ package io.github._20nickname20.imbored.handlers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
-import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
+
 import io.github._20nickname20.imbored.AdminTool;
-import io.github._20nickname20.imbored.GameWorld;
-import io.github._20nickname20.imbored.controllers.PlayerKeyboardAndMouseController;
-import io.github._20nickname20.imbored.game_objects.Entity;
-import io.github._20nickname20.imbored.game_objects.LootGenerator;
-import io.github._20nickname20.imbored.game_objects.Material;
-import io.github._20nickname20.imbored.game_objects.entities.StaticEntity;
-import io.github._20nickname20.imbored.game_objects.entities.container.CrateEntity;
-import io.github._20nickname20.imbored.game_objects.entities.container.crate.WoodenCrateEntity;
-import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
-import io.github._20nickname20.imbored.game_objects.entities.statics.GroundEntity;
-import io.github._20nickname20.imbored.game_objects.loot.supply.GunSupplyLoot;
-import io.github._20nickname20.imbored.game_objects.loot.supply.HealSupplyLoot;
-import io.github._20nickname20.imbored.game_objects.loot.supply.StuffSupplyLoot;
-import io.github._20nickname20.imbored.util.FindBody;
 import io.github._20nickname20.imbored.screens.GameScreen;
 import io.github._20nickname20.imbored.screens.MainMenuScreen;
-import io.github._20nickname20.imbored.util.Shapes;
+import io.github._20nickname20.imbored.world.ServerWorld;
 
 public class MainInputProcessor extends InputAdapter {
     GameScreen gameScreen;
@@ -85,6 +66,16 @@ public class MainInputProcessor extends InputAdapter {
         }
         if (keycode == Input.Keys.ESCAPE) {
             gameScreen.game.setScreen(new MainMenuScreen(gameScreen.game));
+            return false;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && keycode == Input.Keys.S) {
+            if (gameScreen.world instanceof ServerWorld serverWorld) {
+                serverWorld.getMap().save();
+                Gdx.app.log("Map Save", "Map \"" + serverWorld.getMap().name + "\" saved successfully.");
+            } else {
+                Gdx.app.error("Map Save", "Cannot save map, not in server world.");
+            }
+            return false;
         }
         if (!AdminTool.isEnabled) return false;
         AdminTool.keyPressed(keycode);
