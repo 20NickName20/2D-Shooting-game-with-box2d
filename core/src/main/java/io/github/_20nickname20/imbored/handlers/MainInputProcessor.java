@@ -62,6 +62,7 @@ public class MainInputProcessor extends InputAdapter {
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.TAB || (AdminTool.isEnabled && keycode == Input.Keys.ESCAPE)){
             AdminTool.isEnabled = !AdminTool.isEnabled;
+            gameScreen.world.cameraFollowsPlayers = !AdminTool.isEnabled;
             return false;
         }
         if (keycode == Input.Keys.ESCAPE) {

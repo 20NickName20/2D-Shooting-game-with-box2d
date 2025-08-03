@@ -3,7 +3,6 @@ package io.github._20nickname20.imbored;
 import com.badlogic.gdx.controllers.Controller;
 import io.github._20nickname20.imbored.controllers.PlayerGamepadController;
 import io.github._20nickname20.imbored.controllers.PlayerKeyboardAndMouseController;
-import io.github._20nickname20.imbored.screens.MainMenuScreen;
 
 public abstract class ControlsProfile {
     public String username;

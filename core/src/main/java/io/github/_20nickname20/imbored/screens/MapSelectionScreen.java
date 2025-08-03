@@ -22,6 +22,7 @@ import io.github._20nickname20.imbored.world.ServerWorld;
 public class MapSelectionScreen extends MenuScreen {
     protected final Json json = new Json();
 
+
     private List<ControlsProfile> profiles;
     private List<MapButton> maps = new ArrayList<>();
 

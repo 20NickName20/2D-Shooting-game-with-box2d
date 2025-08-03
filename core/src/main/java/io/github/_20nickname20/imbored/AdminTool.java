@@ -1,5 +1,11 @@
 package io.github._20nickname20.imbored;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import org.reflections.Reflections;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -13,27 +19,27 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import io.github._20nickname20.imbored.game_objects.*;
+
+import io.github._20nickname20.imbored.game_objects.Entity;
+import io.github._20nickname20.imbored.game_objects.Item;
+import io.github._20nickname20.imbored.game_objects.JointEntity;
+import io.github._20nickname20.imbored.game_objects.LootGenerator;
+import io.github._20nickname20.imbored.game_objects.Material;
 import io.github._20nickname20.imbored.game_objects.entities.ContainerEntity;
 import io.github._20nickname20.imbored.game_objects.entities.block.SimpleBlockEntity;
-import io.github._20nickname20.imbored.game_objects.entities.container.locked_crate.parachute.AirdropCrate;
+import io.github._20nickname20.imbored.game_objects.entities.container.crate.WoodenCrateEntity;
+import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
+import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity.PlayerEntityData;
 import io.github._20nickname20.imbored.game_objects.entities.statics.GroundEntity;
 import io.github._20nickname20.imbored.game_objects.loot.TestRandomLoot;
 import io.github._20nickname20.imbored.render.GameRenderer;
 import io.github._20nickname20.imbored.util.FindBody;
 import io.github._20nickname20.imbored.util.Util;
-import org.reflections.Reflections;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class AdminTool {
     private static final List<Item> items = new ArrayList<>();
     private static final Material[] materials = {Material.WOOD, Material.CLOTH, Material.ROCK, Material.METAL, Material.GROUND, Material.FLESH};
     private static int materialMode = 0;
-    private static FitViewport viewport;
     public static Random random = new Random();
 
     private static final SpriteBatch batch = new SpriteBatch();
@@ -54,13 +60,11 @@ public class AdminTool {
 
         font = generator.generateFont(parameter);
         generator.dispose();
-
-
-
     }
 
     public static GameWorld world;
     public static boolean isEnabled = false;
+
     // Renders a slot
     static void renderSlot(GameRenderer renderer, boolean active, float time) {
         renderer.withRotation(-time * 2, () -> renderer.rect(-1.9f, -1.9f, 3.8f, 3.8f));
@@ -75,7 +79,7 @@ public class AdminTool {
         });
     }
 
-    static void renderText(){
+    private static void renderText(){
         batch.setProjectionMatrix(world.camera.combined);
         batch.setProjectionMatrix(world.camera.projection);
         font.getData().setScale(batch.getProjectionMatrix().getScaleY() * world.camera.viewportHeight / 7);
@@ -89,9 +93,23 @@ public class AdminTool {
     public static final float slotSize = 4.6f * 1.25f;
     public static int activeSlot = 0;
 
+    private static final float CAMERA_SPEED = 25f;
 
     public static void render(GameRenderer renderer, float dt) {
         if (!isEnabled) return;
+
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            world.camera.position.y += CAMERA_SPEED * dt;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            world.camera.position.y -= CAMERA_SPEED * dt;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            world.camera.position.x -= CAMERA_SPEED * dt;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            world.camera.position.x += CAMERA_SPEED * dt;
+        }
 
         renderer.withTranslation(world.camera.position.x - 67f, world.camera.position.y + 37f, () -> {
             renderItems(renderer);
@@ -108,6 +126,12 @@ public class AdminTool {
             renderer.circle(jointPosA.x, jointPosA.y, 1.4f);
             renderer.circle(jointPosA.x, jointPosA.y, 1.55f);
         }
+
+        renderer.withTranslation(world.camera.position.x, world.camera.position.y, () -> {
+            renderer.setColor(Color.WHITE);
+            renderer.rect(-2f, -0.1f, 4f, 0.2f);
+            renderer.rect(-0.1f, -2f, 0.2f, 4f);
+        });
 
         renderer.withTranslation(world.camera.position.x + 65, world.camera.position.y + 35, () -> {
             switch (mode) {
@@ -247,7 +271,7 @@ public class AdminTool {
 
     public static void keyPressed(int key) {
         switch (key) {
-            case Input.Keys.A -> {
+            /*case Input.Keys.A -> {
                 float halfSide = 4.5f;
                 ContainerEntity crate = new AirdropCrate(
                     world, world.camera.position.x, world.camera.position.y + 30f,
@@ -256,6 +280,16 @@ public class AdminTool {
                     random.nextFloat(halfSide * 2f) - halfSide
                 );
                 crate.getInventory().addAll(testLootGenerator.generate(10));
+                crate.spawn();
+            }*/
+            case Input.Keys.T -> {
+                for (PlayerEntity player : world.players.values()) {
+                    player.b.setTransform(world.camera.position.x, world.camera.position.y, 0);
+                }
+            }
+            case Input.Keys.C -> {
+                float halfSide = 4.5f;
+                ContainerEntity crate = new WoodenCrateEntity(world, world.camera.position.x, world.camera.position.y, halfSide, halfSide);
                 crate.spawn();
             }
             case Input.Keys.F -> world.setFrozen(!world.isFrozen());
@@ -277,7 +311,7 @@ public class AdminTool {
             case Input.Keys.NUM_4 -> mode = Mode.DELETE;
             case Input.Keys.ENTER -> {
                 if (mode == Mode.GRAB) {
-                    world.dropItem(worldMousePosition, new Vector2(), Item.createFromType(items.get(activeSlot).getClass(), null));
+                    world.dropItem(new Vector2(world.camera.position.x, world.camera.position.y), new Vector2(), Item.createFromType(items.get(activeSlot).getClass(), null));
                 }
 
                 if (mode == Mode.POLYGON) {
