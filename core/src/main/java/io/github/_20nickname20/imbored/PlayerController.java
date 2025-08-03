@@ -1,7 +1,5 @@
 package io.github._20nickname20.imbored;
 
-import io.github._20nickname20.imbored.game_objects.entities.living.human.cursor.PlayerEntity;
-
 public abstract class PlayerController {
 
     protected Controllable controllable;
